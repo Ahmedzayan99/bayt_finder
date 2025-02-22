@@ -65,7 +65,7 @@ class _PropertyContactInfoScreenState extends State<PropertyContactInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(language.propertyContactInfo, context1: context, titleSpace: 0),
+      appBar: appBarWidget("propertyContactInfo", context1: context, titleSpace: 0),
       body: Stack(children: [
         mContactInfoModel.isNotEmpty
             ? ListView.builder(
@@ -86,7 +86,7 @@ class _PropertyContactInfoScreenState extends State<PropertyContactInfoScreen> {
                           Text(mContactInfoModel[index].propertyName.validate(), style: primaryTextStyle()),
                           10.height,
                           if (mContactInfoModel[index].createdAt!.isNotEmpty)
-                            Text(language.seenOn + parseDocumentDate(DateTime.parse(mContactInfoModel[index].createdAt.validate())), style: secondaryTextStyle())
+                            Text("seenOn${parseDocumentDate(DateTime.parse(mContactInfoModel[index].createdAt.validate()))}", style: secondaryTextStyle())
                         ],
                       )
                     ]),

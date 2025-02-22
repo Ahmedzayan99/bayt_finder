@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
@@ -10,7 +9,7 @@ class PdfViewWidget extends StatefulWidget {
   static String tag = '/pdfViewWidget';
   final String? pdfUrl;
 
-  PdfViewWidget({this.pdfUrl});
+  const PdfViewWidget({super.key, this.pdfUrl});
 
   @override
   PdfViewWidgetState createState() => PdfViewWidgetState();

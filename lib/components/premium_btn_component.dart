@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../extensions/extension_util/int_extensions.dart';
-import '../main.dart';
 import '../extensions/decorations.dart';
 import '../extensions/text_styles.dart';
 import '../utils/colors.dart';
@@ -10,7 +9,7 @@ class PremiumBtn extends StatefulWidget {
   final bool? pDetail;
   final bool? isFromSearch;
 
-  PremiumBtn({this.pDetail, this.isFromSearch});
+  const PremiumBtn({super.key, this.pDetail, this.isFromSearch});
 
   @override
   State<PremiumBtn> createState() => _PremiumBtnState();
@@ -30,7 +29,7 @@ class _PremiumBtnState extends State<PremiumBtn> {
         children: [
           Image.asset(ic_premiums, height: 12, width: 12, color: widget.isFromSearch == true ? inactiveColor : Colors.white),
           4.width,
-          Text(language.premium, style: secondaryTextStyle(size: widget.isFromSearch == true ? 12 : 14, color: widget.isFromSearch == true ? inactiveColor : Colors.white)),
+          Text("premium", style: secondaryTextStyle(size: widget.isFromSearch == true ? 12 : 14, color: widget.isFromSearch == true ? inactiveColor : Colors.white)),
         ],
       ),
     );

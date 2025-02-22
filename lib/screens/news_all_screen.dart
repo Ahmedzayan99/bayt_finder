@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import '../extensions/colors.dart';
 import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import 'no_data_screen.dart';
 import '../../components/app_bar_components.dart';
-import '../extensions/common.dart';
 import '../extensions/extension_util/widget_extensions.dart';
-import '../extensions/loader_widget.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
 import '../models/article_model.dart';
@@ -17,7 +14,7 @@ import '../utils/app_common.dart';
 import 'news_details_screen.dart';
 
 class NewsAllScreen extends StatefulWidget {
-  NewsAllScreen({super.key});
+  const NewsAllScreen({super.key});
 
   @override
   State<NewsAllScreen> createState() => _NewsAllScreenState();
@@ -65,7 +62,7 @@ class _NewsAllScreenState extends State<NewsAllScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(language.newsArticles, context1: context, textColor: black, center: false, titleSpace: 0),
+      appBar: appBarWidget("newsArticles", context1: context, textColor: black, center: false, titleSpace: 0),
       body: Stack(
         children: [
           mArticleList!.isNotEmpty
@@ -113,9 +110,6 @@ class _NewsAllScreenState extends State<NewsAllScreen> {
                     });
                   })
               : NoDataScreen().center().visible(!appStore.isLoading),
-          Observer(builder: (context) {
-            return Loader().center().visible(appStore.isLoading);
-          })
         ],
       ),
     );

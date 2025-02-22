@@ -77,7 +77,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarWidget(language.category, context1: context, titleSpace: 16, showBack: false),
+        appBar: appBarWidget("category", context1: context, titleSpace: 16, showBack: false),
         body: Stack(
           children: [
             categoryData.isNotEmpty
@@ -87,7 +87,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         runSpacing: 16,
                         spacing: 16,
                         children: List.generate(categoryData.length, (i) {
-                          return Container(
+                          return SizedBox(
                               width: (context.width() - 50) / 2,
                               child: Stack(children: [
                                 cachedImage(categoryData[i].categoryImage, height: context.height() * 0.27, width: (context.width() - 50) / 2, fit: BoxFit.cover).cornerRadiusWithClipRRect(12),
@@ -104,7 +104,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               }));
                         })).paddingSymmetric(horizontal: 16).paddingBottom(20),
                   )
-                : NoDataScreen(mTitle: language.resultNotFound).visible(!appStore.isLoading),
+                : NoDataScreen(mTitle: "resultNotFound").visible(!appStore.isLoading),
             Loader().center().visible(appStore.isLoading)
           ],
         ));

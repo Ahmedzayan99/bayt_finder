@@ -49,11 +49,11 @@ class _AddPropertyHistoryScreenState extends State<AddPropertyHistoryScreen> {
 
   void init() async {
     if (widget.history == true) {
-      title = language.addPropertyHistory;
+      title = ".addPropertyHistory";
       getMyOwnPropertyHistory();
-      print("addPropertyHistory" + widget.history.toString());
+      print("addPropertyHistory${widget.history}");
     } else {
-      title = language.advertisementHistory;
+      title = "advertisementHistory";
       getMyAdvertisementProperty();
       print("advertisementHistory");
     }
@@ -122,7 +122,7 @@ class _AddPropertyHistoryScreenState extends State<AddPropertyHistoryScreen> {
                             Text(mMyAdvertisementPropertyModel[index].name.validate().capitalizeFirstLetter(), style: primaryTextStyle()),
                             10.height,
                             if (mMyAdvertisementPropertyModel[index].advertisementPropertyDate!.isNotEmpty)
-                              Text(language.seenOn + " " + parseDocumentDate(DateTime.parse(mMyAdvertisementPropertyModel[index].advertisementPropertyDate.validate())), style: secondaryTextStyle())
+                              Text("${"seenOn"} ${parseDocumentDate(DateTime.parse(mMyAdvertisementPropertyModel[index].advertisementPropertyDate.validate()))}", style: secondaryTextStyle())
                           ],
                         ).expand()
                       ],

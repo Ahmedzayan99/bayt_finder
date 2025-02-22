@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import '../components/app_bar_components.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../screens/subscribe_screen.dart';
@@ -15,7 +14,7 @@ import 'property_detail_screen.dart';
 class AdvertisementSeeAllScreen extends StatefulWidget {
   final Function? onCall;
 
-  const AdvertisementSeeAllScreen({
+  const AdvertisementSeeAllScreen({super.key, 
     this.onCall,
   });
 
@@ -58,7 +57,7 @@ class _AdvertisementSeeAllScreenState extends State<AdvertisementSeeAllScreen> {
   getPropertyApiCall() async {
     appStore.setLoading(true);
     {
-      await getAdvertisementList(userStore.cityName).then((value) {
+      await getAdvertisementList(appStore.cityName).then((value) {
         appStore.setLoading(false);
         numPage = value.pagination!.totalPages;
         if (page == 1) {
@@ -77,39 +76,37 @@ class _AdvertisementSeeAllScreenState extends State<AdvertisementSeeAllScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Scaffold(
-          appBar: appBarWidget(language.advertisementProperties, context1: context, titleSpace: 0),
-          body: Stack(children: [
-            mPropertyData.isNotEmpty
-                ? ListView.builder(
-                    controller: scrollController,
-                    physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    shrinkWrap: true,
-                    itemCount: mPropertyData.length,
-                    itemBuilder: (context, i) {
-                      return AdvertisementPropertyComponent(
-                        property: mPropertyData[i],
-                        isFullWidth: true,
-                        onCall: () {
-                          getPropertyApiCall();
-                        },
-                      ).onTap(() async {
-                        if (mPropertyData[i].premiumProperty == 1) {
-                          if (userStore.subscription == "1" && userStore.isSubscribe != 0) {
-                            PropertyDetailScreen(propertyId: mPropertyData[i].id).launch(context);
-                          } else {
-                            SubscribeScreen().launch(context);
-                          }
-                        } else {
-                          PropertyDetailScreen(propertyId: mPropertyData[i].id).launch(context);
-                        }
-                      }).paddingBottom(16);
-                    })
-                : NoDataScreen(mTitle: language.resultNotFound).visible(!appStore.isLoading),
-            Loader().center().visible(appStore.isLoading),
-          ]));
-    });
+    return Scaffold(
+        appBar: appBarWidget("advertisementProperties", context1: context, titleSpace: 0),
+        body: Stack(children: [
+          mPropertyData.isNotEmpty
+              ? ListView.builder(
+              controller: scrollController,
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              shrinkWrap: true,
+              itemCount: mPropertyData.length,
+              itemBuilder: (context, i) {
+                return AdvertisementPropertyComponent(
+                  property: mPropertyData[i],
+                  isFullWidth: true,
+                  onCall: () {
+                    getPropertyApiCall();
+                  },
+                ).onTap(() async {
+                  if (mPropertyData[i].premiumProperty == 1) {
+                    if (appStore.subscription == "1" && appStore.isSubscribe != 0) {
+                      PropertyDetailScreen(propertyId: mPropertyData[i].id).launch(context);
+                    } else {
+                      SubscribeScreen().launch(context);
+                    }
+                  } else {
+                    PropertyDetailScreen(propertyId: mPropertyData[i].id).launch(context);
+                  }
+                }).paddingBottom(16);
+              })
+              : NoDataScreen(mTitle: "resultNotFound").visible(!appStore.isLoading),
+          Loader().center().visible(appStore.isLoading),
+        ]));
   }
 }

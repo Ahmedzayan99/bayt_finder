@@ -26,7 +26,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         appBar: appBarWidget(language.privacyPolicy, context1: context,titleSpace: 0),
         body: SingleChildScrollView(
             padding: EdgeInsets.zero,
-            child: HtmlWidget(postContent: userStore.privacyPolicy).paddingSymmetric(horizontal: 10)),
+            child: HtmlWidget(postContent: appStore.privacyPolicy).paddingSymmetric(horizontal: 10)),
       ),
     );
   }

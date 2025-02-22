@@ -6,7 +6,6 @@ import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/system_utils.dart';
 import '../extensions/text_styles.dart';
-import '../main.dart';
 import '../utils/colors.dart';
 
 class LimitExceedDialog extends StatefulWidget {
@@ -35,7 +34,7 @@ class _LimitExceedDialogState extends State<LimitExceedDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                 language.limitExceeded,
+                 "limitExceeded",
                   style: primaryTextStyle(color: limitColor, size: 24),
                 ),
                 Icon(Icons.close, color: limitColor, size: 20).onTap(() {
@@ -46,7 +45,7 @@ class _LimitExceedDialogState extends State<LimitExceedDialog> {
           ),
           Column(
             children: [
-              Text(language.limitMsg, style: primaryTextStyle()),
+              Text("limitMsg", style: primaryTextStyle()),
               18.height,
               Row(
                 mainAxisSize: MainAxisSize.max,
@@ -54,7 +53,7 @@ class _LimitExceedDialogState extends State<LimitExceedDialog> {
                   AppButton(
                     height: 40,
                     padding: EdgeInsets.zero,
-                    text: language.cancel,
+                    text: "cancel",
                     color: primaryVariant,
                     textColor: primaryColor,
                     elevation: 0,
@@ -68,7 +67,7 @@ class _LimitExceedDialogState extends State<LimitExceedDialog> {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       decoration: boxDecorationWithRoundedCorners(borderRadius: radius(), backgroundColor: primaryColor),
-                      child: Text(language.purchase, style: boldTextStyle(color: Colors.white)).center(),
+                      child: Text("purchase", style: boldTextStyle(color: Colors.white)).center(),
                     ),
                   ).expand(),
                 ],

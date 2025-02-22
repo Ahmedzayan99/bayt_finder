@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../components/HtmlWidget.dart';
 import '../extensions/decorations.dart';
 import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
@@ -48,7 +47,7 @@ class _SliderDetailsScreenState extends State<SliderDetailsScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(language.tapToView, style: primaryTextStyle(color: Colors.black)),
+                        Text("tapToView", style: primaryTextStyle(color: Colors.black)),
                         4.height,
                         Text(widget.slider.propertyName.validate(), style: boldTextStyle(size: 18, color: Colors.black)),
                       ],

@@ -18,7 +18,7 @@ import 'no_data_screen.dart';
 import 'notification_details_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
-  NotificationScreen({super.key});
+  const NotificationScreen({super.key});
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
@@ -68,7 +68,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarWidget(language.notification, context1: context, titleSpace: 0, actions: [
+        appBar: appBarWidget("notification", context1: context, titleSpace: 0, actions: [
           Image.asset(ic_marks_all_read, height: 20, width: 20).paddingSymmetric(horizontal: 16).onTap(() {
             getMarksRead("markas_read");
             setState(() {});
@@ -136,7 +136,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       });
                     },
                   )
-                : NoDataScreen(mTitle: language.resultNotFound).visible(!appStore.isLoading),
+                : NoDataScreen(mTitle: "resultNotFound").visible(!appStore.isLoading),
             Loader().center().visible(appStore.isLoading)
           ],
         ));

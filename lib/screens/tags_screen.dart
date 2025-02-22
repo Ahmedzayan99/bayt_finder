@@ -7,7 +7,6 @@ import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/loader_widget.dart';
 import '../utils/app_common.dart';
 import '../extensions/colors.dart';
-import '../extensions/common.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
 import '../models/article_model.dart';
@@ -18,7 +17,7 @@ class TagsScreen extends StatefulWidget {
   final int? id;
   final String? title;
 
-  TagsScreen({this.id, this.title});
+  const TagsScreen({super.key, this.id, this.title});
 
   @override
   State<TagsScreen> createState() => _TagsScreenState();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../extensions/extension_util/int_extensions.dart';
-import '../extensions/shared_pref.dart';
 import '../extensions/text_styles.dart';
+import '../local_storage/shared_preferences_manager.dart';
 import '../main.dart';
 import '../utils/constants.dart';
 
@@ -12,7 +12,7 @@ class PriceWidget extends StatefulWidget {
   final Color? color;
   final TextStyle? textStyle;
 
-  PriceWidget({ this.price, this.color, this.size = 22.0, this.textStyle});
+  PriceWidget({super.key,  this.price, this.color, this.size = 22.0, this.textStyle});
 
   @override
   PriceWidgetState createState() => PriceWidgetState();
@@ -28,14 +28,14 @@ class PriceWidgetState extends State<PriceWidget> {
   }
 
   get() async {
-    setState(() {
-      currency = getStringAsync(CurrencySymbol);
+    setState(() async {
+      currency =SharedPreferencesManager.getStringAsync("CurrencySymbol")??'';
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (userStore.currencyPosition == "left") {
+    if (appStore.currencyPosition == "left") {
       return Row(
         children: [
           currencyWidget(),

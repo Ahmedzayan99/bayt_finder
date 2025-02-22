@@ -70,7 +70,7 @@ class _ViewPropertyContactHistoryState extends State<ViewPropertyContactHistory>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(language.viewPropertyContactHistory, context1: context, titleSpace: 0),
+      appBar: appBarWidget("viewPropertyContactHistory", context1: context, titleSpace: 0),
       body: Stack(children: [
         mPropertyInquiryList.isNotEmpty
             ? ListView.builder(
@@ -98,7 +98,7 @@ class _ViewPropertyContactHistoryState extends State<ViewPropertyContactHistory>
                                   children: [
                                     Text(mPropertyInquiryList[index].customerName.validate().capitalizeFirstLetter(), style: boldTextStyle()),
                                     4.height,
-                                    Text(language.seenOn + " " + parseDocumentDate(DateTime.parse(mPropertyInquiryList[index].createdAt.validate())), style: secondaryTextStyle()),
+                                    Text("${"seenOn"} ${parseDocumentDate(DateTime.parse(mPropertyInquiryList[index].createdAt.validate()))}", style: secondaryTextStyle()),
                                   ],
                                 ).expand()
                               ],
@@ -137,7 +137,7 @@ class _ViewPropertyContactHistoryState extends State<ViewPropertyContactHistory>
                         RichText(
                           text: TextSpan(
                             children: <TextSpan>[
-                              TextSpan(text: language.inquiryFor + " ", style: secondaryTextStyle()),
+                              TextSpan(text: "${"inquiryFor"} ", style: secondaryTextStyle()),
                               TextSpan(
                                 text: mPropertyInquiryList[index].propertyName.validate().capitalizeFirstLetter(),
                                 style: boldTextStyle(color: primaryColor),

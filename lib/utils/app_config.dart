@@ -1,8 +1,9 @@
-const APP_NAME = "eProperty";
+const APP_NAME = "Bayt Finder";
 
 //region baseurl
 /// Note: /Add your domain is www.abc.com
-const mBackendURL = "https://apps.meetmighty.com/";
+//const mBackendURL = "https://apps.meetmighty.com/mighty-realestate";
+const mBackendURL = "https://baytfinder.nahrdev.com";
 
 //endregion
 

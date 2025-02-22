@@ -6,7 +6,6 @@ import '../extensions/extension_util/num_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/loader_widget.dart';
 import '../screens/subscribe_screen.dart';
-import '../components/HtmlWidget.dart';
 import '../components/app_bar_components.dart';
 import '../extensions/LiveStream.dart';
 import '../extensions/animatedList/animated_list_view.dart';
@@ -28,6 +27,8 @@ import '../utils/images.dart';
 import 'no_data_screen.dart';
 
 class SubscriptionDetailScreen extends StatefulWidget {
+  const SubscriptionDetailScreen({super.key});
+
   @override
   State<SubscriptionDetailScreen> createState() => _SubscriptionDetailScreenState();
 }
@@ -77,7 +78,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
       Iterable it = value.data!;
       it.map((e) => mSubscriptionPlanList.add(e)).toList();
 
-      mSubscriptionPlanList.forEach((element) {});
+      for (var element in mSubscriptionPlanList) {}
       appStore.setLoading(false);
 
       setState(() {});
@@ -90,16 +91,16 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
   Future<void> cancelPackage() async {
     appStore.setLoading(true);
     Map req = {
-      "id": userStore.subscriptionDetail!.subscriptionPlan!.id,
+      "id": appStore.subscriptionDetail!.subscriptionPlan!.id,
     };
     await cancelPlanApi(req).then((value) async {
-      await getUSerDetail(context, userStore.userId).whenComplete(() {
+    /*  await getUSerDetail(context, appStore.userId).whenComplete(() {
         appStore.setLoading(false);
-        userStore.isSubscribe = 0;
+        appStore.isSubscribe = 0;
         getSubscriptionList();
         setState(() {});
         toast(value.message);
-      });
+      });*/
     }).catchError((e) {
       print(e.toString());
     });
@@ -107,13 +108,13 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
 
   Color getTextColor(String? state) {
     switch (state) {
-      case ACTIVE:
+      case 'ACTIVE':
         return Colors.green;
-      case INACTIVE:
+      case "INACTIVE":
         return inactiveColor;
-      case CANCELLED:
+      case "CANCELLED":
         return inactiveColor;
-      case EXPIRED:
+      case "EXPIRED":
         return Colors.yellow;
       default:
         return Colors.black;
@@ -122,13 +123,13 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
 
   Color getBgColor(String? state) {
     switch (state) {
-      case ACTIVE:
+      case 'ACTIVE':
         return Colors.green.withOpacity(0.15);
-      case INACTIVE:
+      case 'INACTIVE':
         return inactiveColor.withOpacity(0.10);
-      case CANCELLED:
+      case 'CANCELLED':
         return Colors.red.withOpacity(0.10);
-      case EXPIRED:
+      case 'EXPIRED':
         return Colors.yellow.withOpacity(0.5);
       default:
         return Colors.green.withOpacity(0.15);
@@ -144,7 +145,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
           systemNavigationBarIconBrightness: appStore.isDarkModeOn ? Brightness.light : Brightness.light,
         ),
         child: Scaffold(
-            appBar: appBarWidget(language.subscriptionPlans,
+            appBar: appBarWidget("subscriptionPlans",
                 titleSpace: 0,
                 context1: context,
                 bottom: PreferredSize(
@@ -160,7 +161,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                 : appStore.isDarkModeOn
                                     ? cardDarkColor
                                     : primaryExtraLight),
-                        child: Text(language.active,
+                        child: Text("active",
                                 style: boldTextStyle(
                                     color: i == 0
                                         ? Colors.white
@@ -184,7 +185,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                 : appStore.isDarkModeOn
                                     ? cardDarkColor
                                     : primaryExtraLight),
-                        child: Text(language.history,
+                        child: Text("history",
                                 style: boldTextStyle(
                                     color: i == 1
                                         ? Colors.white
@@ -206,17 +207,17 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                 Stack(
                   children: [
                     select && !appStore.isLoading
-                        ? userStore.subscriptionDetail == null
+                        ? appStore.subscriptionDetail == null
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(no_subscription, height: context.height() * 0.3, width: context.width() * 0.4, fit: BoxFit.cover),
                                   30.height,
-                                  Text(language.subscriptionMsg.capitalizeFirstLetter(), style: boldTextStyle(size: 16, color: textSecondaryColorGlobal)),
+                                  Text('subscriptionMsg'.capitalizeFirstLetter(), style: boldTextStyle(size: 16, color: textSecondaryColorGlobal)),
                                   50.height,
                                   AppButton(
-                                    text: language.viewPlans,
+                                    text: "viewPlans",
                                     width: context.width(),
                                     color: primaryColor,
                                     onTap: () async {
@@ -229,8 +230,8 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                   ).paddingAll(16)
                                 ],
                               )
-                            : userStore.subscriptionDetail!.subscriptionPlan == null || userStore.subscriptionDetail!.subscriptionPlan!.status == "inactive"
-                                ? Container(
+                            : appStore.subscriptionDetail!.subscriptionPlan == null || appStore.subscriptionDetail!.subscriptionPlan!.status == "inactive"
+                                ? SizedBox(
                                     height: context.height() - context.height() * 0.45,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -239,10 +240,10 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                       children: [
                                         Image.asset(no_subscription, height: context.height() * 0.3, width: context.width() * 0.4, fit: BoxFit.cover),
                                         30.height,
-                                        Text(language.subscriptionMsg, style: primaryTextStyle(color: textSecondaryColorGlobal)),
+                                        Text("subscriptionMsg", style: primaryTextStyle(color: textSecondaryColorGlobal)),
                                         50.height,
                                         AppButton(
-                                          text: language.viewPlans,
+                                          text: "viewPlans",
                                           width: context.width(),
                                           color: primaryColor,
                                           onTap: () {
@@ -268,35 +269,31 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     PriceWidget(
-                                                            price: userStore.subscriptionDetail!.subscriptionPlan!.totalAmount.validate().toStringAsFixed(2),
+                                                            price: appStore.subscriptionDetail!.subscriptionPlan!.totalAmount.validate().toStringAsFixed(2),
                                                             color: primaryColor,
                                                             textStyle: boldTextStyle(size: 18, color: primaryColor))
-                                                        .visible(userStore.subscriptionDetail!.subscriptionPlan!.totalAmount.validate() > 0),
-                                                    4.width.visible(userStore.subscriptionDetail!.subscriptionPlan!.totalAmount.validate() > 0),
+                                                        .visible(appStore.subscriptionDetail!.subscriptionPlan!.totalAmount.validate() > 0),
+                                                    4.width.visible(appStore.subscriptionDetail!.subscriptionPlan!.totalAmount.validate() > 0),
                                                     Text(
-                                                      userStore.subscriptionDetail!.subscriptionPlan!.packageData!.durationUnit.toString().capitalizeFirstLetter(),
+                                                      appStore.subscriptionDetail!.subscriptionPlan!.packageData!.durationUnit.toString().capitalizeFirstLetter(),
                                                       style: boldTextStyle(color: primaryColor, size: 18),
                                                     )
                                                   ],
                                                 ),
                                                 8.height,
                                                 Text(
-                                                    language.yourPlanValid +
-                                                        " " +
-                                                        parseDocumentDate(DateTime.parse(userStore.subscriptionDetail!.subscriptionPlan!.subscriptionStartDate.validate())) +
-                                                        " ${language.to} " +
-                                                        parseDocumentDate(DateTime.parse(userStore.subscriptionDetail!.subscriptionPlan!.subscriptionEndDate.validate())),
+                                                    "${"yourPlanValid"} ${parseDocumentDate(DateTime.parse(appStore.subscriptionDetail!.subscriptionPlan!.subscriptionStartDate.validate()))} ${'to'} ${parseDocumentDate(DateTime.parse(appStore.subscriptionDetail!.subscriptionPlan!.subscriptionEndDate.validate()))}",
                                                     style: primaryTextStyle(color: grayColor, size: 12)),
-                                              /*  HtmlWidget(postContent: userStore.subscriptionDetail!.subscriptionPlan!.packageData!.description.validate(), color: textSecondaryColor, size: 14),
+                                              /*  HtmlWidget(postContent: appStore.subscriptionDetail!.subscriptionPlan!.packageData!.description.validate(), color: textSecondaryColor, size: 14),
                                               */  8.height,
                                                 Row(
                                                   children: [
                                                     Icon(Icons.circle, size: 6, color: Colors.black),
                                                     10.width,
-                                                    Text(language.viewPropertyLimit, style: primaryTextStyle(size: 14, color: Colors.black)).expand(),
-                                                    userStore.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit == null
-                                                        ? Text(language.unlimited, style: primaryTextStyle(size: 14, color: primaryColor))
-                                                        : Text(userStore.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit.toString(),
+                                                    Text("viewPropertyLimit", style: primaryTextStyle(size: 14, color: Colors.black)).expand(),
+                                                    appStore.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit == null
+                                                        ? Text("unlimited", style: primaryTextStyle(size: 14, color: primaryColor))
+                                                        : Text(appStore.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit.toString(),
                                                             style: primaryTextStyle(size: 14, color: primaryColor)),
                                                   ],
                                                 ).paddingLeft(10),
@@ -305,10 +302,10 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                                   children: [
                                                     Icon(Icons.circle, size: 6, color: Colors.black),
                                                     10.width,
-                                                    Text(language.addPropertyLimit, style: primaryTextStyle(size: 14, color: Colors.black)).expand(),
-                                                    userStore.subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit == null
-                                                        ? Text(language.unlimited, style: primaryTextStyle(size: 14, color: primaryColor))
-                                                        : Text(userStore.subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit.toString(),
+                                                    Text("addPropertyLimit", style: primaryTextStyle(size: 14, color: Colors.black)).expand(),
+                                                    appStore.subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit == null
+                                                        ? Text("unlimited", style: primaryTextStyle(size: 14, color: primaryColor))
+                                                        : Text(appStore.subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit.toString(),
                                                             style: primaryTextStyle(size: 14, color: primaryColor)),
                                                   ],
                                                 ).paddingLeft(10),
@@ -317,10 +314,10 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                                   children: [
                                                     Icon(Icons.circle, size: 6, color: Colors.black),
                                                     10.width,
-                                                    Text(language.advertisementLimit, style: primaryTextStyle(size: 14, color: Colors.black)).expand(),
-                                                    userStore.subscriptionDetail!.subscriptionPlan!.packageData!.advertisementLimit == null
-                                                        ? Text(language.unlimited, style: primaryTextStyle(size: 14, color: primaryColor))
-                                                        : Text(userStore.subscriptionDetail!.subscriptionPlan!.packageData!.advertisementLimit.toString(),
+                                                    Text("advertisementLimit", style: primaryTextStyle(size: 14, color: Colors.black)).expand(),
+                                                    appStore.subscriptionDetail!.subscriptionPlan!.packageData!.advertisementLimit == null
+                                                        ? Text("unlimited", style: primaryTextStyle(size: 14, color: primaryColor))
+                                                        : Text(appStore.subscriptionDetail!.subscriptionPlan!.packageData!.advertisementLimit.toString(),
                                                             style: primaryTextStyle(size: 14, color: primaryColor)),
                                                   ],
                                                 ).paddingLeft(10),
@@ -334,7 +331,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                               padding: EdgeInsets.symmetric(horizontal: 18, vertical: 4),
                                               decoration: boxDecorationWithRoundedCorners(borderRadius: radius(50), backgroundColor: Colors.black),
                                               child: Text(
-                                                userStore.subscriptionDetail!.subscriptionPlan!.packageName.validate().toUpperCase(),
+                                                appStore.subscriptionDetail!.subscriptionPlan!.packageName.validate().toUpperCase(),
                                                 style: primaryTextStyle(color: Colors.white, size: 14),
                                               ),
                                             ),
@@ -344,7 +341,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                       50.height,
                                       AppButton(
                                         elevation: 0,
-                                        text: language.cancelSubscription,
+                                        text: "cancelSubscription",
                                         width: context.width(),
                                         color: primaryColor,
                                         textColor: Colors.white,
@@ -357,9 +354,9 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                             primaryColor: limitColor,
                                             positiveTextColor: Colors.white,
                                             negativeTextColor: primaryColor,
-                                            title: language.cancelSubscriptionMsg.capitalizeFirstLetter(),
-                                            positiveText: language.yes,
-                                            negativeText: language.no,
+                                            title: "cancelSubscriptionMsg",
+                                            positiveText: "yes",
+                                            negativeText: "no",
                                             onAccept: (c) async {
                                               await cancelPackage();
                                             },
@@ -415,9 +412,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                                   ),
                                                   10.height,
                                                   Text(
-                                                    parseDocumentDate(DateTime.parse(mSubscriptionPlanList[index].subscriptionStartDate.validate())) +
-                                                        " ${language.to} " +
-                                                        parseDocumentDate(DateTime.parse(mSubscriptionPlanList[index].subscriptionEndDate.validate())),
+                                                    "${parseDocumentDate(DateTime.parse(mSubscriptionPlanList[index].subscriptionStartDate.validate()))} ${"to"} ${parseDocumentDate(DateTime.parse(mSubscriptionPlanList[index].subscriptionEndDate.validate()))}",
                                                     style: secondaryTextStyle(),
                                                   ),
                                                   10.height.visible(mSubscriptionPlanList[index].cancelDate != null),
@@ -427,7 +422,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                                       children: [
                                                         Icon(Icons.circle, size: 6, color: Colors.black),
                                                         4.width,
-                                                        Text(language.cancelledOn + " ", style: primaryTextStyle(size: 14)),
+                                                        Text("${"cancelledOn"} ", style: primaryTextStyle(size: 14)),
                                                         Text(parseDocumentDate(DateTime.parse(mSubscriptionPlanList[index].cancelDate.validate())), style: secondaryTextStyle()),
                                                       ],
                                                     ),
@@ -438,7 +433,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                                                       children: [
                                                         Icon(Icons.circle, size: 6, color: Colors.black),
                                                         4.width,
-                                                        Text(language.paymentVia + " " + mSubscriptionPlanList[index].paymentType.toString(), style: primaryTextStyle(size: 14)),
+                                                        Text("${"paymentVia"} ${mSubscriptionPlanList[index].paymentType}", style: primaryTextStyle(size: 14)),
                                                       ],
                                                     ),
                                                 ],

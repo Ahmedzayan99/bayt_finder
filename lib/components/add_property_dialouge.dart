@@ -39,9 +39,9 @@ class _AddPropertyDialogState extends State<AddPropertyDialog> {
   }
 
   getList() {
-    propertyForList.add(AddPropertyModel(language.rentProperty, ic_rate, false));
-    propertyForList.add(AddPropertyModel(language.sellProperty, ic_sell, false));
-    propertyForList.add(AddPropertyModel(language.pgColivingProperty, ic_bed, false));
+    propertyForList.add(AddPropertyModel("rentProperty", ic_rate, false));
+    propertyForList.add(AddPropertyModel("sellProperty", ic_sell, false));
+    propertyForList.add(AddPropertyModel("pgColivingProperty", ic_bed, false));
   }
 
   @override
@@ -60,7 +60,7 @@ class _AddPropertyDialogState extends State<AddPropertyDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(language.iWantTo, style: primaryTextStyle(size: 24)),
+              Text("iWantTo", style: primaryTextStyle(size: 24)),
               Icon(Icons.close, size: 28).onTap(() {
                 finish(context);
               }),
@@ -129,7 +129,7 @@ class _AddPropertyDialogState extends State<AddPropertyDialog> {
           30.height,
           AppButton(
             padding: EdgeInsets.zero,
-            text: language.Continue,
+            text: "Continue",
             width: context.width(),
             color: primaryColor,
             textColor: Colors.white,

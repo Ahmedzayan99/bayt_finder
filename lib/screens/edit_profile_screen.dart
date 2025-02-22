@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +15,6 @@ import '../extensions/common.dart';
 import '../extensions/decorations.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
-import '../extensions/loader_widget.dart';
 import '../extensions/system_utils.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
@@ -29,6 +27,8 @@ import '../utils/constants.dart';
 import '../utils/images.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
+
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
@@ -55,11 +55,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void init() async {
-    fNameController.text = userStore.fName;
-    lNameController.text = userStore.lName;
-    emailController.text = userStore.email;
-    phoneController.text = userStore.phoneNo.replaceAll('+91', '');
-    profileImg = userStore.profileImage;
+    fNameController.text = appStore.fName;
+    lNameController.text = appStore.lName;
+    emailController.text = appStore.email;
+    phoneController.text = appStore.phoneNo.replaceAll('+91', '');
+    profileImg = appStore.profileImage;
     setState(() {});
   }
 
@@ -80,13 +80,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     appStore.setLoading(true);
 
     MultipartRequest multiPartRequest = await getMultiPartRequest('update-profile');
-    multiPartRequest.fields['id'] = userStore.userId.toString();
+    multiPartRequest.fields['id'] = appStore.userId.toString();
     multiPartRequest.fields['first_name'] = fNameController.text;
     multiPartRequest.fields['last_name'] = lNameController.text;
-    multiPartRequest.fields['display_name'] = fNameController.text + " " + lNameController.text;
+    multiPartRequest.fields['display_name'] = "${fNameController.text} ${lNameController.text}";
     multiPartRequest.fields['email'] = emailController.text;
-    multiPartRequest.fields['username'] = userStore.phoneNo.replaceAll('+', '');
-    multiPartRequest.fields['contact_number'] = userStore.phoneNo;
+    multiPartRequest.fields['username'] = appStore.phoneNo.replaceAll('+', '');
+    multiPartRequest.fields['contact_number'] = appStore.phoneNo;
 
     if (image != null) {
       multiPartRequest.files.add(await MultipartFile.fromPath('profile_image', image!.path.toString()));
@@ -99,11 +99,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if ((data as String).isJson()) {
           UserResponse res = UserResponse.fromJson(jsonDecode(data));
           print(res.toJson().toString());
-          userStore.setUserEmail(res.data!.email.validate());
-          userStore.setFirstName(res.data!.firstName.validate());
-          userStore.setUsername(res.data!.username.validate());
-          userStore.setLastName(res.data!.lastName.validate());
-          userStore.setUserImage(res.data!.profileImage.validate());
+          appStore.setUserEmail(res.data!.email.validate());
+          appStore.setFirstName(res.data!.firstName.validate());
+          appStore.setUsername(res.data!.username.validate());
+          appStore.setLastName(res.data!.lastName.validate());
+          appStore.setUserImage(res.data!.profileImage.validate());
 
           appStore.setLoading(false);
           finish(context, true);
@@ -156,10 +156,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarWidget(language.editProfile, context1: context, titleSpace: 0),
+        appBar: appBarWidget("editProfile", context1: context, titleSpace: 0),
         bottomNavigationBar: Stack(children: [
           AppButton(
-            text: language.save,
+            text: "save",
             width: context.width(),
             color: primaryColor,
             elevation: 0,
@@ -194,7 +194,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       openBottomSheet();
                     }).center(),
                     20.height,
-                    Text(language.firstName, style: primaryTextStyle(color: grayColor)),
+                    Text('firstName', style: primaryTextStyle(color: grayColor)),
                     10.height,
                     AppTextField(
                         textInputAction: TextInputAction.next,
@@ -202,10 +202,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         focus: fNameFocus,
                         textFieldType: TextFieldType.NAME,
                         keyboardType: TextInputType.name,
-                        decoration: defaultInputDecoration(context, label: language.enterFirstName),
+                        decoration: defaultInputDecoration(context, label: "enterFirstName"),
                         suffix: Image.asset(ic_profile, height: 16, width: 16, color: grayColor).paddingSymmetric(vertical: 12)),
                     10.height,
-                    Text(language.lastName, style: primaryTextStyle(color: grayColor)),
+                    Text("lastName", style: primaryTextStyle(color: grayColor)),
                     10.height,
                     AppTextField(
                         textInputAction: TextInputAction.next,
@@ -213,10 +213,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         focus: lNameFocus,
                         textFieldType: TextFieldType.NAME,
                         keyboardType: TextInputType.name,
-                        decoration: defaultInputDecoration(context, label: language.enterLastName),
+                        decoration: defaultInputDecoration(context, label: "enterLastName"),
                         suffix: Image.asset(ic_profile, height: 16, width: 16, color: grayColor).paddingSymmetric(vertical: 12)),
                     10.height,
-                    Text(language.email, style: primaryTextStyle(color: grayColor)),
+                    Text("email", style: primaryTextStyle(color: grayColor)),
                     10.height,
                     AppTextField(
                         onFieldSubmitted: (p0) {
@@ -229,10 +229,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         focus: emailFocus,
                         textFieldType: TextFieldType.EMAIL,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: defaultInputDecoration(context, label: language.enterEmail),
+                        decoration: defaultInputDecoration(context, label: "enterEmail"),
                         suffix: Image.asset(ic_mail, height: 16, width: 16, color: grayColor).paddingSymmetric(vertical: 12)),
                     10.height,
-                    Text(language.phoneNumber, style: primaryTextStyle(color: grayColor)),
+                    Text("phoneNumber", style: primaryTextStyle(color: grayColor)),
                     10.height,
                     AppTextField(
                       controller: phoneController,
@@ -241,7 +241,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       readOnly: true,
                       suffix: mSuffixTextFieldIconWidget(ic_call_outlined),
                       decoration: defaultInputDecoration(context,
-                          label: language.enterPhone,
+                          label: "enterPhone",
                           mPrefix: IntrinsicHeight(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -271,11 +271,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ).paddingSymmetric(horizontal: 16),
               ),
             ),
-            Observer(
-              builder: (context) {
-                return Loader().center().visible(appStore.isLoading);
-              },
-            )
+
           ],
         ));
   }
@@ -298,7 +294,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               }),
             ),
             10.height,
-            Container(
+            SizedBox(
               width: context.width(),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -306,7 +302,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   Icon(Ionicons.camera_outline, color: appStore.isDarkModeOn ? white : primaryColor),
                   16.width,
-                  Text(language.camera, style: primaryTextStyle(size: 18, color: appStore.isDarkModeOn ? white : black)),
+                  Text("'camera'", style: primaryTextStyle(size: 18, color: appStore.isDarkModeOn ? white : black)),
                 ],
               ),
             ).onTap(() {
@@ -316,7 +312,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             10.height,
             Divider(),
             10.height,
-            Container(
+            SizedBox(
               width: context.width(),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -324,7 +320,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   Icon(AntDesign.picture, color: appStore.isDarkModeOn ? white : primaryColor),
                   16.width,
-                  Text(language.chooseImage, style: primaryTextStyle(size: 18)),
+                  Text("chooseImage", style: primaryTextStyle(size: 18)),
                 ],
               ),
             ).onTap(() {

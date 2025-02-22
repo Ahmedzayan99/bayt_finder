@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,8 @@ adShow() async {
     adUnitId: kReleaseMode
         ? getInterstitialAdUnitId()!
         : Platform.isIOS
-            ? userStore.admobInterstitialIdIos
-            : userStore.admobInterstitialId,
+            ? appStore.admobInterstitialIdIos
+            : appStore.admobInterstitialId,
     request: AdRequest(),
     adLoadCallback: InterstitialAdLoadCallback(
       onAdLoaded: (InterstitialAd ad) {
@@ -50,18 +51,18 @@ adShow() async {
 
 String? getInterstitialAdUnitId() {
   if (Platform.isIOS) {
-    return userStore.admobInterstitialIdIos;
+    return appStore.admobInterstitialIdIos;
   } else if (Platform.isAndroid) {
-    return userStore.admobInterstitialId;
+    return appStore.admobInterstitialId;
   }
   return null;
 }
 
 String? getBannerAdUnitId() {
   if (Platform.isIOS) {
-    return userStore.admobInterstitialIdIos;
+    return appStore.admobInterstitialIdIos;
   } else if (Platform.isAndroid) {
-    return userStore.admobBannerId;
+    return appStore.admobBannerId;
   }
   return null;
 }
@@ -88,3 +89,4 @@ void loadInterstitialAds() {
 void showInterstitialAds() {
   adShow();
 }
+*/

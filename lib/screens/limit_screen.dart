@@ -9,7 +9,6 @@ import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/price_widget.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
-import 'payment_screen.dart';
 import '../utils/colors.dart';
 import '../utils/images.dart';
 import '../extensions/app_button.dart';
@@ -21,7 +20,7 @@ import '../utils/app_common.dart';
 class LimitScreen extends StatefulWidget {
   final String? limit;
 
-  LimitScreen({super.key, this.limit});
+  const LimitScreen({super.key, this.limit});
 
   @override
   State<LimitScreen> createState() => _LimitScreenState();
@@ -38,11 +37,11 @@ class _LimitScreenState extends State<LimitScreen> {
   void initState() {
     super.initState();
     if (widget.limit == "add_property") {
-      title = language.addPropertyLimit;
+      title = "addPropertyLimit";
     } else if (widget.limit == "view_property") {
-      title = language.contactInfoLimit;
+      title = "contactInfoLimit";
     } else if (widget.limit == "advertisement_property") {
-      title = language.addAdvertisementLimit;
+      title = "addAdvertisementLimit";
     } else {
       title = "";
     }
@@ -53,7 +52,7 @@ class _LimitScreenState extends State<LimitScreen> {
     return Scaffold(
       appBar: appBarWidget(title.toString(), context1: context, titleSpace: 0),
       bottomNavigationBar: AppButton(
-        text: language.purchase,
+        text: "purchase",
         width: context.width(),
         color: primaryColor,
         elevation: 0,
@@ -65,7 +64,7 @@ class _LimitScreenState extends State<LimitScreen> {
               isFromLimit: true,
             ).launch(context);*/
           } else {
-            toast(language.pleaseSelectLimit);
+            toast("pleaseSelectLimit");
           }
         },
       ).paddingOnly(right: 16, bottom: 16, left: 16, top: 0),
@@ -94,7 +93,7 @@ class _LimitScreenState extends State<LimitScreen> {
                       child: Row(children: [
                         Image.asset(_selectedIndex == i ? ic_radio_fill : ic_radio, height: 18, width: 18),
                         10.width,
-                        Text(mLimitPropertyResponse.data![i].limit.toString() + " " + language.limit,
+                        Text("${mLimitPropertyResponse.data![i].limit} ${"limit"}",
                                 style: primaryTextStyle(
                                     color: appStore.isDarkModeOn
                                         ? _selectedIndex == i

@@ -11,6 +11,8 @@ import 'property_detail_screen.dart';
 import 'subscribe_screen.dart';
 
 class FavouriteScreen extends StatefulWidget {
+  const FavouriteScreen({super.key});
+
   @override
   State<FavouriteScreen> createState() => _FavouriteScreenState();
 }
@@ -52,10 +54,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       Iterable it = value.data!;
       it.map((e) => mFavouriteProperty.add(e)).toList();
 
-      print("Favourite Property List Is ==>" + mFavouriteProperty.toString());
+      print("Favourite Property List Is ==>$mFavouriteProperty");
       setState(() {});
     }).catchError((e) {
-      print("Error is " + e.toString());
+      print("Error is $e");
       appStore.setLoading(false);
     });
   }
@@ -63,7 +65,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarWidget(language.favourite, context1: context, showBack: false, titleSpace: 16),
+        appBar: appBarWidget("favourite", context1: context, showBack: false, titleSpace: 16),
         body: Stack(
           children: [
             mFavouriteProperty.isNotEmpty
@@ -84,8 +86,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         },
                       ).onTap(() async {
                         if (mFavouriteProperty[i].premiumProperty == 1) {
-                          if (userStore.subscription == "1") {
-                            if (userStore.isSubscribe != 0) {
+                          if (appStore.subscription == "1") {
+                            if (appStore.isSubscribe != 0) {
                               bool? res = await PropertyDetailScreen(propertyId: mFavouriteProperty[i].id).launch(context);
                               if (res == true) {
                                 init();
@@ -108,7 +110,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         setState(() {});
                       }).paddingBottom(16);
                     })
-                : NoDataScreen(mTitle: language.resultNotFound).visible(!appStore.isLoading),
+                : NoDataScreen(mTitle: "resultNotFound").visible(!appStore.isLoading),
             Loader().center().visible(appStore.isLoading)
           ],
         ));

@@ -24,7 +24,7 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
       ),
       child: Scaffold(
         appBar: appBarWidget(language.termsCondition, context1: context,titleSpace: 0),
-        body: SingleChildScrollView(child: HtmlWidget(postContent: userStore.termsCondition).paddingSymmetric(horizontal: 10)),
+        body: SingleChildScrollView(child: HtmlWidget(postContent: appStore.termsCondition).paddingSymmetric(horizontal: 10)),
       ),
     );
   }

@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:bayt_finder/main.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/colors.dart';
 import '../extensions/common.dart';
+// const themeModeIndexValue = 'theme_mode_index';
+class AppThemeMode {
+  final int themeModeLight = 0;
+  final int themeModeDark = 1;
+  final int themeModeSystem = 2;
+}
 
+/* Theme Mode Type */
+const themeModeLight = 0;
+const themeModeDark = 1;
+const themeModeSystem = 2;
+
+const local = "local";
+const skipBoarding = "skipBoarding";
+const  token = "token";
 const USER_COLLECTION = "users";
 
 const CURRENCY_CODE = "";
@@ -98,7 +111,7 @@ const IS_LOGIN = "IS_LOGIN";
 const GENDER = "GENDER";
 const DISPLAY_NAME = "DISPLAY_NAME";
 const PHONE_NUMBER = "PHONE_NUMBER";
-const TOKEN = "TOKEN";
+
 const USERNAME = "USERNAME";
 const USER_PROFILE_IMG = "USER_PROFILE_IMG";
 const PASSWORD = "PASSWORD";
@@ -122,16 +135,7 @@ const DURATION_YEARLY = 'Yearly';
 
 //endregion
 
-class AppThemeMode {
-  final int themeModeLight = 0;
-  final int themeModeDark = 1;
-  final int themeModeSystem = 2;
-}
 
-/* Theme Mode Type */
-const ThemeModeLight = 0;
-const ThemeModeDark = 1;
-const ThemeModeSystem = 2;
 
 class DefaultValues {
   final String defaultLanguage = "en";
@@ -178,15 +182,15 @@ Duration pageRouteTransitionDurationGlobal = 400.milliseconds;
 
 int passwordLengthGlobal = 6;
 
-var errorSomethingWentWrong = language.somethingWentWrong;
-var errorThisFieldRequired = language.thisFieldIsRequired;
-var errorInternetNotAvailable = language.noInternet;
-var errorNotAllow = language.errorNotAllow;
+var errorSomethingWentWrong = "somethingWentWrong";
+var errorThisFieldRequired = "thisFieldIsRequired";
+var errorInternetNotAvailable = "noInternet";
+var errorNotAllow = "errorNotAllow";
 
 const playStoreBaseURL = 'https://play.google.com/store/apps/details?id=';
 const appStoreBaseURL = 'https://apps.apple.com/in/app/';
 
-const THEME_MODE_INDEX = 'theme_mode_index';
+
 
 var errorMessage = 'Please try again';
 
@@ -259,19 +263,19 @@ ShapeBorder? defaultDialogShape;
 // const FULLY = "Fully Furnished";
 // const SEMI = "Semi Furnished";
 
-final UNFURNISHED = language.unfurnished;
-final FULLY = language.fullyFurnished;
-final SEMI = language.semiFurnished;
+final UNFURNISHED = "unfurnished";
+final FULLY = "fullyFurnished";
+final SEMI = 'semiFurnished';
 
 // const OWNER = "Owner";
 // const BROKER = "Broker";
 // const BUILDER = "Builder";
 // const AGENT = "Agent";
 
-final OWNER = language.owner;
-final BROKER = language.broker;
-final BUILDER = language.builder;
-final AGENT = language.agent;
+final OWNER = "owner";
+final BROKER = "broker";
+final BUILDER = "builder";
+final AGENT = "agent";
 
 ///PropertyFor
 enum PropertyForIndex {

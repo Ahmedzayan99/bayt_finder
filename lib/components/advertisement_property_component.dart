@@ -21,7 +21,7 @@ class AdvertisementPropertyComponent extends StatefulWidget {
   final bool? isFullWidth;
   final Function? onCall;
 
-  AdvertisementPropertyComponent({this.property, this.isFullWidth = false, this.onCall});
+  const AdvertisementPropertyComponent({super.key, this.property, this.isFullWidth = false, this.onCall});
 
   @override
   State<AdvertisementPropertyComponent> createState() => _AdvertisementPropertyComponentState();
@@ -66,7 +66,7 @@ class _AdvertisementPropertyComponentState extends State<AdvertisementPropertyCo
           Stack(
             children: [
               cachedImage(widget.property!.propertyImage.validate(), height: 150, fit: BoxFit.cover, width: 130).cornerRadiusWithClipRRectOnly(topLeft: 12, bottomLeft: 12),
-              if (userStore.subscription == "1" && widget.property!.premiumProperty == 1) Positioned(top: 0, left: 0, child: PremiumBtn(pDetail: true)),
+              if (appStore.subscription == "1" && widget.property!.premiumProperty == 1) Positioned(top: 0, left: 0, child: PremiumBtn(pDetail: true)),
             ],
           ),
           Column(

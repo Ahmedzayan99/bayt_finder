@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bayt_finder/extensions/extension_util/bool_extensions.dart';
-import 'package:bayt_finder/extensions/extension_util/list_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/text_styles.dart';
@@ -13,7 +11,7 @@ class RadioComponent extends StatefulWidget {
   final String? selectedRadioValue;
   final bool? isUpdateProperty;
 
-  RadioComponent({this.radioValues, this.amenityId, required this.onUpdate, this.selectedRadioValue, this.isUpdateProperty = false});
+  const RadioComponent({super.key, this.radioValues, this.amenityId, required this.onUpdate, this.selectedRadioValue, this.isUpdateProperty = false});
 
   @override
   State<RadioComponent> createState() => _RadioComponentState();
@@ -33,9 +31,9 @@ class _RadioComponentState extends State<RadioComponent> {
   void init() async {
     print(currentRIndex);
     print(widget.selectedRadioValue);
-    widget.radioValues!.forEach((element) {
+    for (var element in widget.radioValues!) {
       if (widget.selectedRadioValue == element) currentRIndex = widget.radioValues!.indexOf(element);
-    });
+    }
 
     setState(() {});
   }
@@ -62,7 +60,7 @@ class _RadioComponentState extends State<RadioComponent> {
           dense: true,
           value: i,
           selected: true,
-          fillColor: MaterialStateProperty.all(primaryColor),
+          fillColor: WidgetStateProperty.all(primaryColor),
           activeColor: primaryColor,
           groupValue: currentRIndex,
           title: Text(widget.radioValues![i].toString().capitalizeFirstLetter(), style: primaryTextStyle(size: 16)),

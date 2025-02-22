@@ -5,16 +5,16 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import '../screens/login_screen.dart';
+import '../local_storage/shared_preferences_manager.dart';
+import '../screens/login/login_screen.dart';
 
 import '../../main.dart';
 import '../extensions/common.dart';
 import '../extensions/extension_util/int_extensions.dart';
-import '../extensions/shared_pref.dart';
 import '../utils/app_config.dart';
 import '../utils/constants.dart';
 
-Map<String, String> buildHeaderTokens() {
+Map<String, String> buildHeaderTokens()  {
   Map<String, String> header = {
     HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
     HttpHeaders.cacheControlHeader: 'no-cache',
@@ -22,9 +22,8 @@ Map<String, String> buildHeaderTokens() {
     'Access-Control-Allow-Headers': '*',
     'Access-Control-Allow-Origin': '*',
   };
-
   if (appStore.isLoggedIn) {
-    header.putIfAbsent(HttpHeaders.authorizationHeader, () => 'Bearer ${userStore.token}');
+    header.putIfAbsent(HttpHeaders.authorizationHeader, () => 'Bearer ${appStore.token}');
   }
   log(jsonEncode(header));
   return header;
@@ -40,9 +39,19 @@ Uri buildBaseUrl(String endPoint) {
 
 Future<Response> buildHttpResponse(String endPoint, {HttpMethod method = HttpMethod.GET, Map? request, String? req}) async {
   if (await isNetworkAvailable()) {
-    var headers = buildHeaderTokens();
+    var authorizationHeader= 'Bearer ${SharedPreferencesManager.getStringAsync( 'token')}';
+    print(authorizationHeader);
+  //  var headers = buildHeaderTokens();
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+      HttpHeaders.cacheControlHeader: 'no-cache',
+      HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
+      HttpHeaders.authorizationHeader:authorizationHeader.toString(),
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Origin': '*',
+    };
+    log(jsonEncode(headers));
     Uri url = buildBaseUrl(endPoint);
-
     try {
       Response response;
 
@@ -78,11 +87,11 @@ Future<Response> buildHttpResponse(String endPoint, {HttpMethod method = HttpMet
 //   if (response.statusCode == 401) {
 //     if (appStore.isLoggedIn) {
 //       Map req = {
-//         'email': getStringAsync(USER_EMAIL),
+//         'email': SharedPreferencesManager.getStringAsync(USER_EMAIL),
 //         'password': "12345678",
 //
 //         // "12345678"
-//         //getStringAsync(USER_PASSWORD),
+//         //SharedPreferencesManager.getStringAsync(USER_PASSWORD),
 //       };
 //       print(req.toString());
 //       // await logInApi(req).then((value) {
@@ -113,24 +122,22 @@ Future handleResponse(Response response) async {
   if (!await isNetworkAvailable()) {
     throw errorInternetNotAvailable;
   }
-
   if (response.statusCode.isSuccessful()) {
     return jsonDecode(response.body);
   } else {
     var string = await (isJsonValid(response.body));
-    print("jsonDecode(response.body)" + string.toString());
+    print("jsonDecode(response.body)$string");
     if (string!.isNotEmpty) {
       if (string.toString().contains("Unauthenticated")) {
-        await removeKey(IS_LOGIN);
-        await removeKey(USER_ID);
-        await removeKey(FIRSTNAME);
-        await removeKey(LASTNAME);
-        await removeKey(PHONE_NUMBER);
-        await removeKey(GENDER);
-        await removeKey(IS_OTP);
-
-        userStore.clearUserData();
-        userStore.setLogin(false);
+        await SharedPreferencesManager.removeData("token");
+        // await SharedPreferencesManager.removeData(USER_ID);
+        // await SharedPreferencesManager.removeData(FIRSTNAME);
+        // await SharedPreferencesManager.removeData(LASTNAME);
+        // await SharedPreferencesManager.removeData(PHONE_NUMBER);
+        // await SharedPreferencesManager.removeData(GENDER);
+        // await SharedPreferencesManager.removeData(IS_OTP);
+        appStore.clearUserData();
+        appStore.setLogin(false);
         push(LoginScreen());
       } else {
         throw string;
@@ -148,6 +155,7 @@ class TokenException implements Exception {
 
   const TokenException([this.message = ""]);
 
+  @override
   String toString() => "FormatException: $message";
 }
 
@@ -190,7 +198,7 @@ Future<String?> isJsonValid(json) async {
 
 
 Future<MultipartRequest> getMultiPartRequest(String endPoint, {String? baseUrl}) async {
-  String url = '${baseUrl ?? buildBaseUrl(endPoint).toString()}';
+  String url = baseUrl ?? buildBaseUrl(endPoint).toString();
   log(url);
   return MultipartRequest('POST', Uri.parse(url));
 }

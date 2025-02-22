@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../extensions/extension_util/bool_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
-import '../main.dart';
 import '../utils/constants.dart';
 import '../extensions/app_text_field.dart';
 import '../extensions/decorations.dart';
@@ -15,7 +14,7 @@ class AmenityTextFiledComponent extends StatefulWidget {
   final String? amenityType;
   final Function(int?, String? id) onUpdate;
 
-  AmenityTextFiledComponent({this.amenityValueData, this.amenityID, this.isUpdate = false, this.updatedValue, this.amenityType, required this.onUpdate});
+  const AmenityTextFiledComponent({super.key, this.amenityValueData, this.amenityID, this.isUpdate = false, this.updatedValue, this.amenityType, required this.onUpdate});
 
   @override
   State<AmenityTextFiledComponent> createState() => _AmenityTextFiledComponentState();
@@ -50,7 +49,7 @@ class _AmenityTextFiledComponentState extends State<AmenityTextFiledComponent> {
                   ? TextFieldType.MULTILINE
                   : TextFieldType.NAME,
           isValidationRequired: true,
-          decoration: defaultInputDecoration(context, fillColor: primaryExtraLight, label: language.enter + " " + widget.amenityValueData!.validate()),
+          decoration: defaultInputDecoration(context, fillColor: primaryExtraLight, label: "${"enter"} ${widget.amenityValueData!.validate()}"),
           onFieldSubmitted: (value) {
             if (textBoxController.text.isNotEmpty) {
               sendRadioData(widget.amenityID, textBoxController.text);

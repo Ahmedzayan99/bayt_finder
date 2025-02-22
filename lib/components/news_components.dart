@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../extensions/decorations.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
-import '../extensions/common.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
@@ -13,7 +12,7 @@ import '../utils/colors.dart';
 class NewsComponents extends StatefulWidget {
   final Article? article;
 
-  NewsComponents({this.article});
+  const NewsComponents({super.key, this.article});
 
   @override
   State<NewsComponents> createState() => _PropertyComponentsState();

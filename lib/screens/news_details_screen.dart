@@ -9,9 +9,7 @@ import '../../extensions/text_styles.dart';
 import '../../screens/tags_screen.dart';
 import '../../utils/constants.dart';
 import 'package:share_plus/share_plus.dart';
-import '../components/HtmlWidget.dart';
 import '../extensions/decorations.dart';
-import '../main.dart';
 import '../models/article_model.dart';
 import '../utils/app_common.dart';
 import '../utils/app_config.dart';
@@ -48,7 +46,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
     return Scaffold(
         appBar: appBarWidget("", context1: context, titleSpace: 0, actions: [
           Icon(Ionicons.share_social, size: 20, color: primaryColor).paddingSymmetric(horizontal: 16).onTap(() {
-            Share.share(language.checkoutNewsArticles + " " + widget.articles.name.validate(), subject: widget.articles.name.validate());
+            Share.share("${"checkoutNewsArticles"} ${widget.articles.name.validate()}", subject: widget.articles.name.validate());
           })
         ]),
         body: SingleChildScrollView(

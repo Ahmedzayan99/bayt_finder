@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../main.dart';
 import '../utils/images.dart';
 
 import '../extensions/extension_util/context_extensions.dart';
@@ -12,7 +11,7 @@ class NoDataScreen extends StatefulWidget {
 
   final String? mTitle;
 
-  NoDataScreen({this.mTitle});
+  const NoDataScreen({super.key, this.mTitle});
 
   @override
   NoDataScreenState createState() => NoDataScreenState();
@@ -39,7 +38,7 @@ class NoDataScreenState extends State<NoDataScreen> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
-      children: [Image.asset(no_data, height: context.height() * 0.2, width: context.width() * 0.4), 16.height, Text(widget.mTitle ?? language.noFoundData, style: boldTextStyle())],
+      children: [Image.asset(no_data, height: context.height() * 0.2, width: context.width() * 0.4), 16.height, Text(widget.mTitle ?? "noFoundData", style: boldTextStyle())],
     ).center();
   }
 }

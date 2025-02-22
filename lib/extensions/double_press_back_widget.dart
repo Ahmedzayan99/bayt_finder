@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bayt_finder/main.dart';
 import '../extensions/common.dart';
 
 DateTime? _currentBackPressTime;
@@ -10,12 +9,12 @@ class DoublePressBackWidget extends StatelessWidget {
   final String? message;
   final WillPopCallback? onWillPop;
 
-  DoublePressBackWidget({
-    Key? key,
+  const DoublePressBackWidget({
+    super.key,
     required this.child,
     this.message,
     this.onWillPop,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class DoublePressBackWidget extends StatelessWidget {
         onWillPop?.call();
         if (_currentBackPressTime == null || now.difference(_currentBackPressTime!) > Duration(seconds: 2)) {
           _currentBackPressTime = now;
-          toast(message ?? language.pressBackAgainToExit);
+          toast(message ?? "pressBackAgainToExit");
 
           return Future.value(false);
         }

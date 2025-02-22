@@ -26,14 +26,14 @@ class ChattingScreen extends StatefulWidget {
 
   final bool isDirect;
 
-  ChattingScreen({this.isDirect = false});
+  const ChattingScreen({super.key, this.isDirect = false});
 
   @override
   _ChattingScreenState createState() => _ChattingScreenState();
 }
 
 class _ChattingScreenState extends State<ChattingScreen> {
-  ChatGpt chatGpt = ChatGpt(apiKey: userStore.chatGptApiKey);
+  ChatGpt chatGpt = ChatGpt(apiKey: appStore.chatGptApiKey);
 
   ScrollController scrollController = ScrollController();
 
@@ -70,7 +70,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
 
   void statusListener(String status) {
     setState(() {
-      lastStatus = "$status";
+      lastStatus = status;
     });
   }
 
@@ -124,7 +124,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
       });
     } catch (error) {
       setState(() {
-        questionAnswers.first.answer!.write(language.tooManyRequestsPleaseTryAgain);
+        questionAnswers.first.answer!.write("tooManyRequestsPleaseTryAgain");
       });
       log("Error occurred: $error");
     }
@@ -133,11 +133,11 @@ class _ChattingScreenState extends State<ChattingScreen> {
   void showDialog() {
     showConfirmDialogCustom(
       context,
-      title: language.clearMsg,
-      positiveText: language.yes,
+      title: "clearMsg",
+      positiveText: "yes",
       positiveTextColor: Colors.white,
       image: ic_logo,
-      negativeText: language.no,
+      negativeText: "no",
       dialogType: DialogType.CONFIRMATION,
       onAccept: (p0) {
         questionAnswers.clear();
@@ -160,13 +160,13 @@ class _ChattingScreenState extends State<ChattingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(language.aiBot, titleSpace: 0, context1: context, actions: [
+      appBar: appBarWidget("aiBot", titleSpace: 0, context1: context, actions: [
         IconButton(
           onPressed: () {
             showDialog();
           },
           icon: Icon(Icons.restart_alt, color: appStore.isDarkModeOn ? Colors.white : Colors.black),
-          tooltip: language.clearConversion,
+          tooltip: "clearConversion",
         ).visible(questionAnswers.isNotEmpty),
       ]),
       body: Stack(
@@ -213,7 +213,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
                       maxLines: 1,
                       cursorColor: appStore.isDarkModeOn ? Colors.white : Colors.black,
                       keyboardType: TextInputType.multiline,
-                      decoration: defaultInputDecoration(context, label: language.howCanIHelpYou),
+                      decoration: defaultInputDecoration(context, label: "howCanIHelpYou"),
                       onFieldSubmitted: (s) {
                         sendMessage();
                       },

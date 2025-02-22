@@ -11,7 +11,7 @@ class DropDownComponent extends StatefulWidget {
   final bool? isUpdateProperty;
   final dynamic selectedDropDownValue;
 
-  const DropDownComponent({this.dropdownValues, this.amenityId, required this.onUpdate, this.selectedDropDownValue, this.isUpdateProperty});
+  const DropDownComponent({super.key, this.dropdownValues, this.amenityId, required this.onUpdate, this.selectedDropDownValue, this.isUpdateProperty});
 
   @override
   State<DropDownComponent> createState() => _DropDownComponentState();

@@ -79,6 +79,46 @@ const payment_failed = "assets/payment_failed.png";
 const payment_success = "assets/payment_success.json";
 const ic_cancel_subscription = "assets/ic_cancle_subscription.png";
 
+class AppImage {
+  static String pathSvg = 'assets/svg_icon/';
+  static String pathImage = 'assets/images/';
+  static String splash = 'assets/image/appIcon.png';
+  static String usFlag = 'assets/image/us_flag.png';
+  static String iraqFlag  = 'assets/image/iraq_flag.png';
+  static String intro1  = 'assets/image/intro1.jpg';
+  static String intro2  = 'assets/image/intro2.png';
+  static String intro3  = 'assets/image/intro3.png';
+  static String login  = 'assets/image/Mobile-login 1.png';
+  static String otp  = 'assets/image/otp.png';
+  static String icMail  = 'assets/image/ic_mail.png';
+  static String icProfile = 'assets/image/ic_profile.png';
+  static String icLogo = 'assets/image/ic_logo.png';
+  static String prosAndCons = 'assets/image/pros-and-cons 2.png';
+
+
+
+
+  static String icCallOutline  = 'assets/svg_icon/ic_call_outline.png';
+
+  static String radioActive  = 'assets/svg_icon/radio_active.svg';
+  static String radioNotActive   = 'assets/svg_icon/radio_not.svg';
+  static String homeAct  = 'assets/svg_icon/homeAct.svg';
+  static String home  = 'assets/svg_icon/home.svg';
+  static String search  = 'assets/svg_icon/search.svg';
+  static String searchAct  = 'assets/svg_icon/searchAct.svg';
+  static String favourite  = 'assets/svg_icon/fivoret.svg';
+  static String favouriteAct  = 'assets/svg_icon/fivoretAct.svg';
+  static String profile  = 'assets/svg_icon/profile.svg';
+  static String profileAct  = 'assets/svg_icon/profileAct.svg';
+  static String search2  = 'assets/svg_icon/search2.svg';
+  static String notification  = 'assets/svg_icon/notification.svg';
+  static String filter  = 'assets/svg_icon/mi_filter.svg';
+  static String language  = 'assets/svg_icon/iconoir_language.svg';
+  static String appIcon = 'assets/svg_icon/iconApp.svg';
+
+
+}
+
 ///TODO remove this image
 // const ic_logo_dark = 'assets/ic_dark_logo.png';
 // const ic_upload = "assets/ic_upload.png";

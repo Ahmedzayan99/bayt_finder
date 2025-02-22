@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/common.dart';
 import '../main.dart';
-import '../screens/otp_screen.dart';
+import '../screens/login/otp_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 Future<void> loginWithOTP(BuildContext context, String phoneNumber, String mobileNo, bool resend, Function? oncall) async {
-  print("Phone Number " + phoneNumber.toString());
-  print("mobile Number " + mobileNo.toString());
-
+  print("Phone Number $phoneNumber");
+  print("mobile Number $mobileNo");
   appStore.setLoading(true);
   return await _auth.verifyPhoneNumber(
     phoneNumber: phoneNumber,
@@ -19,7 +18,7 @@ Future<void> loginWithOTP(BuildContext context, String phoneNumber, String mobil
       await appStore.setLoading(false);
       if (e.code == 'invalid-phone-number') {
         // appStore.setLoading(false);
-        toast(language.theProvidedPhoneNumberIsNotValid);
+        toast("theProvidedPhoneNumberIsNotValid");
         throw 'The provided phone number is not valid.';
       } else {
         toast(e.toString());
@@ -30,11 +29,11 @@ Future<void> loginWithOTP(BuildContext context, String phoneNumber, String mobil
     codeSent: (String verificationId, int? resendToken) async {
       if (resend == true) {
         OTPScreen(
-          verificationId: verificationId,
+        /*  verificationId: verificationId,
           isCodeSent: true,
           phoneNumber: phoneNumber,
           mobileNo: mobileNo,
-          onCall: () {},
+          onCall: () {},*/
         ).launch(context);
       }
       return;
@@ -53,15 +52,15 @@ sendOtp(BuildContext context, {required String phoneNumber, required Function(St
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
         appStore.setLoading(false);
-        toast(language.phoneVerificationDone);
+        toast("phoneVerificationDone");
 
-        // toast(language.verificationCompleted);
+        // toast(verificationCompleted);
       },
       verificationFailed: (FirebaseAuthException e) {
         appStore.setLoading(false);
         if (e.code == 'invalid-phone-number') {
-          toast(language.invalidPhoneNumber);
-          // throw language.phoneNumberInvalid;
+          toast("invalidPhoneNumber");
+          // throw phoneNumberInvalid;
         } else {
           toast(e.message.toString());
           throw e.message.toString();
@@ -69,7 +68,7 @@ sendOtp(BuildContext context, {required String phoneNumber, required Function(St
       },
       codeSent: (String verificationId, int? resendToken) async {
         appStore.setLoading(false);
-        toast(language.codeSent);
+        toast("codeSent");
         onUpdate.call(verificationId);
       },
       codeAutoRetrievalTimeout: (String verificationId) {

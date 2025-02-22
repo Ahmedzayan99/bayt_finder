@@ -11,7 +11,7 @@ import '../utils/app_common.dart';
 import '../utils/colors.dart';
 
 class SelectPropertyListScreen extends StatefulWidget {
-  SelectPropertyListScreen({super.key, required this.mDashboardResponse});
+  const SelectPropertyListScreen({super.key, required this.mDashboardResponse});
 
   final List<DashboardResponse> mDashboardResponse;
 
@@ -22,6 +22,7 @@ class SelectPropertyListScreen extends StatefulWidget {
 class _SelectPropertyListScreenState extends State<SelectPropertyListScreen> {
   List<PropertyType> mPropertyType = [];
 
+  @override
   void initState() {
     super.initState();
     init();
@@ -42,7 +43,7 @@ class _SelectPropertyListScreenState extends State<SelectPropertyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarWidget(language.selectPropertyType, context1: context,titleSpace: 0),
+        appBar: appBarWidget("selectPropertyType", context1: context,titleSpace: 0),
         body: AnimatedWrap(
           runSpacing: 16,
           spacing: 16,

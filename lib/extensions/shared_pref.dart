@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 
 import '../extensions/extension_util/string_extensions.dart';
@@ -8,28 +9,35 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 
+
 /// Returns SharedPref Instance
-Future<SharedPreferences> getSharedPref() async {
-  return await SharedPreferences.getInstance();
+Future<SharedPreferencesManager> getSharedPref() async {
+  return await SharedPreferencesManager.getInstance();
 }
 
 /// Add a value in SharedPref based on their type - Must be a String, int, bool, double, Map<String, dynamic> or StringList
-Future<bool> setValue(String key, dynamic value, {bool print1 = true}) async {
+Future<bool> SharedPreferencesManager.saveData(String key, dynamic value, {bool print1 = true}) async {
   if (print1) print('${value.runtimeType} - $key - $value');
 
   if (value is String) {
-    return await sharedPreferences.setString(key, value.validate());
-  } else if (value is int) {
-    return await sharedPreferences.setInt(key, value.validate());
-  } else if (value is bool) {
-    return await sharedPreferences.setBool(key, value.validate());
-  } else if (value is double) {
-    return await sharedPreferences.setDouble(key, value.validate());
-  } else if (value is Map<String, dynamic>) {
-    return await sharedPreferences.setString(key, jsonEncode(value));
-  } else if (value is List<String>) {
-    return await sharedPreferences.setStringList(key, value);
-  } else {
+    return await SharedPreferencesManager.setString(key, value.validate());
+  }
+  else if (value is int) {
+    return await SharedPreferencesManager.setInt(key, value.validate());
+  }
+  else if (value is bool) {
+    return await SharedPreferencesManager.setBool(key, value.validate());
+  }
+  else if (value is double) {
+    return await SharedPreferencesManager.setDouble(key, value.validate());
+  }
+  else if (value is Map<String, dynamic>) {
+    return await SharedPreferencesManager.setString(key, jsonEncode(value));
+  }
+  else if (value is List<String>) {
+    return await SharedPreferencesManager.setStringList(key, value);
+  }
+  else {
     throw ArgumentError('Invalid value ${value.runtimeType} - Must be a String, int, bool, double, Map<String, dynamic> or StringList');
   }
 }
@@ -38,93 +46,92 @@ Future<bool> setValue(String key, dynamic value, {bool print1 = true}) async {
 List<String> getMatchingSharedPrefKeys(String key) {
   List<String> keys = [];
 
-  sharedPreferences.getKeys().forEach((element) {
+  SharedPreferencesManager.getKeys().forEach((element) {
     if (element.contains(key)) {
       keys.add(element);
     }
   });
-
   return keys;
 }
 
 /// Returns a StringList if exists in SharedPref
 List<String>? getStringListAsync(String key) {
-  return sharedPreferences.getStringList(key);
+  return SharedPreferencesManager.getStringList(key);
 }
 
 /// Returns a Bool if exists in SharedPref
 bool getBoolAsync(String key, {bool defaultValue = false}) {
-  return sharedPreferences.getBool(key) ?? defaultValue;
+  return SharedPreferencesManager.getBool(key) ?? defaultValue;
 }
 
 /// Returns a Double if exists in SharedPref
 double getDoubleAsync(String key, {double defaultValue = 0.0}) {
-  return sharedPreferences.getDouble(key) ?? defaultValue;
+  return SharedPreferencesManager.getDouble(key) ?? defaultValue;
 }
 
 /// Returns a Int if exists in SharedPref
-int getIntAsync(String key, {int defaultValue = 0}) {
-  return sharedPreferences.getInt(key) ?? defaultValue;
+int SharedPreferencesManager.getIntAsync(String key, {int defaultValue = 0}) {
+  return SharedPreferencesManager.getInt(key) ?? defaultValue;
 }
 
 /// Returns a String if exists in SharedPref
-String getStringAsync(String key, {String defaultValue = ''}) {
-  return sharedPreferences.getString(key) ?? defaultValue;
+String SharedPreferencesManager.getStringAsync(String key, {String defaultValue = ''}) {
+  return SharedPreferencesManager.getString(key) ?? defaultValue;
 }
 
 /// Returns a JSON if exists in SharedPref
 Map<String, dynamic> getJSONAsync(String key, {Map<String, dynamic>? defaultValue}) {
-  if (sharedPreferences.containsKey(key) && sharedPreferences.getString(key).validate().isNotEmpty) {
-    return jsonDecode(sharedPreferences.getString(key)!);
+  if (SharedPreferencesManager.containsKey(key) && SharedPreferencesManager.getString(key).validate().isNotEmpty) {
+    return jsonDecode(SharedPreferencesManager.getString(key)!);
   } else {
     return defaultValue ?? {};
   }
 }
 
 /// remove key from SharedPref
-Future<bool> removeKey(String key) async {
-  return await sharedPreferences.remove(key);
+Future<bool> SharedPreferencesManager.removeData(String key) async {
+  return await SharedPreferencesManager.removeData(key);
 }
 
 /// clear SharedPref
 Future<bool> clearSharedPref() async {
-  return await sharedPreferences.clear();
+  return await SharedPreferencesManager.clear();
 }
 
 /////////////////////////////////////////////////////////////////////// DEPRECATED \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /// add a Double in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setDoubleAsync(String key, double value) async {
-  return await sharedPreferences.setDouble(key, value);
+  return await SharedPreferencesManager.setDouble(key, value);
 }
 
 /// add a Bool in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setBoolAsync(String key, bool value) async {
-  return await sharedPreferences.setBool(key, value);
+  return await SharedPreferencesManager.setBool(key, value);
 }
 
 /// add a Int in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setIntAsync(String key, int value) async {
-  return await sharedPreferences.setInt(key, value);
+  return await SharedPreferencesManager.setInt(key, value);
 }
 
 /// add a String in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setStringAsync(String key, String value) async {
-  return await sharedPreferences.setString(key, value);
+  return await SharedPreferencesManager.setString(key, value);
 }
 
 /// add a JSON in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setJSONAsync(String key, String value) async {
-  return await sharedPreferences.setString(key, jsonEncode(value));
+  return await SharedPreferencesManager.setString(key, jsonEncode(value));
 }
 
 /// Returns a String if exists in SharedPref
-@Deprecated('Use getStringAsync instead without using await')
+@Deprecated('Use SharedPreferencesManager.getStringAsync instead without using await')
 Future<String> getString(String key, {defaultValue = ''}) async {
   return await getSharedPref().then((pref) {
     return pref.getString(key) ?? defaultValue;
@@ -132,7 +139,7 @@ Future<String> getString(String key, {defaultValue = ''}) async {
 }
 
 /// Returns a Int if exists in SharedPref
-@Deprecated('Use getIntAsync instead without using await')
+@Deprecated('Use SharedPreferencesManager.getIntAsync instead without using await')
 Future<int> getInt(String key, {defaultValue = 0}) async {
   return await getSharedPref().then((pref) {
     return pref.getInt(key) ?? defaultValue;
@@ -156,7 +163,7 @@ Future<bool> getBool(String key, {defaultValue = false}) async {
 }
 
 /// add a String in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setString(String key, String value) async {
   return await getSharedPref().then((pref) async {
     return await pref.setString(key, value);
@@ -164,7 +171,7 @@ Future<bool> setString(String key, String value) async {
 }
 
 /// add a Int in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setInt(String key, int value) async {
   return await getSharedPref().then((pref) async {
     return await pref.setInt(key, value);
@@ -172,7 +179,7 @@ Future<bool> setInt(String key, int value) async {
 }
 
 /// add a Bool in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setBool(String key, bool value) async {
   return await getSharedPref().then((pref) async {
     return await pref.setBool(key, value);
@@ -180,9 +187,10 @@ Future<bool> setBool(String key, bool value) async {
 }
 
 /// add a Double in SharedPref
-@Deprecated('Use setValue instead')
+@Deprecated('Use SharedPreferencesManager.saveData instead')
 Future<bool> setDouble(String key, double value) async {
   return await getSharedPref().then((pref) async {
     return await pref.setDouble(key, value);
   });
 }
+*/

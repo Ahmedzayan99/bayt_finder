@@ -1,80 +1,159 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bayt_finder/network/RestApis.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
 import '../extensions/extension_util/context_extensions.dart';
-import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/system_utils.dart';
+import '../local_storage/shared_preferences_manager.dart';
 import '../screens/notification_screen.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
-import '../components/adMob_component.dart';
 import '../components/permission.dart';
 import '../extensions/common.dart';
 import '../extensions/decorations.dart';
 import '../extensions/extension_util/device_extensions.dart';
-import '../extensions/shared_pref.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
 import '../models/user_response.dart';
-import '../network/RestApis.dart';
-import '../screens/login_screen.dart';
+import '../screens/login/login_screen.dart';
 import 'app_config.dart';
 import 'colors.dart';
 import 'constants.dart';
 import 'images.dart';
 
+
+
 Widget mSuffixTextFieldIconWidget(String? img) {
-  return Image.asset(img.validate(), height: 20, width: 20, color: grayColor).paddingAll(14);
+  return Image.asset(img.toString(), height: 20, width: 20, color: grayColor)
+      .paddingAll(14);
 }
 
-Future<void> getUSerDetail(BuildContext context, int? id) async {
-  await getUserDataApi(id: id.validate()).then((value) async {
-    userStore.setUserDetail(value);
-    userStore.setFirstName(value.data!.firstName.validate());
-    userStore.setUserEmail(value.data!.email.validate());
-    userStore.setLastName(value.data!.lastName.validate());
-    userStore.setUserID(value.data!.id.validate());
-    userStore.setPhoneNo(value.data!.contactNumber.validate());
-    userStore.setUsername(value.data!.username.validate());
-    userStore.setDisplayName(value.data!.displayName.validate());
-    userStore.setUserImage(value.data!.profileImage.validate());
-    userStore.setSubscribe(value.subscriptionDetail!.isSubscribe.validate());
-    userStore.setSubscriptionDetail(value.subscriptionDetail!);
-    userStore.setAddLimitCount(value.data!.addLimitCount.validate());
-    userStore.setContactInfo(value.data!.viewLimitCount.validate());
-    userStore.setAdvertisement(value.data!.advertisementLimit.validate());
-    setValue(CONTACT_INFO, value.data!.viewLimitCount.validate());
-    setValue(ADVERTISEMENT, value.data!.advertisementLimit.validate());
-    setValue(ADD_PROPERTY, value.data!.addLimitCount.validate());
+/*Future<void> getSettingData() async {
+  SharedPreferencesManager.saveData(
+      SITE_NAME, appSettingMain.siteName.toString());
+  SharedPreferencesManager.saveData(
+      SITE_EMAIL, appSettingMain.siteEmail.toString());
+  SharedPreferencesManager.saveData(
+      SITE_LOGO, appSettingMain.siteLogo.toString());
+  SharedPreferencesManager.saveData(
+      SITE_FAVICON, appSettingMain.siteFavicon.toString());
+  SharedPreferencesManager.saveData(
+      SITE_DESCRIPTION, appSettingMain.siteDescription.toString());
+  SharedPreferencesManager.saveData(
+      SITE_COPYRIGHT, appSettingMain.siteCopyright.toString());
+  SharedPreferencesManager.saveData(
+      FACEBOOK_URL, appSettingMain.facebookUrl.toString());
+  SharedPreferencesManager.saveData(
+      INSTAGRAM_URL, appSettingMain.instagramUrl.toString());
+  SharedPreferencesManager.saveData(
+      TWITTER_URL, appSettingMain.twitterUrl.toString());
+  SharedPreferencesManager.saveData(
+      LINKED_URL, appSettingMain.linkedinUrl.toString());
+  SharedPreferencesManager.saveData(
+      CONTACT_EMAIL, appSettingMain.contactEmail.toString());
+  SharedPreferencesManager.saveData(
+      CONTACT_NUMBER, appSettingMain.contactNumber.toString());
+  SharedPreferencesManager.saveData(
+      HELP_SUPPORT_URL, appSettingMain.helpSupportUrl.toString());
+  SharedPreferencesManager.saveData(
+      PRIVACY_POLICY, appSettingMain.helpSupportUrl.toString());
+  SharedPreferencesManager.saveData(
+      TERMS_CONDITIONS, appSettingMain.helpSupportUrl.toString());
+  SharedPreferencesManager.saveData(
+      SUBSCRIPTION, appSettingMain.subscription.toString());
+}*/
 
-    if (value.subscriptionDetail != null) {
-      userStore.setTotalAdvertisement(value.subscriptionDetail!.subscriptionPlan!.packageData!.advertisementLimit.validate());
-      userStore.setTotalContactInfo(value.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit.validate());
-      userStore.setTotalAddLimitCount(value.subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit.validate());
-      setValue(TOTAL_ADD_PROPERTY, value.subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit.validate());
-      setValue(TOTAL_ADVERTISEMENT, value.subscriptionDetail!.subscriptionPlan!.packageData!.advertisementLimit.validate());
-      setValue(TOTAL_CONTACT_INFO, value.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit.validate());
+Future<bool> checkPermission() async {
+  LocationPermission locationPermission = await Geolocator.requestPermission();
+  if (locationPermission == LocationPermission.whileInUse ||
+      locationPermission == LocationPermission.always) {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return await Geolocator.openLocationSettings()
+          .then((value) => false)
+          .catchError((e) => false);
+    } else {
+      return true;
     }
+  } else {
+    toast("allow Location Permission".tr());
+    await Geolocator.openAppSettings();
 
-    appStore.setLoading(false);
-  }).catchError((e) {
-    print("ERROR USER DETAIL" + e.toString());
-    appStore.setLoading(false);
-  });
+    return false;
+  }
 }
 
-Widget cachedImage(String? url, {double? height, Color? color, double? width, BoxFit? fit, AlignmentGeometry? alignment, bool usePlaceholderIfUrlEmpty = true, double? radius}) {
-  if (url.validate().isEmpty) {
-    return placeHolderWidget(height: height, width: width, fit: fit, alignment: alignment, radius: radius);
-  } else if (url.validate().startsWith('http')) {
+/*Future<void> getUSerDetail(value) async {
+  appStore.setUserDetail(value);
+  appStore.setFirstName(value.data!.firstName.toString());
+  appStore.setUserEmail(value.data!.email.toString());
+  appStore.setLastName(value.data!.lastName.toString());
+  appStore.setUserID(value.data!.id ?? 0);
+  appStore.setPhoneNo(value.data!.contactNumber.toString());
+  appStore.setUsername(value.data!.username.toString());
+  appStore.setDisplayName(value.data!.displayName.toString());
+  appStore.setUserImage(value.data!.profileImage.toString());
+  appStore.setSubscribe(value.subscriptionDetail!.isSubscribe);
+  appStore.setSubscriptionDetail(value.subscriptionDetail!);
+  appStore.setAddLimitCount(value.data!.addLimitCount ?? 0);
+  appStore.setContactInfo(value.data!.viewLimitCount ?? 0);
+  appStore.setAdvertisement(value.data!.advertisementLimit ?? 0);
+  SharedPreferencesManager.saveData(
+      CONTACT_INFO, value.data!.viewLimitCount.toString());
+  SharedPreferencesManager.saveData(
+      ADVERTISEMENT, value.data!.advertisementLimit.toString());
+  SharedPreferencesManager.saveData(
+      ADD_PROPERTY, value.data!.addLimitCount.toString());
+  if (value.subscriptionDetail != null &&
+      value.subscriptionDetail!.subscriptionPlan != null) {
+    appStore.setTotalAdvertisement(value.subscriptionDetail!.subscriptionPlan!
+            .packageData!.advertisementLimit ??
+        0);
+    appStore.setTotalContactInfo(value
+            .subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit ??
+        0);
+    appStore.setTotalAddLimitCount(value.subscriptionDetail!.subscriptionPlan!
+            .packageData!.addPropertyLimit ??
+        0);
+    SharedPreferencesManager.saveData(
+        TOTAL_ADD_PROPERTY,
+        value
+            .subscriptionDetail!.subscriptionPlan!.packageData!.addPropertyLimit
+            .toString());
+    SharedPreferencesManager.saveData(
+        TOTAL_ADVERTISEMENT,
+        value.subscriptionDetail!.subscriptionPlan!.packageData!
+            .advertisementLimit
+            .toString());
+    SharedPreferencesManager.saveData(
+        TOTAL_CONTACT_INFO,
+        value.subscriptionDetail!.subscriptionPlan!.packageData!.propertyLimit
+            .toString());
+  }
+}*/
+
+Widget cachedImage(String? url,
+    {double? height,
+    Color? color,
+    double? width,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    bool usePlaceholderIfUrlEmpty = true,
+    double? radius}) {
+  if (url.toString().isEmpty) {
+    return placeHolderWidget(
+        height: height,
+        width: width,
+        fit: fit,
+        alignment: alignment,
+        radius: radius);
+  } else if (url.toString().startsWith('http')) {
     return CachedNetworkImage(
       imageUrl: url!,
       height: height,
@@ -83,22 +162,39 @@ Widget cachedImage(String? url, {double? height, Color? color, double? width, Bo
       color: color,
       alignment: alignment as Alignment? ?? Alignment.center,
       progressIndicatorBuilder: (context, url, progress) {
-        return placeHolderWidget(height: height, width: width, fit: fit, alignment: alignment, radius: radius);
+        return placeHolderWidget(
+            height: height,
+            width: width,
+            fit: fit,
+            alignment: alignment,
+            radius: radius);
       },
       errorWidget: (_, s, d) {
-        return placeHolderWidget(height: height, width: width, fit: fit, alignment: alignment, radius: radius);
+        return placeHolderWidget(
+            height: height,
+            width: width,
+            fit: fit,
+            alignment: alignment,
+            radius: radius);
       },
     );
   } else {
-    return Image.asset(ic_placeholder, height: height, width: width, fit: BoxFit.cover, alignment: alignment ?? Alignment.center).cornerRadiusWithClipRRect(radius ?? defaultRadius);
+    return Image.asset(ic_placeholder,
+            height: height,
+            width: width,
+            fit: BoxFit.cover,
+            alignment: alignment ?? Alignment.center)
+        .cornerRadiusWithClipRRect(radius ?? defaultRadius);
   }
 }
 
-Widget commonCacheImageWidget(String? url, {double? width, BoxFit? fit, double? height}) {
+Widget commonCacheImageWidget(String? url,
+    {double? width, BoxFit? fit, double? height}) {
   if (url.toString().startsWith('http')) {
     if (isMobile) {
       return CachedNetworkImage(
-        placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
+        placeholder:
+            placeholderWidgetFn() as Widget Function(BuildContext, String)?,
         imageUrl: '$url',
         height: height,
         width: width,
@@ -112,21 +208,32 @@ Widget commonCacheImageWidget(String? url, {double? width, BoxFit? fit, double? 
   }
 }
 
-Function(BuildContext, String) placeholderWidgetFn() => (_, s) => placeHolderWidget();
+Function(BuildContext, String) placeholderWidgetFn() =>
+    (_, s) => placeHolderWidget();
 
-Widget placeHolderWidget({double? height, double? width, BoxFit? fit, AlignmentGeometry? alignment, double? radius}) {
-  return Image.asset(ic_placeholder, height: height, width: width, fit: BoxFit.cover, alignment: alignment ?? Alignment.center).cornerRadiusWithClipRRect(radius ?? defaultRadius);
+Widget placeHolderWidget(
+    {double? height,
+    double? width,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    double? radius}) {
+  return Image.asset(ic_placeholder,
+          height: height,
+          width: width,
+          fit: BoxFit.cover,
+          alignment: alignment ?? Alignment.center)
+      .cornerRadiusWithClipRRect(radius ?? defaultRadius);
 }
 
 void showInterstitialAds() {
-  if (userStore.isSubscribe == 0) {
-    adShow();
+  if (appStore.isSubscribe == 0) {
+    // adShow();
   }
 }
 
 void loadInterstitialAds() {
-  if (userStore.isSubscribe == 0) {
-    createInterstitialAd();
+  if (appStore.isSubscribe == 0) {
+    //createInterstitialAd();
   }
 }
 
@@ -134,67 +241,39 @@ void oneSignalData() async {
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
   OneSignal.Debug.setAlertLevel(OSLogLevel.none);
   OneSignal.consentRequired(false);
-
   final permission = await OneSignal.Notifications.permissionNative();
   print("Permission $permission");
-
   Permissions.notificationPermissions();
   OneSignal.Notifications.requestPermission(true).then((value) {
     print("Accepted permission: $value");
   });
   OneSignal.initialize(mOneSignalID);
-
-  saveOneSignalPlayerId();
+     OneSignal.User.pushSubscription.addObserver((state) async {
+    // OneSignal.User.pushSubscription.optIn();
+    print(
+        "AFTER saveOneSignalPlayerId Function ===========${OneSignal.User.pushSubscription.optedIn}");
+    await SharedPreferencesManager.saveData(
+        "PLAYER_ID", OneSignal.User.pushSubscription.id);
+    print(
+        "PLAYER ID IS ++>${await SharedPreferencesManager.getStringAsync("PLAYER_ID").toString()}");
+    // updatePlayerId();
+  });
   OneSignal.Notifications.addClickListener((notification) async {
     var notId = notification.notification.additionalData!["id"];
     if (notId != null) {
-      if (!appStore.isLoggedIn) {
-        LoginScreen().launch(getContext);
-      } else {
-        NotificationScreen().launch(getContext);
-      }
+   /*
+        LoginScreen().launch(getContext1)
+       else {
+        NotificationScreen().launch(getContext1);
+      }*/
     }
   });
-  // if (userStore.isLoggedIn) {
-  //   updatePlayerId();
-  // }
-}
+    Map req = {
+      "player_id":
+          SharedPreferencesManager.getStringAsync("PLAYER_ID").toString(),
+    };
+   // updatePlayerIdApi(req);
 
-Future<void> saveOneSignalPlayerId() async {
-  print("BEFORE saveOneSignalPlayerId Function ===========" + OneSignal.User.pushSubscription.optedIn.toString());
-  print("BEFORE saveOneSignalPlayerId Function =========" + OneSignal.User.pushSubscription.id.toString());
-  print("BEFORE saveOneSignalPlayerId Function =========" + OneSignal.User.pushSubscription.token.toString());
-  OneSignal.User.pushSubscription.addObserver((state) async {
-    // OneSignal.User.pushSubscription.optIn();
-
-    print("AFTER saveOneSignalPlayerId Function ===========" + OneSignal.User.pushSubscription.optedIn.toString());
-    print("AFTER saveOneSignalPlayerId Function =========" + OneSignal.User.pushSubscription.id.toString());
-    print("AFTER saveOneSignalPlayerId Function =========" + OneSignal.User.pushSubscription.token.toString());
-    await setValue(PLAYER_ID, OneSignal.User.pushSubscription.id);
-    print("PLAYER ID IS ++>" + getStringAsync(PLAYER_ID).validate());
-    // updatePlayerId();
-  });
-}
-
-Future<void> getSettingData() async {
-  await getDashBoardData({"latitude": userStore.latitude, "longitude": userStore.longitude, "city": userStore.cityName}).then((value) {
-    setValue(SITE_NAME, value.appSetting!.siteName.validate());
-    setValue(SITE_EMAIL, value.appSetting!.siteEmail.validate());
-    setValue(SITE_LOGO, value.appSetting!.siteLogo.validate());
-    setValue(SITE_FAVICON, value.appSetting!.siteFavicon.validate());
-    setValue(SITE_DESCRIPTION, value.appSetting!.siteDescription.validate());
-    setValue(SITE_COPYRIGHT, value.appSetting!.siteCopyright.validate());
-    setValue(FACEBOOK_URL, value.appSetting!.facebookUrl.validate());
-    setValue(INSTAGRAM_URL, value.appSetting!.instagramUrl.validate());
-    setValue(TWITTER_URL, value.appSetting!.twitterUrl.validate());
-    setValue(LINKED_URL, value.appSetting!.linkedinUrl.validate());
-    setValue(CONTACT_EMAIL, value.appSetting!.contactEmail.validate());
-    setValue(CONTACT_NUMBER, value.appSetting!.contactNumber.validate());
-    setValue(HELP_SUPPORT_URL, value.appSetting!.helpSupportUrl.validate());
-    setValue(PRIVACY_POLICY, value.appSetting!.helpSupportUrl.validate());
-    setValue(TERMS_CONDITIONS, value.appSetting!.helpSupportUrl.validate());
-    setValue(SUBSCRIPTION, value.appSetting!.subscription.validate());
-  });
 }
 
 String parseDocumentDate(DateTime dateTime, {bool includeTime = false}) {
@@ -223,58 +302,13 @@ String formatFilterNumberString(double priceValue) {
   return formattedPrice;
 }
 
-setLogInValue() {
-  userStore.setLogin(getBoolAsync(IS_LOGIN));
-  if (userStore.isLoggedIn) {
-    userStore.setToken(getStringAsync(TOKEN));
-    userStore.setUserID(getIntAsync(USER_ID));
-    userStore.setUserEmail(getStringAsync(EMAIL));
-    userStore.setFirstName(getStringAsync(FIRSTNAME));
-    userStore.setLastName(getStringAsync(LASTNAME));
-    userStore.setUserPassword(getStringAsync(PASSWORD));
-    userStore.setUserImage(getStringAsync(USER_PROFILE_IMG));
-    userStore.setPhoneNo(getStringAsync(PHONE_NUMBER));
-    userStore.setDisplayName(getStringAsync(DISPLAY_NAME));
-    userStore.setGender(getStringAsync(GENDER));
-    userStore.setContactInfo(getIntAsync(CONTACT_INFO));
-    userStore.setAdvertisement(getIntAsync(ADVERTISEMENT));
-    userStore.setAddLimitCount(getIntAsync(ADD_PROPERTY));
-    UserResponse? userDetail = UserResponse.fromJson(jsonDecode(getStringAsync(USER_DETAIL)));
-
-    userStore.setUserDetail(userDetail);
-    if (!getStringAsync(SUBSCRIPTION_DETAIL).isEmptyOrNull) {
-      SubscriptionDetail? subscriptionDetail = SubscriptionDetail.fromJson(jsonDecode(getStringAsync(SUBSCRIPTION_DETAIL)));
-      userStore.setSubscribe(getIntAsync(IS_SUBSCRIBE));
-      userStore.setSubscriptionDetail(subscriptionDetail);
-      userStore.setTotalAddLimitCount(getIntAsync(TOTAL_ADD_PROPERTY));
-      userStore.setTotalContactInfo(getIntAsync(TOTAL_CONTACT_INFO));
-      userStore.setTotalAdvertisement(getIntAsync(TOTAL_ADVERTISEMENT));
-    }
-  }
-}
-
 Future<void> commonLaunchUrl(String url, {bool forceWebView = false}) async {
   log(url);
-  await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication).then((value) {}).catchError((e) {
-    toast(language.individual + ' $url');
+  await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)
+      .then((value) {})
+      .catchError((e) {
+    toast('${"individual"} $url');
   });
-}
-
-Future<bool> checkPermission() async {
-  LocationPermission locationPermission = await Geolocator.requestPermission();
-
-  if (locationPermission == LocationPermission.whileInUse || locationPermission == LocationPermission.always) {
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      return await Geolocator.openLocationSettings().then((value) => false).catchError((e) => false);
-    } else {
-      return true;
-    }
-  } else {
-    toast(language.allowLocationPermission);
-    await Geolocator.openAppSettings();
-
-    return false;
-  }
 }
 
 Future<void> launchUrls(String url, {bool forceWebView = false}) async {
@@ -296,24 +330,31 @@ class DateDifferenceWidget extends StatelessWidget {
   final DateTime startDate;
   final DateTime endDate;
 
-  DateDifferenceWidget({required this.startDate, required this.endDate});
+  const DateDifferenceWidget(
+      {super.key, required this.startDate, required this.endDate});
 
   @override
   Widget build(BuildContext context) {
     Duration difference = endDate.difference(startDate);
 
     if (difference.inSeconds.abs() < 60) {
-      return Text("${difference.inSeconds.abs()} seconds ago", style: secondaryTextStyle(size: 12));
+      return Text("${difference.inSeconds.abs()} seconds ago",
+          style: secondaryTextStyle(size: 12));
     } else if (difference.inMinutes.abs() < 60) {
-      return Text("${difference.inMinutes.abs()} minutes ago ", style: secondaryTextStyle(size: 12));
+      return Text("${difference.inMinutes.abs()} minutes ago ",
+          style: secondaryTextStyle(size: 12));
     } else if (difference.inHours.abs() < 24) {
-      return Text("${difference.inHours.abs()} hours ago", style: secondaryTextStyle(size: 12));
+      return Text("${difference.inHours.abs()} hours ago",
+          style: secondaryTextStyle(size: 12));
     } else if (difference.inDays.abs() < 30) {
-      return Text("${difference.inDays.abs()} days ago ", style: secondaryTextStyle(size: 12));
+      return Text("${difference.inDays.abs()} days ago ",
+          style: secondaryTextStyle(size: 12));
     } else if ((difference.inDays.abs() ~/ 30) < 12) {
-      return Text("${difference.inDays.abs() ~/ 30} months ago ", style: secondaryTextStyle(size: 12));
+      return Text("${difference.inDays.abs() ~/ 30} months ago ",
+          style: secondaryTextStyle(size: 12));
     } else {
-      return Text("${difference.inDays.abs() ~/ 365} years ago ", style: secondaryTextStyle(size: 12));
+      return Text("${difference.inDays.abs() ~/ 365} years ago ",
+          style: secondaryTextStyle(size: 12));
     }
   }
 }
@@ -325,11 +366,15 @@ String getYoutubeThumbnail(String url) {
   return thumbnail;
 }
 
-Widget fevIconWidget(int? isFavourite, BuildContext context, {Color? color, double? padding}) {
+Widget fevIconWidget(int? isFavourite, BuildContext context,
+    {Color? color, double? padding}) {
   return Container(
     padding: EdgeInsets.all(padding ?? 4),
-    decoration: boxDecorationWithRoundedCorners(borderRadius: BorderRadius.circular(50), backgroundColor: color ?? context.cardColor),
-    child: Image.asset(isFavourite == 1 ? ic_favorite_fill : ic_favorite, color: primaryColor, height: 20, width: 20),
+    decoration: boxDecorationWithRoundedCorners(
+        borderRadius: BorderRadius.circular(50),
+        backgroundColor: color ?? context.cardColor),
+    child: Image.asset(isFavourite == 1 ? ic_favorite_fill : ic_favorite,
+        color: primaryColor, height: 20, width: 20),
   );
 }
 
@@ -341,14 +386,20 @@ Widget backButtonWidget(BuildContext context, {Function()? onTap}) {
         },
     child: Container(
         alignment: Alignment.center,
-        decoration: boxDecorationDefault(shape: BoxShape.circle, color: context.cardColor),
-        child: Icon(appStore.selectedLanguage != 'ar' ? MaterialIcons.keyboard_arrow_left : MaterialIcons.keyboard_arrow_right, size: 30, color: primaryColor)),
+        decoration: boxDecorationDefault(
+            shape: BoxShape.circle, color: context.cardColor),
+        child: Icon(
+            appStore.selectedLanguage != 'ar'
+                ? MaterialIcons.keyboard_arrow_left
+                : MaterialIcons.keyboard_arrow_right,
+            size: 30,
+            color: primaryColor)),
   );
 }
 
 String durationWidget(String? duration) {
   String icon = 'assets/icons/ic_product.png';
-  switch (duration.validate().toLowerCase()) {
+  switch (duration.toString().toLowerCase()) {
     case "monthly":
       return 'month';
     case "daily":

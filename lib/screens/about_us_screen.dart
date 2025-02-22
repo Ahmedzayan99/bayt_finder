@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../components/app_bar_components.dart';
@@ -5,7 +6,7 @@ import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/text_styles.dart';
-import '../main.dart';
+import '../local_storage/shared_preferences_manager.dart';
 import '../utils/colors.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../extensions/shared_pref.dart';
@@ -28,8 +29,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(language.aboutUs, context1: context, titleSpace: 0),
-      bottomNavigationBar: Container(
+      appBar: appBarWidget("aboutUs", context1: context, titleSpace: 0),
+      bottomNavigationBar: SizedBox(
         height: 130,
         child: Column(
           children: [
@@ -43,7 +44,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
               },
             ),
             16.height,
-            Text(language.followUs, style: primaryTextStyle(size: 14)),
+            Text("followUs", style: primaryTextStyle(size: 14)),
             2.height,
             SizedBox(
               height: 50,
@@ -55,36 +56,32 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       mSocialOption(ic_facebook)
-                          .onTap(() {
-                            launchUrls(getStringAsync(FACEBOOK_URL));
+                          .onTap(() async {
+                            launchUrls(await SharedPreferencesManager.getStringAsync(FACEBOOK_URL)??'');
                           })
-                          .paddingOnly(left: 16, right: 16)
-                          .visible(getStringAsync(FACEBOOK_URL).isNotEmpty),
+                          .paddingOnly(left: 16, right: 16),
                       mSocialOption(ic_instagram)
-                          .onTap(() {
-                            launchUrls(getStringAsync(INSTAGRAM_URL));
+                          .onTap(() async {
+                            launchUrls(await  SharedPreferencesManager.getStringAsync(INSTAGRAM_URL)??'');
                           })
-                          .paddingRight(16)
-                          .visible(getStringAsync(INSTAGRAM_URL).isNotEmpty),
+                          .paddingRight(16),
                       mSocialOption(ic_twitter)
-                          .onTap(() {
-                            launchUrls(getStringAsync(TWITTER_URL));
+                          .onTap(() async {
+                            launchUrls(await  SharedPreferencesManager.getStringAsync(TWITTER_URL)??'');
                           })
-                          .paddingRight(16)
-                          .visible(getStringAsync(TWITTER_URL).isNotEmpty),
+                          .paddingRight(16),
                       mSocialOption(ic_linkedin)
-                          .onTap(() {
-                            launchUrls(getStringAsync(LINKED_URL));
+                          .onTap(() async {
+                            launchUrls(await SharedPreferencesManager.getStringAsync(LINKED_URL)??'');
                           })
                           .paddingRight(16)
-                          .visible(getStringAsync(LINKED_URL).isNotEmpty),
                     ],
                   ),
                 ],
               ),
             ),
             2.height,
-            Text(getStringAsync(SITE_COPYRIGHT), style: secondaryTextStyle(size: 12), maxLines: 1).visible(getStringAsync(SITE_COPYRIGHT).isNotEmpty),
+            Text( SharedPreferencesManager.getStringAsync(SITE_COPYRIGHT).toString(), style: secondaryTextStyle(size: 12), maxLines: 1).visible( SharedPreferencesManager.getStringAsync(SITE_COPYRIGHT)==''?false:true),
           ],
         ),
       ),
@@ -93,38 +90,39 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             4.height,
-            Text(getStringAsync(SITE_NAME), style: boldTextStyle(color: primaryColor, size: 18)),
+            Text( SharedPreferencesManager.getStringAsync(SITE_NAME).toString(), style: boldTextStyle(color: primaryColor, size: 18)),
             10.height,
-            Text(getStringAsync(SITE_DESCRIPTION), style: primaryTextStyle()),
+            Text( SharedPreferencesManager.getStringAsync(SITE_DESCRIPTION).toString(), style: primaryTextStyle()),
             16.height,
             Row(
               children: [
                 Icon(MaterialIcons.mail_outline, color: textSecondaryColorGlobal),
                 8.width,
-                Text(getStringAsync(CONTACT_EMAIL), style: secondaryTextStyle()).onTap(() {
-                  commonLaunchUrl(language.mailto + getStringAsync(CONTACT_EMAIL));
+                Text( SharedPreferencesManager.getStringAsync(CONTACT_EMAIL)??'', style: secondaryTextStyle()).onTap(() async {
+                  commonLaunchUrl("mailto${await SharedPreferencesManager.getStringAsync(CONTACT_EMAIL)}");
                 }),
               ],
-            ).visible(getStringAsync(CONTACT_EMAIL).isNotEmpty),
+            ),
             16.height,
             Row(
               children: [
                 Icon(MaterialIcons.support_agent, color: textSecondaryColorGlobal),
                 8.width,
-                Text(getStringAsync(HELP_SUPPORT), style: secondaryTextStyle()),
+                Text( SharedPreferencesManager.getStringAsync(HELP_SUPPORT)??'', style: secondaryTextStyle()),
               ],
-            ).visible(getStringAsync(HELP_SUPPORT).isNotEmpty),
+            ).visible( SharedPreferencesManager.getStringAsync(HELP_SUPPORT)==''?false:true),
             16.height,
             Row(
               children: [
                 Icon(Ionicons.md_call_outline, color: textSecondaryColorGlobal),
                 8.width,
-                Text(getStringAsync(CONTACT_NUMBER), style: secondaryTextStyle()),
+                Text( SharedPreferencesManager.getStringAsync(CONTACT_NUMBER)??'', style: secondaryTextStyle()),
               ],
-            ).visible(getStringAsync(CONTACT_NUMBER).isNotEmpty),
+            ).visible( SharedPreferencesManager.getStringAsync(CONTACT_NUMBER)==''?false:true),
           ],
         ),
       ).paddingSymmetric(horizontal: 16),
     );
   }
 }
+*/

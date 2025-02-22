@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import '../components/app_bar_components.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../utils/constants.dart';
 import '../components/advertisement_property_component.dart';
-import '../extensions/loader_widget.dart';
 import '../main.dart';
 import '../models/dashBoard_response.dart';
 import '../network/RestApis.dart';
@@ -15,7 +13,7 @@ class OwnerFurnishedSeeAllScreen extends StatefulWidget {
   final Function? onCall;
   final bool seller;
 
-  OwnerFurnishedSeeAllScreen({
+  const OwnerFurnishedSeeAllScreen({super.key, 
     this.onCall,
     this.seller = false,
   });
@@ -52,9 +50,9 @@ class _OwnerFurnishedSeeAllScreenState extends State<OwnerFurnishedSeeAllScreen>
 
   Future<void> init() async {
     if (widget.seller == true) {
-      title = language.ownerProperties;
+      title = "ownerProperties";
     } else {
-      title = language.fullyFurnishedProperties;
+      title = "fullyFurnishedProperties";
     }
     await filterData();
   }
@@ -70,12 +68,12 @@ class _OwnerFurnishedSeeAllScreenState extends State<OwnerFurnishedSeeAllScreen>
     if (widget.seller == true) {
       req = {
         "saller_type": SellerType.OWNER.sellerTypeIndex,
-        "city": userStore.cityName,
+        "city": appStore.cityName,
       };
     } else {
       req = {
         "furnished_type": FurnishedType.FULLY.furnishedTypeIndex,
-        "city": userStore.cityName,
+        "city": appStore.cityName,
       };
     }
     await filterApi(req, page: 1).then((value) {
@@ -84,7 +82,7 @@ class _OwnerFurnishedSeeAllScreenState extends State<OwnerFurnishedSeeAllScreen>
       Iterable it = value.property!;
       it.map((e) => filterProperty.add(e)).toList();
       appStore.setLoading(false);
-      print("Filter Response " + filterProperty.toString());
+      print("Filter Response $filterProperty");
       setState(() {});
     }).catchError((e) {
       print(req);
@@ -94,39 +92,34 @@ class _OwnerFurnishedSeeAllScreenState extends State<OwnerFurnishedSeeAllScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Scaffold(
-          appBar: appBarWidget(title, context1: context, titleSpace: 0),
-          body: Stack(
-            children: [
-              filterProperty.isNotEmpty
-                  ? ListView.builder(
-                      controller: scrollController,
-                      physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      shrinkWrap: true,
-                      itemCount: filterProperty.length,
-                      itemBuilder: (context, i) {
-                        return AdvertisementPropertyComponent(
-                          property: filterProperty[i],
-                          isFullWidth: true,
-                          onCall: () {
-                            filterData();
-                          },
-                        ).onTap(() async {
-                          bool? res = await PropertyDetailScreen(propertyId: filterProperty[i].id).launch(context);
-                          if (res == true) {
-                            init();
-                          }
-                          setState(() {});
-                        }).paddingBottom(16);
-                      })
-                  : NoDataScreen(mTitle: language.resultNotFound).visible(!appStore.isLoading),
-              Observer(builder: (context) {
-                return Loader().center().visible(appStore.isLoading);
-              }),
-            ],
-          ));
-    });
+    return Scaffold(
+        appBar: appBarWidget(title, context1: context, titleSpace: 0),
+        body: Stack(
+          children: [
+            filterProperty.isNotEmpty
+                ? ListView.builder(
+                controller: scrollController,
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                shrinkWrap: true,
+                itemCount: filterProperty.length,
+                itemBuilder: (context, i) {
+                  return AdvertisementPropertyComponent(
+                    property: filterProperty[i],
+                    isFullWidth: true,
+                    onCall: () {
+                      filterData();
+                    },
+                  ).onTap(() async {
+                    bool? res = await PropertyDetailScreen(propertyId: filterProperty[i].id).launch(context);
+                    if (res == true) {
+                      init();
+                    }
+                    setState(() {});
+                  }).paddingBottom(16);
+                })
+                : NoDataScreen(mTitle: "resultNotFound").visible(!appStore.isLoading),
+          ],
+        ));
   }
 }

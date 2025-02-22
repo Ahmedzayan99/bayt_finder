@@ -4,10 +4,11 @@ import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/text_styles.dart';
-import '../main.dart';
 import '../utils/images.dart';
 
 class NoInternetScreen extends StatefulWidget {
+  const NoInternetScreen({super.key});
+
   @override
   _NoInternetScreenState createState() => _NoInternetScreenState();
 }
@@ -38,7 +39,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
         children: [
           Image.asset(no_internet, height: context.height() * 0.2, width: context.width() * 0.4),
           16.height,
-          Text(language.noInternet, style: boldTextStyle(size: 20)),
+          Text("noInternet", style: boldTextStyle(size: 20)),
         ],
       ).center(),
     );

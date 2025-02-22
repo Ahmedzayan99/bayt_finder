@@ -12,7 +12,7 @@ import '../utils/colors.dart';
 class AmenityScreen extends StatefulWidget {
   final List<AmenityName> amenityValue;
 
-  const AmenityScreen({required this.amenityValue});
+  const AmenityScreen({super.key, required this.amenityValue});
 
   @override
   State<AmenityScreen> createState() => _AmenityScreenState();
@@ -24,7 +24,7 @@ class _AmenityScreenState extends State<AmenityScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(language.extraFacilities, style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16),
+        Text("extraFacilities", style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16),
         8.height,
         ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 16),

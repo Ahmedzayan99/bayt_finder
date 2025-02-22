@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import '../components/boost_dialog.dart';
 import '../extensions/animatedList/animated_list_view.dart';
 import '../extensions/extension_util/bool_extensions.dart';
@@ -30,12 +29,14 @@ import 'property_detail_screen.dart';
 import 'subscribe_screen.dart';
 
 class MyPropertiesScreen extends StatefulWidget {
+  const MyPropertiesScreen({super.key});
+
   @override
   State<MyPropertiesScreen> createState() => _MyPropertiesScreenState();
 }
 
 class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
-  List<String> propertyForList = [language.rent, language.sell, language.pg];
+  List<String> propertyForList = ["rent", "sell", "pg"];
   List<Property> mPropertyDataRent = [];
   List<Property> mPropertyDataSell = [];
   List<Property> mPropertyDataPg = [];
@@ -75,7 +76,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
       mPropertyDataSell.clear();
       mPropertyDataPg.clear();
 
-      mMyPropertiesData.forEach((e) {
+      for (var e in mMyPropertiesData) {
         if (e.propertyFor == 0) {
           mPropertyDataRent.add(e);
         } else if (e.propertyFor == 1) {
@@ -83,7 +84,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
         } else {
           mPropertyDataPg.add(e);
         }
-      });
+      }
       isLastPage = true;
       setState(() {});
     }).catchError((e) {
@@ -123,7 +124,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
     };
     appStore.setLoading(true);
     setPropertyAdvertisement(req).then((value) async {
-      await getUSerDetail(context, userStore.userId);
+     // await getUSerDetail(context, appStore.userId);
       if (advertisementProperty == 1) {
         advertisementProperty = 0;
       } else {
@@ -141,109 +142,107 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return DefaultTabController(
-        length: propertyForList.length,
-        child: Scaffold(
-          appBar: appBarWidget(
-            titleSpace: 0,
-            language.myProperty,
-            context1: context,
-            bottom: TabBar(
-              padding: EdgeInsets.only(left: 10, right: 10),
-              indicator: BoxDecoration(borderRadius: radius(), color: primaryColor),
-              labelColor: Colors.white,
-              indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
-              labelPadding: EdgeInsets.symmetric(horizontal: 10),
-              indicatorSize: TabBarIndicatorSize.tab,
-              physics: NeverScrollableScrollPhysics(),
-              unselectedLabelColor: primaryColor,
-              onTap: (v) {
-                appStore.setLoading(true);
-                currentIndex = v;
-
-                mPropertyDataRent.clear();
-                mPropertyDataSell.clear();
-                mPropertyDataPg.clear();
-
-                mMyPropertiesData.forEach((e) {
-                  if (e.propertyFor == 0) {
-                    mPropertyDataRent.add(e);
-                  } else if (e.propertyFor == 1) {
-                    mPropertyDataSell.add(e);
-                  } else {
-                    mPropertyDataPg.add(e);
-                  }
-                });
-                appStore.setLoading(false);
-                setState(() {});
-              },
-              labelStyle: boldTextStyle(color: Colors.white, size: 14),
-              tabs: propertyForList.map((e) {
-                return Tab(
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text(e),
-                    decoration: boxDecorationWithRoundedCorners(backgroundColor: primaryColor.withOpacity(0.1)),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          body: TabBarView(
+    return DefaultTabController(
+      length: propertyForList.length,
+      child: Scaffold(
+        appBar: appBarWidget(
+          titleSpace: 0,
+          "myProperty",
+          context1: context,
+          bottom: TabBar(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            indicator: BoxDecoration(borderRadius: radius(), color: primaryColor),
+            labelColor: Colors.white,
+            indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
+            labelPadding: EdgeInsets.symmetric(horizontal: 10),
+            indicatorSize: TabBarIndicatorSize.tab,
             physics: NeverScrollableScrollPhysics(),
-            children: propertyForList.map((e) {
-              if (currentIndex == 0) {
-                return propertyList(mPropertyData: mPropertyDataRent).paddingOnly(top: 16);
-              } else if (currentIndex == 1) {
-                return propertyList(mPropertyData: mPropertyDataSell).paddingOnly(top: 16);
-              } else {
-                return propertyList(mPropertyData: mPropertyDataPg).paddingOnly(top: 16);
+            unselectedLabelColor: primaryColor,
+            onTap: (v) {
+              appStore.setLoading(true);
+              currentIndex = v;
+
+              mPropertyDataRent.clear();
+              mPropertyDataSell.clear();
+              mPropertyDataPg.clear();
+
+              for (var e in mMyPropertiesData) {
+                if (e.propertyFor == 0) {
+                  mPropertyDataRent.add(e);
+                } else if (e.propertyFor == 1) {
+                  mPropertyDataSell.add(e);
+                } else {
+                  mPropertyDataPg.add(e);
+                }
               }
+              appStore.setLoading(false);
+              setState(() {});
+            },
+            labelStyle: boldTextStyle(color: Colors.white, size: 14),
+            tabs: propertyForList.map((e) {
+              return Tab(
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: boxDecorationWithRoundedCorners(backgroundColor: primaryColor.withOpacity(0.1)),
+                  child: Text(e),
+                ),
+              );
             }).toList(),
           ),
-          bottomNavigationBar: AppButton(
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            text: language.addNew,
-            width: context.width(),
-            color: primaryColor,
-            elevation: 0,
-            onTap: () {
-              userStore.subscription == "1"
-                  ? userStore.isSubscribe != 0
-                      ? userStore.subscriptionDetail!.subscriptionPlan!.packageData!.addProperty == 0
-                          ? showDialog(
-                              context: context,
-                              builder: (context) {
-                                return userStore.addLimitCount == 0
-                                    ? LimitExceedDialog(
-                                        onTap: () {
-                                          LimitScreen(limit: "add_property").launch(context);
-                                        },
-                                      )
-                                    : AddPropertyDialog();
-                              },
-                            )
-                          : showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AddPropertyDialog();
-                              },
-                            )
-                      : SubscribeScreen().launch(context)
-                  : showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AddPropertyDialog();
-                      },
-                    );
-            },
-          ).paddingAll(16),
         ),
-      );
-    });
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: propertyForList.map((e) {
+            if (currentIndex == 0) {
+              return propertyList(mPropertyData: mPropertyDataRent).paddingOnly(top: 16);
+            } else if (currentIndex == 1) {
+              return propertyList(mPropertyData: mPropertyDataSell).paddingOnly(top: 16);
+            } else {
+              return propertyList(mPropertyData: mPropertyDataPg).paddingOnly(top: 16);
+            }
+          }).toList(),
+        ),
+        bottomNavigationBar: AppButton(
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          text: "addNew",
+          width: context.width(),
+          color: primaryColor,
+          elevation: 0,
+          onTap: () {
+            appStore.subscription == "1"
+                ? appStore.isSubscribe != 0
+                ? appStore.subscriptionDetail!.subscriptionPlan!.packageData!.addProperty == 0
+                ? showDialog(
+              context: context,
+              builder: (context) {
+                return appStore.addLimitCount == 0
+                    ? LimitExceedDialog(
+                  onTap: () {
+                    LimitScreen(limit: "add_property").launch(context);
+                  },
+                )
+                    : AddPropertyDialog();
+              },
+            )
+                : showDialog(
+              context: context,
+              builder: (context) {
+                return AddPropertyDialog();
+              },
+            )
+                : SubscribeScreen().launch(context)
+                : showDialog(
+              context: context,
+              builder: (context) {
+                return AddPropertyDialog();
+              },
+            );
+          },
+        ).paddingAll(16),
+      ),
+    );
   }
 
   Widget propertyList({required List<Property> mPropertyData}) {
@@ -277,7 +276,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                         Stack(
                           children: [
                             cachedImage(data.propertyImage.validate(), height: 145, fit: BoxFit.cover, width: 130).cornerRadiusWithClipRRectOnly(topLeft: 12),
-                            if (userStore.subscription == "1" && data.premiumProperty == 1) Positioned(top: 0, left: 0, child: PremiumBtn(pDetail: true)),
+                            if (appStore.subscription == "1" && data.premiumProperty == 1) Positioned(top: 0, left: 0, child: PremiumBtn(pDetail: true)),
                           ],
                         ),
                         Column(
@@ -320,17 +319,17 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       decoration:
                           boxDecorationWithRoundedCorners(backgroundColor: data.advertisementProperty == 1 ? boostBgColor : primaryColor, borderRadius: radiusOnly(bottomLeft: 12, bottomRight: 12)),
-                      child: Text(data.advertisementProperty == 1 ? language.alreadyBoostedYourProperty : language.boostYourProperty,
+                      child: Text(data.advertisementProperty == 1 ? "alreadyBoostedYourProperty" : "boostYourProperty",
                               style: primaryTextStyle(color: Colors.white), textAlign: TextAlign.end)
                           .center(),
                     ).onTap(() {
                       paymentId = data.id;
                       paymentPrice = data.price;
                       setState(() {
-                        if (userStore.subscription == "1") {
-                          if (userStore.isSubscribe != 0) {
-                            if (data.advertisementProperty == null && userStore.subscriptionDetail!.subscriptionPlan!.packageData!.advertisement.validate() == 0) {
-                              if (userStore.advertisement == 0) {
+                        if (appStore.subscription == "1") {
+                          if (appStore.isSubscribe != 0) {
+                            if (data.advertisementProperty == null && appStore.subscriptionDetail!.subscriptionPlan!.packageData!.advertisement.validate() == 0) {
+                              if (appStore.advertisement == 0) {
                                 showDialog(
                                     context: context,
                                     builder: (context) {

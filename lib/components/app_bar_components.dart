@@ -1,9 +1,9 @@
+import 'package:bayt_finder/nav.dart';
+import 'package:bayt_finder/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../extensions/colors.dart';
-import '../extensions/extension_util/widget_extensions.dart';
-import '../extensions/text_styles.dart';
 import '../main.dart';
 import '../utils/colors.dart';
 
@@ -19,6 +19,7 @@ AppBar appBarWidget(
   bool showBack = true,
   bool showFilter = true,
   bool showCart = true,
+  bool centerTitle = true,
   Color? shadowColor,
   Color? bgColor,
   double? elevation,
@@ -28,21 +29,31 @@ AppBar appBarWidget(
   TextStyle? titleTextStyle,
   PreferredSizeWidget? bottom,
   Widget? flexibleSpace,
+      void Function()? onTapBack,
   required BuildContext context1,
 }) {
   return AppBar(
       titleSpacing: titleSpace,
-      centerTitle: false,
-      title: titleWidget ?? Text(title, style: titleTextStyle ?? (boldTextStyle(color: appStore.isDarkModeOn ? selectIconColor : scaffoldColorDark, size: textSize))),
+      centerTitle: centerTitle,
+      title: titleWidget ?? Text(title, style: titleTextStyle ?? TextStyle(
+        fontSize:19.sp ,
+        color: AppColors.colorBlack,
+        fontWeight:FontManger.medium,
+      )),
       actions: actions,
       automaticallyImplyLeading: showBack,
       backgroundColor: appStore.isDarkModeOn ? bgColor ?? scaffoldColorDark : bgColor ?? whiteColor,
       leading: showBack
-          ? (backWidget ??
-              Icon(appStore.selectedLanguage == 'ar' ? MaterialIcons.arrow_forward_ios : Octicons.chevron_left, color: primaryColor, size: appStore.selectedLanguage == 'ar' ? 20 : 28).onTap(() {
-                Navigator.pop(context1);
-              }))
-          : null,
+          ? backWidget?? InkWell(
+            onTap:onTapBack??(){
+              navigateBack(context1);
+            } ,
+            child: Icon(
+                Icons.arrow_back_ios,
+                color: AppColors.colorBlack,
+                size: 28.sp),
+          ): null,
+
       shadowColor: viewLineColor,
       elevation: elevation ?? 0,
       systemOverlayStyle: systemUiOverlayStyle,

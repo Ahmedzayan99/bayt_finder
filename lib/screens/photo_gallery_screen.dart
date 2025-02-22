@@ -5,14 +5,10 @@ import '../extensions/animatedList/animated_wrap.dart';
 import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
-import '../main.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../components/VideoPlayerScreen.dart';
-import '../components/adMob_component.dart';
 import '../extensions/decorations.dart';
 import '../models/property_details_model.dart';
 import '../utils/app_common.dart';
-import '../utils/app_config.dart';
 import '../utils/colors.dart';
 import 'Image_view_screen.dart';
 import 'YoutubePlayerScreen.dart';
@@ -20,7 +16,7 @@ import 'YoutubePlayerScreen.dart';
 class PhotoGalleyScreen extends StatefulWidget {
   final PropertyDetail? mPropertyDetail;
 
-  PhotoGalleyScreen({required this.mPropertyDetail});
+  const PhotoGalleyScreen({super.key, required this.mPropertyDetail});
 
   @override
   State<PhotoGalleyScreen> createState() => _PhotoGalleyScreenState();
@@ -59,8 +55,8 @@ class _PhotoGalleyScreenState extends State<PhotoGalleyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(language.gallery, context1: context, titleSpace: 0),
-      bottomNavigationBar: showBannerAdOnPhotoGallerySelected && userStore.isSubscribe == 0 ? showBannerAds(context) : SizedBox(),
+      appBar: appBarWidget("gallery", context1: context, titleSpace: 0),
+    //  bottomNavigationBar: showBannerAdOnPhotoGallerySelected && appStore.isSubscribe == 0 ? showBannerAds(context) : SizedBox(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

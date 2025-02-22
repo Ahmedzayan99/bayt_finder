@@ -5,12 +5,15 @@ import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/shared_pref.dart';
 import '../extensions/system_utils.dart';
 import '../extensions/text_styles.dart';
+import '../local_storage/shared_preferences_manager.dart';
 import '../main.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
 
 class ThemeSelectionDialog extends StatefulWidget {
   static String tag = '/ThemeSelectionDialog';
+
+  const ThemeSelectionDialog({super.key});
 
   @override
   ThemeSelectionDialogState createState() => ThemeSelectionDialogState();
@@ -26,7 +29,7 @@ class ThemeSelectionDialogState extends State<ThemeSelectionDialog> {
   }
 
   Future<void> init() async {
-    valueTheme = sharedPreferences.getInt(THEME_MODE_INDEX) ?? AppThemeMode().themeModeLight;
+    valueTheme =await SharedPreferencesManager.getIntAsync("themeMode")??themeModeLight ;
   }
 
   @override
@@ -36,7 +39,7 @@ class ThemeSelectionDialogState extends State<ThemeSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    List<String?> themeModeList = [language.light, language.dark, language.systemDefault];
+    List<String?> themeModeList = ["light", "dark", "systemDefault"];
     return Container(
       decoration: boxDecorationWithRoundedCorners(backgroundColor: context.cardColor, borderRadius: radius()),
       width: MediaQuery.of(context).size.width,
@@ -50,7 +53,7 @@ class ThemeSelectionDialogState extends State<ThemeSelectionDialog> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(language.chooseTheme, style: boldTextStyle(size: 20, color: Colors.white)),
+                Text("chooseTheme", style: boldTextStyle(size: 20, color: Colors.white)),
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context, true);
@@ -73,12 +76,12 @@ class ThemeSelectionDialogState extends State<ThemeSelectionDialog> {
                 title: Text(themeModeList[index]!, style: primaryTextStyle(size: 16)),
                 onChanged: (dynamic val) {
                   valueTheme = val;
-                  setValue(THEME_MODE_INDEX, val);
-                  if (val == ThemeModeSystem) {
+                  SharedPreferencesManager.saveData("themeMode", val);
+                  if (val == themeModeSystem) {
                     appStore.setDarkMode(MediaQuery.of(context).platformBrightness == Brightness.dark);
-                  } else if (val == ThemeModeLight) {
+                  } else if (val == themeModeLight) {
                     appStore.setDarkMode(false);
-                  } else if (val == ThemeModeDark) {
+                  } else if (val == themeModeDark) {
                     appStore.setDarkMode(true);
                   }
                   setState(() {});

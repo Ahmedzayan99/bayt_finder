@@ -14,7 +14,7 @@ class AppTheme {
     hoverColor: Colors.transparent,
     useMaterial3: false,
     bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent),
-    scaffoldBackgroundColor: whiteColor,
+    scaffoldBackgroundColor: AppColors.colorBGSheet,
     primaryColor: primaryColor,
     iconTheme: IconThemeData(color: Colors.black),
     dividerColor: dividerColor,
@@ -27,19 +27,17 @@ class AppTheme {
       primary: primaryColor,
       secondary: primaryColor,
       surface: Colors.white,
-      background: Colors.white,
       error: Colors.red,
       onPrimary: Colors.white,
       onSecondary: Colors.black,
       onSurface: Colors.black,
-      onBackground: Colors.black,
       onError: Colors.redAccent,
       brightness: Brightness.light,
     ),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(borderRadius: radius(20), side: BorderSide(width: 1, color: primaryColor)),
-      checkColor: MaterialStateProperty.all(Colors.white),
-      fillColor: MaterialStateProperty.all(primaryColor),
+      checkColor: WidgetStateProperty.all(Colors.white),
+      fillColor: WidgetStateProperty.all(primaryColor),
       materialTapTargetSize: MaterialTapTargetSize.padded,
     ),
     textTheme: GoogleFonts.latoTextTheme(),
@@ -50,6 +48,7 @@ class AppTheme {
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       },
     ),
+    fontFamily: 'Rubik',
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -69,12 +68,10 @@ class AppTheme {
       primary: primaryColor,
       secondary: primaryColor,
       surface: Colors.black,
-      background: Colors.black,
       error: Colors.red,
       onPrimary: Colors.black,
       onSecondary: Colors.white,
       onSurface: Colors.white,
-      onBackground: Colors.white,
       onError: Colors.redAccent,
       brightness: Brightness.dark,
     ),
@@ -82,8 +79,8 @@ class AppTheme {
     textTheme: GoogleFonts.latoTextTheme(),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(borderRadius: radius(20), side: BorderSide(width: 1, color: primaryColor)),
-      checkColor: MaterialStateProperty.all(Colors.white),
-      fillColor: MaterialStateProperty.all(primaryColor),
+      checkColor: WidgetStateProperty.all(Colors.white),
+      fillColor: WidgetStateProperty.all(primaryColor),
       materialTapTargetSize: MaterialTapTargetSize.padded,
     ),
     pageTransitionsTheme: PageTransitionsTheme(
@@ -93,5 +90,6 @@ class AppTheme {
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       },
     ),
+    fontFamily: 'Rubik',
   );
 }

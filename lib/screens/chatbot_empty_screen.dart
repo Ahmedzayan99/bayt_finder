@@ -11,7 +11,7 @@ class ChatBotEmptyScreen extends StatefulWidget {
   final Function(String value) onTap;
   final bool isScroll;
 
-  ChatBotEmptyScreen({Key? key, required this.onTap, this.isScroll = false}) : super(key: key);
+  const ChatBotEmptyScreen({super.key, required this.onTap, this.isScroll = false});
 
   @override
   State<ChatBotEmptyScreen> createState() => _ChatBotEmptyScreenState();
@@ -21,9 +21,9 @@ class _ChatBotEmptyScreenState extends State<ChatBotEmptyScreen> {
   ScrollController controller = ScrollController();
 
   List<String> questionList = [
-    language.chatbotQue1,
-    language.chatbotQue2,
-    language.chatbotQue3,
+    "chatbotQue1",
+    "chatbotQue2",
+    "chatbotQue3",
   ];
 
   @override

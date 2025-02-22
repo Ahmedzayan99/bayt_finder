@@ -4,7 +4,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,14 +35,12 @@ import '../main.dart';
 import '../models/base_response.dart';
 import '../models/category_list_model.dart';
 import '../models/dynamic_model.dart';
-import '../models/place_address_model.dart';
 import '../models/property_details_model.dart';
 import '../network/RestApis.dart';
 import '../network/network_utills.dart';
 import '../utils/app_common.dart';
 import '../utils/constants.dart';
 import '../utils/images.dart';
-import 'google_map_screen.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   final bool? updateProperty;
@@ -51,7 +48,7 @@ class AddPropertyScreen extends StatefulWidget {
   final int? propertyFor;
   final PropertyDetailsModel? updatePropertyData;
 
-  AddPropertyScreen({this.propertyFor, this.updateProperty = false, this.pId, this.updatePropertyData});
+  const AddPropertyScreen({super.key, this.propertyFor, this.updateProperty = false, this.pId, this.updatePropertyData});
 
   @override
   State<AddPropertyScreen> createState() => _AddPropertyScreenState();
@@ -94,10 +91,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   ABC? selectedValue;
 
   getList() {
-    listTest.add(ABC(0, language.daily, DURATION_DAILY));
-    listTest.add(ABC(1, language.monthly, DURATION_MONTHLY));
-    listTest.add(ABC(2, language.quarterly, DURATION_QUARTERLY));
-    listTest.add(ABC(3, language.yearly, DURATION_YEARLY));
+    listTest.add(ABC(0, "daily", DURATION_DAILY));
+    listTest.add(ABC(1, "monthly", DURATION_MONTHLY));
+    listTest.add(ABC(2, "quarterly", DURATION_QUARTERLY));
+    listTest.add(ABC(3, "yearly", DURATION_YEARLY));
   }
 
   List<String> propertySellerType = [OWNER, BROKER, BUILDER];
@@ -166,7 +163,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
     setUpdatePropertyData();
     await getPropertyCategory();
-    print("---" + priceDurationValue.toString());
+    print("---$priceDurationValue");
     setState(() {});
   }
 
@@ -194,10 +191,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       newAmenityValueData = updatePropertyData!.propertyAmenityValue!;
       furnishedType = updatePropertyData!.data!.furnishedType;
       isPremium = updatePropertyData!.data!.premiumProperty == 1 ? true : false;
-      updatePropertyData!.data!.propertyGallary!.forEach((element) {
+      for (var element in updatePropertyData!.data!.propertyGallary!) {
         selectedImages.add(element);
         existingImages.add(element);
-      });
+      }
       latitude = updatePropertyData!.data!.latitude.toDouble();
       longitude = updatePropertyData!.data!.longitude.toDouble();
       setState(() {});
@@ -233,27 +230,27 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     multiPartRequest.fields['longitude'] = longitude.toString();
     multiPartRequest.fields['address'] = mapLocation.text;
     multiPartRequest.fields['video_url'] = videoUrlController.text;
-    multiPartRequest.fields['status'] = PROPERTY_ACTIVE;
+    multiPartRequest.fields['status'] = 'active';
     multiPartRequest.fields['premium_property'] = isPremium == true ? '1' : '0';
     isAmenityIsEmpty = false;
-    dynamicAmenityList.forEach((element) {
+    for (var element in dynamicAmenityList) {
       if (!element.dynamicAmenityValue.toString().isEmptyOrNull) {
         if (element.dynamicAmenityValue is String) {
-          multiPartRequest.fields['amenity_' + element.dynamicAmenityId.toString()] = element.dynamicAmenityValue;
-          log(multiPartRequest.fields['amenity_' + element.dynamicAmenityId.toString()]);
+          multiPartRequest.fields['amenity_${element.dynamicAmenityId}'] = element.dynamicAmenityValue;
+          log(multiPartRequest.fields['amenity_${element.dynamicAmenityId}']);
         } else if (element.dynamicAmenityValue is List) {
           List data = [];
           data.add(element.dynamicAmenityValue);
-          multiPartRequest.fields['amenity_' + element.dynamicAmenityId.toString()] = data.toString().replaceAll('[[', '[').replaceAll(']]', ']');
-          log(multiPartRequest.fields['amenity_' + element.dynamicAmenityId.toString()]);
+          multiPartRequest.fields['amenity_${element.dynamicAmenityId}'] = data.toString().replaceAll('[[', '[').replaceAll(']]', ']');
+          log(multiPartRequest.fields['amenity_${element.dynamicAmenityId}']);
         }
       } else if (element.dynamicAmenityValue.toString().isEmptyOrNull) {
         isAmenityIsEmpty = true;
       }
       setState(() {});
-    });
+    }
     if (isAmenityIsEmpty) {
-      // toast(language.addRequiredAmenityMessage);
+      // toast(addRequiredAmenityMessage);
       appStore.setLoading(false);
     }
 
@@ -307,7 +304,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       }).whenComplete(() => appStore.setLoading(false));
     } else {
       isAmenityIsEmpty = false;
-      toast(language.addRequiredAmenityMessage);
+      toast("addRequiredAmenityMessage");
       setState(() {});
     }
   }
@@ -329,7 +326,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       }
       setState(() {});
     }).catchError((e) {
-      print("Error is " + e.toString());
+      print("Error is $e");
       isLastPage = true;
     }).whenComplete(() => appStore.setLoading(false));
   }
@@ -344,36 +341,36 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     dynamicAmenityList.clear();
     if (!widget.updateProperty.validate()) {
       isCategoryChanged = false;
-      amenityValueData.forEach((element) {
+      for (var element in amenityValueData) {
         AmenityDynamicModel dynamicModel = AmenityDynamicModel();
         dynamicModel.dynamicAmenityId = element.id;
         dynamicAmenityList.add(dynamicModel);
-      });
+      }
     } else {
       if (selectedCategoryId == updatePropertyData!.data!.categoryId) {
         isCategoryChanged = false;
         if (newAmenityValueData == [] && newAmenityValueData!.isEmpty) {
           newAmenityValueData = updatePropertyData!.propertyAmenityValue!;
         }
-        newAmenityValueData!.forEach((element) {
+        for (var element in newAmenityValueData!) {
           AmenityDynamicModel dynamicModel = AmenityDynamicModel();
           dynamicModel.dynamicAmenityId = element.amenityId;
           dynamicModel.dynamicAmenityValue = element.value;
           dynamicAmenityList.add(dynamicModel);
-        });
+        }
       } else {
         isCategoryChanged = true;
-        amenityValueData.forEach((element) {
+        for (var element in amenityValueData) {
           AmenityDynamicModel dynamicModel = AmenityDynamicModel();
           dynamicModel.dynamicAmenityId = element.id;
           dynamicAmenityList.add(dynamicModel);
-        });
+        }
         // newAmenityValueData!.clear();
       }
     }
-    dynamicAmenityList.forEach((element) {
+    for (var element in dynamicAmenityList) {
       log("=======Dynamic Amenity List ${element.toJson().toString()}");
-    });
+    }
   }
 
   ///SelectSingleImage
@@ -393,110 +390,108 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Scaffold(
-        appBar: appBarWidget(
-          widget.updateProperty.validate() ? language.updateProperty : language.addProperty,
-          context1: context,
-          titleSpace: 0,
-          showBack: true,
-          actions: [
-            Text("${appStore.addPropertyIndex + 1}" + "/" + "3", style: secondaryTextStyle()).paddingOnly(right: 30, top: 15),
-          ],
-          backWidget: Icon(Octicons.chevron_left, color: primaryColor, size: 28).onTap(() {
-            print(appStore.addPropertyIndex.toString());
-            setState(() {
-              if (appStore.addPropertyIndex == 0) {
-                finish(context);
-                finish(context);
-              } else {
-                appStore.addPropertyIndex--;
-              }
-            });
-          }),
-          elevation: 0,
-        ),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(3, (i) {
-                    return Container(
-                      alignment: Alignment.center,
-                      height: 3,
-                      width: context.width() / 3.5,
-                      decoration: boxDecorationWithRoundedCorners(backgroundColor: appStore.addPropertyIndex >= i ? primaryColor : dividerColor),
-                    );
-                  }).toList(),
-                ).paddingSymmetric(horizontal: 12),
-                ListView(
-                  children: [
-                    if (appStore.addPropertyIndex == 0) addPropertyComponent1(),
-                    if (appStore.addPropertyIndex == 1) addPropertyComponent2(),
-                    if (appStore.addPropertyIndex == 2) addPropertyComponent3(),
-                  ],
-                ).expand()
-              ],
-            ),
-            Loader().center().visible(appStore.isLoading),
-          ],
-        ),
-        bottomNavigationBar: AppButton(
-          text: appStore.addPropertyIndex == 0 || appStore.addPropertyIndex == 1 ? language.Continue : language.submit,
-          width: context.width(),
-          color: primaryColor,
-          textColor: Colors.white,
-          onTap: () {
+    return Scaffold(
+      appBar: appBarWidget(
+        widget.updateProperty.validate() ? "updateProperty" : "addProperty",
+        context1: context,
+        titleSpace: 0,
+        showBack: true,
+        actions: [
+          Text("${appStore.addPropertyIndex + 1}" "/" "3", style: secondaryTextStyle()).paddingOnly(right: 30, top: 15),
+        ],
+        backWidget: Icon(Octicons.chevron_left, color: primaryColor, size: 28).onTap(() {
+          print(appStore.addPropertyIndex.toString());
+          setState(() {
             if (appStore.addPropertyIndex == 0) {
-              if (selectedCategoryId != null) {
-                appStore.addPropertyIndex = 1;
-              } else {
-                toast(language.pleaseSelectCategory);
-              }
-            } else if (appStore.addPropertyIndex == 1) {
-              if (mSecondComponentFormKey.currentState!.validate()) {
-                if (widget.propertyFor == 0 || widget.propertyFor == 2) {
-                  if (priceDurationValue != null &&
-                      selectedImages.isNotEmpty &&
-                      mainImagePath != null &&
-                      selectedBhkIndex != null &&
-                      latitude != null &&
-                      longitude != null &&
-                      mapLocation.text.isNotEmpty) {
-                    appStore.addPropertyIndex = 2;
-                  } else {
-                    if (priceDurationValue.isEmptyOrNull) toast(language.pleaseSelectPriceDuration);
-                    if (mainImagePath.isEmptyOrNull) toast(language.pleaseSelectMainPicture);
-                    if (selectedImages.isEmpty) toast(language.pleaseSelectOtherPicture);
-                    if (selectedBhkIndex == null) toast(language.pleaseSelectBHK);
-                    if (mapLocation.text.isEmpty) toast(language.pleaseSelectAddress);
-                  }
+              finish(context);
+              finish(context);
+            } else {
+              appStore.addPropertyIndex--;
+            }
+          });
+        }),
+        elevation: 0,
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(3, (i) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: 3,
+                    width: context.width() / 3.5,
+                    decoration: boxDecorationWithRoundedCorners(backgroundColor: appStore.addPropertyIndex >= i ? primaryColor : dividerColor),
+                  );
+                }).toList(),
+              ).paddingSymmetric(horizontal: 12),
+              ListView(
+                children: [
+                  if (appStore.addPropertyIndex == 0) addPropertyComponent1(),
+                  if (appStore.addPropertyIndex == 1) addPropertyComponent2(),
+                  if (appStore.addPropertyIndex == 2) addPropertyComponent3(),
+                ],
+              ).expand()
+            ],
+          ),
+          Loader().center().visible(appStore.isLoading),
+        ],
+      ),
+      bottomNavigationBar: AppButton(
+        text: appStore.addPropertyIndex == 0 || appStore.addPropertyIndex == 1 ? "Continue" : "submit",
+        width: context.width(),
+        color: primaryColor,
+        textColor: Colors.white,
+        onTap: () {
+          if (appStore.addPropertyIndex == 0) {
+            if (selectedCategoryId != null) {
+              appStore.addPropertyIndex = 1;
+            } else {
+              toast("pleaseSelectCategory");
+            }
+          } else if (appStore.addPropertyIndex == 1) {
+            if (mSecondComponentFormKey.currentState!.validate()) {
+              if (widget.propertyFor == 0 || widget.propertyFor == 2) {
+                if (priceDurationValue != null &&
+                    selectedImages.isNotEmpty &&
+                    mainImagePath != null &&
+                    selectedBhkIndex != null &&
+                    latitude != null &&
+                    longitude != null &&
+                    mapLocation.text.isNotEmpty) {
+                  appStore.addPropertyIndex = 2;
                 } else {
-                  if (selectedImages.isNotEmpty && mainImagePath != null && selectedBhkIndex != null) {
-                    appStore.addPropertyIndex = 2;
+                  if (priceDurationValue.isEmptyOrNull) toast("pleaseSelectPriceDuration");
+                  if (mainImagePath.isEmptyOrNull) toast("pleaseSelectMainPicture");
+                  if (selectedImages.isEmpty) toast("pleaseSelectOtherPicture");
+                  if (selectedBhkIndex == null) toast("pleaseSelectBHK");
+                  if (mapLocation.text.isEmpty) toast("pleaseSelectAddress");
+                }
+              } else {
+                if (selectedImages.isNotEmpty && mainImagePath != null && selectedBhkIndex != null) {
+                  appStore.addPropertyIndex = 2;
 
-                    setState(() {});
-                  } else {
-                    if (mainImagePath == null) toast(language.pleaseSelectMainPicture);
-                    if (selectedImages.isEmpty) toast(language.pleaseSelectOtherPicture);
-                    if (selectedBhkIndex == null) toast(language.pleaseSelectBHK);
-                  }
+                  setState(() {});
+                } else {
+                  if (mainImagePath == null) toast("pleaseSelectMainPicture");
+                  if (selectedImages.isEmpty) toast("pleaseSelectOtherPicture");
+                  if (selectedBhkIndex == null) toast("pleaseSelectBHK");
                 }
               }
-              log('Selected index $selectedCategoryId');
-              addSelectedCategoryData();
-            } else {
-              if (mThirdComponentFormKey.currentState!.validate()) {
-                saveProperty();
-              }
             }
-            setState(() {});
-          },
-        ).paddingOnly(right: 16, bottom: 16, left: 16, top: 0),
-      );
-    });
+            log('Selected index $selectedCategoryId');
+            addSelectedCategoryData();
+          } else {
+            if (mThirdComponentFormKey.currentState!.validate()) {
+              saveProperty();
+            }
+          }
+          setState(() {});
+        },
+      ).paddingOnly(right: 16, bottom: 16, left: 16, top: 0),
+    );
   }
 
   //region Add property steps
@@ -509,15 +504,15 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             20.height,
-            Text(language.areYouA, style: primaryTextStyle()),
+            Text("areYouA", style: primaryTextStyle()),
             10.height,
             DropdownButtonFormField<String>(
                 dropdownColor: appStore.isDarkModeOn ? cardDarkColor : selectIconColor,
                 items: propertySellerType
                     .map(
                       (value) => DropdownMenuItem<String>(
-                        child: Text(value, style: primaryTextStyle()),
                         value: value,
+                        child: Text(value, style: primaryTextStyle()),
                       ),
                     )
                     .toList(),
@@ -542,11 +537,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     sellerType = 2;
                   }
                   setState(() {});
-                  print("====" + sellerType.toString());
-                  print("====" + propertySellerType.toString());
+                  print("====$sellerType");
+                  print("====$propertySellerType");
                 }),
             20.height,
-            Text(language.selectCategory, style: primaryTextStyle()),
+            Text("selectCategory", style: primaryTextStyle()),
             20.height,
             AnimatedWrap(
               runSpacing: 16,
@@ -593,7 +588,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             20.height,
-            RequiredValidationText(required: true, titleText: language.propertyName),
+            RequiredValidationText(required: true, titleText: "propertyName"),
             10.height,
             AppTextField(
               controller: propertyNameController,
@@ -601,10 +596,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               textFieldType: TextFieldType.NAME,
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.go,
-              decoration: defaultInputDecoration(context, label: language.enterPropertyName),
+              decoration: defaultInputDecoration(context, label: "enterPropertyName"),
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.selectBHK),
+            RequiredValidationText(required: true, titleText: "selectBHK"),
             10.height,
             HorizontalList(
               itemCount: bhkList.length,
@@ -618,7 +613,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           : appStore.isDarkModeOn
                               ? cardDarkColor
                               : primaryExtraLight),
-                  child: Text(bhkList[i].toString() + " " + language.bhk, style: primaryTextStyle(color: selectedBhkIndex == bhkList[i].toInt() ? Colors.white : grayColor)).center(),
+                  child: Text("${bhkList[i]} ${"bhk"}", style: primaryTextStyle(color: selectedBhkIndex == bhkList[i].toInt() ? Colors.white : grayColor)).center(),
                 ).onTap(() {
                   selectedBhkIndex = bhkList[i].toInt();
                   setState(() {});
@@ -626,11 +621,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               },
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.furnishType),
+            RequiredValidationText(required: true, titleText: "furnishType"),
             10.height,
             DropdownButtonFormField(
-              hint: Text(language.selectFurnishedType, style: primaryTextStyle()),
-              items: furnishedTypeList.map((value) => DropdownMenuItem<String>(child: Text(value, style: primaryTextStyle()), value: value)).toList(),
+              hint: Text("selectFurnishedType", style: primaryTextStyle()),
+              items: furnishedTypeList.map((value) => DropdownMenuItem<String>(value: value, child: Text(value, style: primaryTextStyle()))).toList(),
               isExpanded: false,
               isDense: true,
               borderRadius: radius(),
@@ -656,7 +651,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               },
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.squareFeetArea),
+            RequiredValidationText(required: true, titleText: "squareFeetArea"),
             10.height,
             AppTextField(
               isValidationRequired: true,
@@ -665,10 +660,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: areaCFocus,
               textFieldType: TextFieldType.NAME,
               keyboardType: TextInputType.name,
-              decoration: defaultInputDecoration(context, label: language.enterSquareFeetArea),
+              decoration: defaultInputDecoration(context, label: "enterSquareFeetArea"),
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.ageOfProperty + language.year),
+            RequiredValidationText(required: true, titleText: "ageOfProperty" 'year'),
             10.height,
             AppTextField(
               isValidationRequired: true,
@@ -677,10 +672,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: ageOfPropertyFocus,
               textFieldType: TextFieldType.NUMBER,
               keyboardType: TextInputType.number,
-              decoration: defaultInputDecoration(context, label: language.enterAgeOfProperty),
+              decoration: defaultInputDecoration(context, label: "enterAgeOfProperty"),
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.description),
+            RequiredValidationText(required: true, titleText: "description"),
             10.height,
             AppTextField(
               isValidationRequired: true,
@@ -689,12 +684,12 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: descriptionFocus,
               textFieldType: TextFieldType.MULTILINE,
               keyboardType: TextInputType.multiline,
-              decoration: defaultInputDecoration(context, label: language.writeSomethingHere),
+              decoration: defaultInputDecoration(context, label: "writeSomethingHere"),
               minLines: 3,
               maxLines: 3,
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.price),
+            RequiredValidationText(required: true, titleText: "price"),
             10.height,
             AppTextField(
               textInputAction: TextInputAction.go,
@@ -704,15 +699,15 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               keyboardType: TextInputType.number,
               decoration: defaultInputDecoration(
                 context,
-                label: language.enterPrice,
+                label: "enterPrice",
               ),
             ),
             20.height,
-            if (widget.propertyFor == 0 || widget.propertyFor == 2) RequiredValidationText(required: true, titleText: language.priceDuration),
+            if (widget.propertyFor == 0 || widget.propertyFor == 2) RequiredValidationText(required: true, titleText: "priceDuration"),
             10.height.visible(widget.propertyFor == 0 || widget.propertyFor == 2),
             // if (widget.propertyFor == 0 || widget.propertyFor == 2)
             //   DropdownButtonFormField(
-            //     hint: Text(language.selectPriceDuration, style: primaryTextStyle()),
+            //     hint: Text(selectPriceDuration, style: primaryTextStyle()),
             //     items: priceDuration.map((value) => DropdownMenuItem<String>(child: Text(value, style: primaryTextStyle()), value: value)).toList(),
             //     isExpanded: false,
             //     isDense: true,
@@ -729,8 +724,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
             //   ).visible(widget.propertyFor == 0 || widget.propertyFor == 2),
             if (widget.propertyFor == 0 || widget.propertyFor == 2)
               DropdownButtonFormField<ABC>(
-                  hint: Text(language.selectPriceDuration, style: primaryTextStyle()),
-                  items: listTest.map((ABC testss) => DropdownMenuItem<ABC>(child: Text(testss.title.validate(), style: primaryTextStyle()), value: testss)).toList(),
+                  hint: Text("selectPriceDuration", style: primaryTextStyle()),
+                  items: listTest.map((ABC testss) => DropdownMenuItem<ABC>(value: testss, child: Text(testss.title.validate(), style: primaryTextStyle()))).toList(),
                   isExpanded: false,
                   isDense: true,
                   borderRadius: radius(),
@@ -740,14 +735,14 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     selectedValue = value;
                     priceDurationValue = value!.value.validate();
 
-                    print("Price Duration Value" + priceDurationValue.toString());
-                    print("Price Duration Value" + selectedValue.toString());
+                    print("Price Duration Value$priceDurationValue");
+                    print("Price Duration Value$selectedValue");
 
                     setState(() {});
                   }),
 
             20.height.visible(widget.propertyFor == 0 || widget.propertyFor == 2),
-            RequiredValidationText(required: true, titleText: language.securityDeposit),
+            RequiredValidationText(required: true, titleText: 'securityDeposit'),
             10.height,
             AppTextField(
               textInputAction: TextInputAction.go,
@@ -755,10 +750,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: depositFocus,
               textFieldType: TextFieldType.NUMBER,
               keyboardType: TextInputType.number,
-              decoration: defaultInputDecoration(context, label: language.enterSecurityDeposit),
+              decoration: defaultInputDecoration(context, label: "enterSecurityDeposit"),
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.brokerage),
+            RequiredValidationText(required: true, titleText: "brokerage"),
             10.height,
             AppTextField(
               textInputAction: TextInputAction.go,
@@ -766,10 +761,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: brokerageFocus,
               textFieldType: TextFieldType.NUMBER,
               keyboardType: TextInputType.number,
-              decoration: defaultInputDecoration(context, label: language.enterBrokerage),
+              decoration: defaultInputDecoration(context, label: "enterBrokerage"),
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.maintenanceCharges),
+            RequiredValidationText(required: true, titleText: "maintenanceCharges"),
             10.height,
             AppTextField(
               textInputAction: TextInputAction.go,
@@ -777,10 +772,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: mChargesFocus,
               textFieldType: TextFieldType.NUMBER,
               keyboardType: TextInputType.number,
-              decoration: defaultInputDecoration(context, label: language.enterMaintenanceCharge),
+              decoration: defaultInputDecoration(context, label: "enterMaintenanceCharge"),
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.address),
+            RequiredValidationText(required: true, titleText: "address"),
             10.height,
             GestureDetector(
               onTap: () async {
@@ -800,7 +795,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   children: [
                     Icon(Icons.my_location, color: grayColor),
                     10.width,
-                    Text(language.chooseOnMap, style: secondaryTextStyle()),
+                    Text("chooseOnMap", style: secondaryTextStyle()),
                   ],
                 ),
               ),
@@ -828,10 +823,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     focus: countryFocus,
                     textFieldType: TextFieldType.NAME,
                     keyboardType: TextInputType.streetAddress,
-                    decoration: defaultInputDecoration(context, label: language.country),
+                    decoration: defaultInputDecoration(context, label: "country"),
                     onTap: () async {
                       if (mapLocation.text.isEmpty) {
-                        toast(language.pleaseChooseAddressFromMap);
+                        toast("pleaseChooseAddressFromMap");
                       }
                     },
                   ),
@@ -846,10 +841,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     focus: stateFocus,
                     textFieldType: TextFieldType.NAME,
                     keyboardType: TextInputType.streetAddress,
-                    decoration: defaultInputDecoration(context, label: language.state),
+                    decoration: defaultInputDecoration(context, label: "state"),
                     onTap: () async {
                       if (mapLocation.text.isEmpty) {
-                        toast(language.pleaseChooseAddressFromMap);
+                        toast("pleaseChooseAddressFromMap");
                       }
                     },
                   ),
@@ -865,15 +860,15 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               focus: cityFocus,
               textFieldType: TextFieldType.NAME,
               keyboardType: TextInputType.streetAddress,
-              decoration: defaultInputDecoration(context, label: language.city),
+              decoration: defaultInputDecoration(context, label: "city"),
               onTap: () async {
                 if (mapLocation.text.isEmpty) {
-                  toast(language.pleaseChooseAddressFromMap);
+                  toast("pleaseChooseAddressFromMap");
                 }
               },
             ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.addPicture),
+            RequiredValidationText(required: true, titleText: "addPicture"),
             10.height,
             if (mainImagePath != null)
               Stack(
@@ -924,7 +919,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         children: [
                           Image.asset(ic_gallery, height: 24, width: 24, color: grayColor),
                           10.width,
-                          Text(language.addMainPicture, style: secondaryTextStyle()),
+                          Text("addMainPicture", style: secondaryTextStyle()),
                         ],
                       ),
                     ),
@@ -932,7 +927,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ),
               ),
             20.height,
-            RequiredValidationText(required: true, titleText: language.addOtherPicture),
+            RequiredValidationText(required: true, titleText: "addOtherPicture"),
             10.height,
             if (selectedImages.isNotEmpty)
               AnimatedWrap(
@@ -967,9 +962,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               onTap: () async {
                 List<XFile> image = await ImagePicker().pickMultiImage();
                 imageFileList!.addAll(image);
-                imageFileList!.forEach((image) {
+                for (var image in imageFileList!) {
                   selectedImages.add(image.path);
-                });
+                }
                 imageFileList!.clear();
                 setState(() {});
               },
@@ -986,7 +981,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       children: [
                         Image.asset(ic_gallery, height: 24, width: 24, color: grayColor),
                         10.width,
-                        Text(language.addOtherPictures, style: secondaryTextStyle()),
+                        Text("a'ddOtherPictures", style: secondaryTextStyle()),
                       ],
                     ),
                   ),
@@ -994,7 +989,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               ),
             ),
             20.height,
-            RequiredValidationText(required: false, titleText: language.videoUrl),
+            RequiredValidationText(required: false, titleText: "videoUrl"),
             5.height,
             AppTextField(
                 textInputAction: TextInputAction.done,
@@ -1003,14 +998,14 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 focus: videoUrlFocus,
                 textFieldType: TextFieldType.URL,
                 keyboardType: TextInputType.url,
-                decoration: defaultInputDecoration(context, label: language.enterVideoUrl)),
+                decoration: defaultInputDecoration(context, label: 'enterVideoUrl')),
             20.height,
             Row(
               children: [
-                Text(language.premiumProperty, style: primaryTextStyle(size: 18)).expand(),
+                Text("premiumProperty", style: primaryTextStyle(size: 18)).expand(),
                 CupertinoSwitch(
                   thumbColor: primaryExtraLight,
-                  activeColor: primaryColor,
+                  activeTrackColor: primaryColor,
                   value: isPremium,
                   onChanged: (bool val) {
                     isPremium = val;
@@ -1036,7 +1031,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 20.height,
-                Text(language.extraFacilities, style: primaryTextStyle()),
+                Text("extraFacilities", style: primaryTextStyle()),
                 20.height,
                 ListView.builder(
                     physics: ScrollPhysics(),
@@ -1128,14 +1123,13 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
         dynamicAmenityList.add(a);
         if (checkboxList.isEmpty) {
-          toast(language.pleaseAddAmenities);
+          toast("pleaseAddAmenities");
         }
         setState(() {});
       }
     } else {
-      toast(language.pleaseAddAmenities);
+      toast("pleaseAddAmenities");
     }
-
     setState(() {});
   }
 
@@ -1148,7 +1142,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     log('================${a.toJson()}');
     dynamicAmenityList.add(a);
     if (value.toString().isEmptyOrNull) {
-      toast(language.pleaseAddAmenities);
+      toast("pleaseAddAmenities");
     }
   }
 
@@ -1170,7 +1164,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   address(String? finalMapAddress) {
     mapLocation.text = finalMapAddress.toString();
-    print("Final Location Is From Properties Screen ==>" + mapLocation.toString());
+    print("Final Location Is From Properties Screen ==>$mapLocation");
     setState(() {});
   }
 
@@ -1179,7 +1173,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       cityController.text = city.toString();
       stateController.text = state.toString();
       countryController.text = country.toString();
-      print("CITY" + cityController.text.toString() + stateController.text.toString() + countryController.text.toString());
+      print("CITY${cityController.text}${stateController.text}${countryController.text}");
     }
     setState(() {});
   }

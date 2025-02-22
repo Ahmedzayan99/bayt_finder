@@ -5,11 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/system_utils.dart';
-import '../languageConfiguration/ServerLanguageResponse.dart';
+import '../local_storage/shared_preferences_manager.dart';
 import '../models/property_list_model.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
-import '../extensions/shared_pref.dart';
 import '../main.dart';
 import '../models/app_setting_response.dart';
 import '../models/article_response.dart';
@@ -25,7 +24,7 @@ import '../models/login_Response.dart';
 import '../models/my_advertisement_property_response.dart';
 import '../models/my_properties_model.dart';
 import '../models/notification_model.dart';
-import '../models/otp_login_response.dart';
+import '../models/auth/otp_login_response.dart';
 import '../models/payment_list_model.dart';
 import '../models/property_contact_info_response.dart';
 import '../models/property_details_model.dart';
@@ -33,21 +32,22 @@ import '../models/property_inquiry_response.dart';
 import '../models/property_type_model.dart';
 import '../models/purchase_extra_limit_response.dart';
 import '../models/search_response_model.dart';
-import '../models/signUp_resonse.dart';
+import '../models/auth/signUp_resonse.dart';
 import '../models/subscribe_package_reponse.dart';
 import '../models/subscription_model.dart';
 import '../models/subscription_plan_response.dart';
 import '../models/user_response.dart';
 import '../models/view_property_response.dart';
-import '../screens/login_screen.dart';
+import '../screens/login/login_screen.dart';
 import '../utils/constants.dart';
 import 'network_utills.dart';
 
+/*
 Future<SignUpResponse> signUpApi(Map request, BuildContext context) async {
   Response response = await buildHttpResponse('register', request: request, method: HttpMethod.POST);
   if (!response.statusCode.isSuccessful()) {
     await appStore.setLogin(true);
-    await setValue(IS_USER_SIGNUP, true);
+    await SharedPreferencesManager.saveData(IS_USER_SIGNUP, true);
     if (response.body.isJson()) {
       var json = jsonDecode(response.body);
       if (json.containsKey('code') && json['code'].toString().contains('invalid_username')) {
@@ -60,13 +60,13 @@ Future<SignUpResponse> signUpApi(Map request, BuildContext context) async {
 
   return await handleResponse(response).then((json) async {
     var signupResponse = SignUpResponse.fromJson(json);
-    // if (signupResponse.data!.apiToken.validate().isNotEmpty) await userStore.setToken(signupResponse.data!.apiToken.validate());
-    await setValue(USER_ID, signupResponse.data!.id);
-    await setValue(FIRSTNAME, signupResponse.data!.firstName.validate());
-    await setValue(LASTNAME, signupResponse.data!.lastName.validate());
-    await setValue(EMAIL, signupResponse.data!.email.validate());
-    await setValue(TOKEN, signupResponse.data!.apiToken.validate());
-    await setValue(USER_TYPE, signupResponse.data!.userType.validate());
+    // if (signupResponse.data!.apiToken.validate().isNotEmpty) await appStore.setToken(signupResponse.data!.apiToken.validate());
+    await SharedPreferencesManager.saveData(USER_ID, signupResponse.data!.id);
+    await SharedPreferencesManager.saveData(FIRSTNAME, signupResponse.data!.firstName.validate());
+    await SharedPreferencesManager.saveData(LASTNAME, signupResponse.data!.lastName.validate());
+    await SharedPreferencesManager.saveData(EMAIL, signupResponse.data!.email.validate());
+    await SharedPreferencesManager.saveData(token, signupResponse.data!.apiToken.validate());
+    await SharedPreferencesManager.saveData(USER_TYPE, signupResponse.data!.userType.validate());
     await appStore.setLogin(true);
 
     return signupResponse;
@@ -75,6 +75,7 @@ Future<SignUpResponse> signUpApi(Map request, BuildContext context) async {
     throw e.toString();
   });
 }
+*/
 
 Future<SocialLoginResponse> otpLogInApi(Map request) async {
   Response response = await buildHttpResponse('social-otp-login', request: request, method: HttpMethod.POST);
@@ -104,17 +105,17 @@ Future<PropertyTypeResponse> getPropertyTypeList() async {
 }
 
 /// Language Data
-Future<ServerLanguageResponse> getLanguageList(versionNo) async {
+/*Future<ServerLanguageResponse> getLanguageList(versionNo) async {
   return ServerLanguageResponse.fromJson(await handleResponse(await buildHttpResponse('language-table-list?version_no=$versionNo', method: HttpMethod.GET)).then((value) => value));
-}
+}*/
 
 Future<LogInResponse> updateProfileApi(Map req) async {
   return LogInResponse.fromJson(await handleResponse(await buildHttpResponse('update-profile', request: req, method: HttpMethod.POST)));
 }
 
-// Future<LogInResponse> updatePlayerIdApi(Map req) async {
-//   return LogInResponse.fromJson(await handleResponse(await buildHttpResponse('update-user-status', request: req, method: HttpMethod.POST)));
-// }
+Future<LogInResponse> updatePlayerIdApi(Map req) async {
+  return LogInResponse.fromJson(await handleResponse(await buildHttpResponse('update-user-status', request: req, method: HttpMethod.POST)));
+}
 
 Future<DashboardResponse> getDashBoardData(Map request) async {
   return DashboardResponse.fromJson(await handleResponse(await buildHttpResponse('dashboard-list', request: request, method: HttpMethod.POST)).then((value) => value));
@@ -299,16 +300,16 @@ Future deleteUserFirebase() async {
 }
 
 Future<void> logout(BuildContext context, {bool isFromLogin = false}) async {
-  await sharedPreferences.remove(IS_LOGGED_IN);
-  await sharedPreferences.remove(USER_ID);
-  await sharedPreferences.remove(USER_TYPE);
-  await sharedPreferences.remove(NAME);
-  await sharedPreferences.remove(USER_PROFILE_PHOTO);
-  await sharedPreferences.remove(USER_CONTACT_NUMBER);
-  await sharedPreferences.remove(USER_NAME);
-  await sharedPreferences.remove(USER_ADDRESS);
-  await sharedPreferences.remove(IS_OTP);
-  userStore.setLogin(false);
+  await SharedPreferencesManager.removeData('token');
+/*  await SharedPreferencesManager.removeData(USER_ID);
+  await SharedPreferencesManager.removeData(USER_TYPE);
+  await SharedPreferencesManager.removeData(NAME);
+  await SharedPreferencesManager.removeData(USER_PROFILE_PHOTO);
+  await SharedPreferencesManager.removeData(USER_CONTACT_NUMBER);
+  await SharedPreferencesManager.removeData(USER_NAME);
+  await SharedPreferencesManager.removeData(USER_ADDRESS);
+  await SharedPreferencesManager.removeData(IS_OTP);*/
+  appStore.setLogin(false);
   if (!isFromLogin) {
     LoginScreen().launch(context, isNewTask: true);
     appStore.setLoading(true);

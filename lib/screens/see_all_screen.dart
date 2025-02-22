@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import '../components/app_bar_components.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../components/advertisement_property_component.dart';
@@ -13,7 +12,7 @@ import 'property_detail_screen.dart';
 class SeeAllScreen extends StatefulWidget {
   final Function? onCall;
 
-  const SeeAllScreen({this.onCall});
+  const SeeAllScreen({super.key, this.onCall});
 
   @override
   State<SeeAllScreen> createState() => _SeeAllScreenState();
@@ -58,7 +57,7 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
     Map req;
 
     req = {
-      "city": userStore.cityName,
+      "city": appStore.cityName,
     };
 
     await filterApi(req).then((value) {
@@ -71,7 +70,7 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
       Iterable it = value.property!;
       it.map((e) => mPropertyData.add(e)).toList();
       appStore.setLoading(false);
-      print("Filter Response " + mPropertyData.toString());
+      print("Filter Response $mPropertyData");
       setState(() {});
     }).catchError((e) {
       print(req);
@@ -81,34 +80,32 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Scaffold(
-          appBar: appBarWidget(language.properties, context1: context, titleSpace: 0),
-          body: Stack(children: [
-            mPropertyData.isNotEmpty
-                ? ListView.builder(
-                    controller: scrollController,
-                    physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    shrinkWrap: true,
-                    itemCount: mPropertyData.length,
-                    itemBuilder: (context, i) {
-                      return AdvertisementPropertyComponent(
-                        property: mPropertyData[i],
-                        isFullWidth: true,
-                        onCall: () {
-                          filterData();
-                        },
-                      ).onTap(() async {
-                        bool? res = await PropertyDetailScreen(propertyId: mPropertyData[i].id).launch(context);
-                        if (res == true) {
-                          init();
-                        }
-                      }).paddingBottom(16);
-                    })
-                : NoDataScreen(mTitle: language.resultNotFound).visible(!appStore.isLoading),
-            Loader().center().visible(appStore.isLoading),
-          ]));
-    });
+    return Scaffold(
+        appBar: appBarWidget("properties", context1: context, titleSpace: 0),
+        body: Stack(children: [
+          mPropertyData.isNotEmpty
+              ? ListView.builder(
+              controller: scrollController,
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              shrinkWrap: true,
+              itemCount: mPropertyData.length,
+              itemBuilder: (context, i) {
+                return AdvertisementPropertyComponent(
+                  property: mPropertyData[i],
+                  isFullWidth: true,
+                  onCall: () {
+                    filterData();
+                  },
+                ).onTap(() async {
+                  bool? res = await PropertyDetailScreen(propertyId: mPropertyData[i].id).launch(context);
+                  if (res == true) {
+                    init();
+                  }
+                }).paddingBottom(16);
+              })
+              : NoDataScreen(mTitle: "resultNotFound").visible(!appStore.isLoading),
+          Loader().center().visible(appStore.isLoading),
+        ]));
   }
 }

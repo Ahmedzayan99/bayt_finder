@@ -3,17 +3,16 @@ import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/text_styles.dart';
-import '../main.dart';
-import '../screens/dashboard_screen.dart';
 import '../screens/property_detail_screen.dart';
 import '../utils/images.dart';
 import '../extensions/app_button.dart';
 import '../utils/colors.dart';
+import 'layout/layout_screen.dart';
 
 class SuccessPropertyScreen extends StatefulWidget {
   final int? propertyId;
 
-  const SuccessPropertyScreen({required this.propertyId});
+  const SuccessPropertyScreen({super.key, required this.propertyId});
 
   @override
   State<SuccessPropertyScreen> createState() => _SuccessPropertyScreenState();
@@ -30,12 +29,12 @@ class _SuccessPropertyScreenState extends State<SuccessPropertyScreen> {
           height: 200,
         ),
         20.height,
-        Text(language.congratulations, style: boldTextStyle(size: 30, color: primaryColor)),
+        Text("congratulations", style: boldTextStyle(size: 30, color: primaryColor)),
         20.height,
-        Text(language.yourPropertySubmittedSuccessfully, style: secondaryTextStyle(size: 16)),
+        Text("yourPropertySubmittedSuccessfully", style: secondaryTextStyle(size: 16)),
         50.height,
         AppButton(
-          text: language.previewProperty,
+          text: "previewProperty",
           width: context.width(),
           color: primaryColor,
           textColor: Colors.white,
@@ -51,9 +50,9 @@ class _SuccessPropertyScreenState extends State<SuccessPropertyScreen> {
         30.height,
         TextButton(
           onPressed: () {
-            DashboardScreen().launch(context, isNewTask: true);
+            LayoutScreen().launch(context, isNewTask: true);
           },
-          child: Text(language.backToHome, style: primaryTextStyle(color: primaryColor)),
+          child: Text("backToHome", style: primaryTextStyle(color: primaryColor)),
         )
       ]).paddingSymmetric(horizontal: 16),
     );

@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import '../components/HtmlWidget.dart';
 import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
 import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/price_widget.dart';
 import '../extensions/text_styles.dart';
-import 'payment_screen.dart';
 import '../utils/colors.dart';
-import '../extensions/LiveStream.dart';
 import '../extensions/app_button.dart';
-import '../extensions/common.dart';
 import '../extensions/decorations.dart';
-import '../extensions/loader_widget.dart';
 import '../extensions/system_utils.dart';
 import '../main.dart';
 import '../models/subscription_model.dart';
 import '../network/RestApis.dart';
-import '../utils/app_common.dart';
 import '../utils/constants.dart';
 import '../utils/images.dart';
 
@@ -84,13 +77,13 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
     appStore.setLoading(true);
     Map req = {"package_id": id, "payment_status": "paid", "payment_type": "", "txn_id": "", "transaction_detail": ""};
     await subscribePackageApi(req).then((value) async {
-      getUSerDetail(context, userStore.userId).then((value) {
+     /* getUSerDetail(context, appStore.userId).then((value) {
         setState(() {
           LiveStream().emit(PAYMENT);
           appStore.setLoading(false);
           finish(context, true);
         });
-      });
+      });*/
     }).catchError((e) {
       appStore.setLoading(false);
       print(e.toString());
@@ -125,14 +118,14 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
             elevation: 0,
             titleSpacing: 0,
             centerTitle: false,
-            title: Text(language.subscriptionPlans, style: boldTextStyle(size: 18, color: Colors.white))),
+            title: Text("subscriptionPlans", style: boldTextStyle(size: 18, color: Colors.white))),
         bottomNavigationBar: AppButton(
-          text: language.subscribe,
+          text: "subscribe",
           width: context.width(),
           color: primaryColor,
           onTap: () {
      /*       selectedIndex == -1
-                ? toast(language.pleaseSelectPlantContinue)
+                ? toast(pleaseSelectPlantContinue)
                 : mSubscriptionListNew[selectedIndex].price == 0
                     ? paymentConfirm(mSubscriptionListNew[selectedIndex].id)
                     : PaymentScreen(
@@ -154,9 +147,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(language.bePremiumGetUnlimitedAccess.capitalizeFirstLetter(), style: primaryTextStyle(size: 20, color: Colors.white), textAlign: TextAlign.center),
+                        Text("bePremiumGetUnlimitedAccess".capitalizeFirstLetter(), style: primaryTextStyle(size: 20, color: Colors.white), textAlign: TextAlign.center),
                         4.height,
-                        Text(language.enjoyUnlimitedAccessWithoutAdsAndRestrictions.capitalizeFirstLetter(), style: primaryTextStyle(size: 14, color: Colors.white)),
+                        Text("enjoyUnlimitedAccessWithoutAdsAndRestrictions".capitalizeFirstLetter(), style: primaryTextStyle(size: 14, color: Colors.white)),
                         20.height,
                       ],
                     ),
@@ -200,9 +193,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                                             children: [
                                               Icon(Icons.circle, size: 8, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal),
                                               10.width,
-                                              Text(language.viewPropertyLimit, style: primaryTextStyle(size: 14, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal)).expand(),
+                                              Text("viewPropertyLimit", style: primaryTextStyle(size: 14, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal)).expand(),
                                               mSubscriptionListNew[index].viewPropertyLimit == null
-                                                  ? Text(language.unlimited, style: primaryTextStyle(size: 14, color: primaryColor))
+                                                  ? Text("unlimited", style: primaryTextStyle(size: 14, color: primaryColor))
                                                   : Text(mSubscriptionListNew[index].viewPropertyLimit.toString(), style: primaryTextStyle(size: 14, color: primaryColor)),
                                             ],
                                           ).paddingLeft(10),
@@ -211,9 +204,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                                             children: [
                                               Icon(Icons.circle, size: 8, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal),
                                               10.width,
-                                              Text(language.addPropertyLimit, style: primaryTextStyle(size: 14, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal)).expand(),
+                                              Text("addPropertyLimit", style: primaryTextStyle(size: 14, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal)).expand(),
                                               mSubscriptionListNew[index].addPropertyLimit == null
-                                                  ? Text(language.unlimited, style: primaryTextStyle(size: 14, color: primaryColor))
+                                                  ? Text("unlimited", style: primaryTextStyle(size: 14, color: primaryColor))
                                                   : Text(mSubscriptionListNew[index].addPropertyLimit.toString(), style: primaryTextStyle(size: 14, color: primaryColor)),
                                             ],
                                           ).paddingLeft(10),
@@ -222,9 +215,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                                             children: [
                                               Icon(Icons.circle, size: 8, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal),
                                               10.width,
-                                              Text(language.advertisementLimit, style: primaryTextStyle(size: 14, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal)).expand(),
+                                              Text("advertisementLimit", style: primaryTextStyle(size: 14, color: selectedIndex == index ? Colors.black : textPrimaryColorGlobal)).expand(),
                                               mSubscriptionListNew[index].advertisementLimit == null
-                                                  ? Text(language.unlimited, style: primaryTextStyle(size: 14, color: primaryColor))
+                                                  ? Text("unlimited", style: primaryTextStyle(size: 14, color: primaryColor))
                                                   : Text(mSubscriptionListNew[index].advertisementLimit.toString(), style: primaryTextStyle(size: 14, color: primaryColor)),
                                             ],
                                           ).paddingLeft(10),
@@ -260,7 +253,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                               children: [
                                 Image.asset(no_data, height: context.height() * 0.2, width: context.width() * 0.4),
                                 16.height,
-                                Text(language.noData, style: boldTextStyle()),
+                                Text("noData", style: boldTextStyle()),
                               ],
                             ).center().visible(!appStore.isLoading),
                       // 30.height,
@@ -269,9 +262,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                 ],
               ),
             ),
-            Observer(builder: (context) {
-              return Loader().center().visible(appStore.isLoading);
-            })
+
           ],
         ),
       ),

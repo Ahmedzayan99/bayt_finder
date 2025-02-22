@@ -29,8 +29,8 @@ class PropertyComponents extends StatefulWidget {
   //  final int? propertyId;
   //  final int? isPremium;
 
-  PropertyComponents(
-      {
+  const PropertyComponents(
+      {super.key, 
       // this.propertyImg,
       // this.propertyCategory,
       // this.propertyPrice,
@@ -89,9 +89,9 @@ class _PropertyComponentsState extends State<PropertyComponents> {
                 right: 8,
                 top: 8,
                 child: Row(
-                  mainAxisAlignment: userStore.subscription == "1" && widget.property!.premiumProperty == 1 ? MainAxisAlignment.spaceBetween :MainAxisAlignment.end,
+                  mainAxisAlignment: appStore.subscription == "1" && widget.property!.premiumProperty == 1 ? MainAxisAlignment.spaceBetween :MainAxisAlignment.end,
                   children: [
-                    if (userStore.subscription == "1" && widget.property!.premiumProperty == 1) PremiumBtn(pDetail: false),
+                    if (appStore.subscription == "1" && widget.property!.premiumProperty == 1) PremiumBtn(pDetail: false),
                     fevIconWidget(widget.property!.isFavourite,context).onTap(() {
                       setState(() {
                         setFavouriteApi(widget.property!.id);
@@ -114,10 +114,10 @@ class _PropertyComponentsState extends State<PropertyComponents> {
                     decoration: boxDecorationWithRoundedCorners(borderRadius: radius(4), backgroundColor: context.cardColor),
                     child: Text(
                       widget.property!.propertyFor == 0
-                          ? language.forRent
+                          ? "forRent"
                           : widget.property!.propertyFor == 1
-                              ? language.forSell
-                              : language.pgCoLiving,
+                              ? "forSell"
+                              : "pgCoLiving",
                       style: primaryTextStyle(size: 12, color: primaryColor),
                     ),
                   )

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../extensions/extension_util/context_extensions.dart';
 import '../extensions/extension_util/int_extensions.dart';
-import '../extensions/extension_util/string_extensions.dart';
 import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/text_styles.dart';
 import '../extensions/app_button.dart';
@@ -15,7 +14,7 @@ import '../utils/images.dart';
 class PaymentSuccessDialog extends StatefulWidget {
   final Function()? onTap;
 
-  PaymentSuccessDialog(this.onTap);
+  const PaymentSuccessDialog(this.onTap, {super.key});
 
   @override
   State<PaymentSuccessDialog> createState() => _PaymentSuccessDialogState();
@@ -31,17 +30,17 @@ class _PaymentSuccessDialogState extends State<PaymentSuccessDialog> {
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         Lottie.asset(payment_success, height: context.height() * 0.2),
         20.height,
-        Text(language.paymentSuccessfullyDone, style: boldTextStyle(size: 18)),
+        Text("paymentSuccessfullyDone", style: boldTextStyle(size: 18)),
         10.height,
         Text(
-          language.paymentSuccessfullyMsg.capitalizeFirstLetter(),
+          "paymentSuccessfullyMsg",
           style: secondaryTextStyle(),
           textAlign: TextAlign.center,
         ),
         20.height,
         AppButton(
           padding: EdgeInsets.zero,
-          text: language.Continue,
+          text: "Continue",
           width: context.width(),
           color: primaryColor,
           elevation: 0,

@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_paytabs_bridge/BaseBillingShippingInfo.dart' as payTab;
 import 'package:flutter_paytabs_bridge/IOSThemeConfiguration.dart';
@@ -229,8 +228,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       'retry': {'enabled': true, 'max_count': 1},
       'send_sms_hash': true,
       'prefill': {
-        'contact': getStringAsync(CONTACT_NUMBER),
-        'email': getStringAsync(EMAIL),
+        'contact': SharedPreferencesManager.getStringAsync(CONTACT_NUMBER),
+        'email': SharedPreferencesManager.getStringAsync(EMAIL),
       },
       'external': {
         'wallets': ['paytm']
@@ -268,7 +267,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     request.bodyFields = {
       'amount': '${(widget.price!.toDouble() * 100).toInt()}',
-      'currency': "${userStore.currencyCode.toUpperCase()}",
+      'currency': "${appStore.currencyCode.toUpperCase()}",
     };
 
     log(request.bodyFields);
@@ -287,10 +286,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
             paymentIntentClientSecret: res.clientSecret.validate(),
             style: ThemeMode.light,
             appearance: PaymentSheetAppearance(colors: PaymentSheetAppearanceColors(primary: primaryColor)),
-            applePay: PaymentSheetApplePay(merchantCountryCode: "${userStore.currencySymbol.toUpperCase()}"),
-            googlePay: PaymentSheetGooglePay(merchantCountryCode: "${userStore.currencySymbol.toUpperCase()}", testEnv: true),
+            applePay: PaymentSheetApplePay(merchantCountryCode: "${appStore.currencySymbol.toUpperCase()}"),
+            googlePay: PaymentSheetGooglePay(merchantCountryCode: "${appStore.currencySymbol.toUpperCase()}", testEnv: true),
             merchantDisplayName: APP_NAME,
-            customerId: userStore.userId.toString(),
+            customerId: appStore.userId.toString(),
           );
 
           await Stripe.instance.initPaymentSheet(paymentSheetParameters: setupPaymentSheetParameters).then((value) async {
@@ -317,8 +316,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     appStore.setLoading(true);
     Charge charge = Charge()
       ..amount = (widget.price.toString().toDouble() * 100).toInt() // In base currency
-      ..email = userStore.email.validate()
-      ..currency = userStore.currencyCode.toUpperCase();
+      ..email = appStore.email.validate()
+      ..currency = appStore.currencyCode.toUpperCase();
     charge.reference = _getReference();
 
     try {
@@ -360,11 +359,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   /// Paypal Payment
   void payPalPayment() async {
-    print("===================>>>${userStore.currencySymbol.toUpperCase()}");
+    print("===================>>>${appStore.currencySymbol.toUpperCase()}");
 
     appStore.setLoading(true);
-    // final request = await BraintreePayPalRequest(amount: widget.mSubscriptionModel?.price.toString(), currencyCode: userStore.currencySymbol.toUpperCase(), displayName: userStore.username.validate());
-    // final request = await BraintreePayPalRequest(amount: widget.mSubscriptionModel?.price.toString(), currencyCode: "USD", displayName: userStore.username.validate());
+    // final request = await BraintreePayPalRequest(amount: widget.mSubscriptionModel?.price.toString(), currencyCode: appStore.currencySymbol.toUpperCase(), displayName: appStore.username.validate());
+    // final request = await BraintreePayPalRequest(amount: widget.mSubscriptionModel?.price.toString(), currencyCode: "USD", displayName: appStore.username.validate());
 
     var request = BraintreeDropInRequest(
       tokenizationKey: payPalTokenizationKey ?? "",
@@ -385,7 +384,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         countryCodeAlpha2: "US",
       ),*//*
 
-      paypalRequest: BraintreePayPalRequest(amount: widget.price.toString(), displayName: userStore.username.validate(), currencyCode: "USD"),
+      paypalRequest: BraintreePayPalRequest(amount: widget.price.toString(), displayName: appStore.username.validate(), currencyCode: "USD"),
       cardEnabled: true,
     );
 
@@ -402,12 +401,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
   /// FlutterWave Payment
   void flutterWaveCheckout() async {
     appStore.setLoading(true);
-    final customer = Customer(name: userStore.username.validate(), phoneNumber: userStore.phoneNo.validate(), email: userStore.email.validate());
+    final customer = Customer(name: appStore.username.validate(), phoneNumber: appStore.phoneNo.validate(), email: appStore.email.validate());
 
     final Flutterwave flutterwave = Flutterwave(
       context: context,
       publicKey: flutterWavePublicKey.validate(),
-      currency: userStore.currencySymbol.validate().toLowerCase(),
+      currency: appStore.currencySymbol.validate().toLowerCase(),
       redirectUrl: "https://www.google.com",
       txRef: DateTime.now().millisecond.toString(),
       amount: widget.price.toString(),
@@ -462,12 +461,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
         amount: widget.price!.toDouble(),
         showBillingInfo: true,
         forceShippingInfo: false,
-        currencyCode: userStore.currencySymbol.toUpperCase(),
-        merchantCountryCode: userStore.currencySymbol.toUpperCase(),
+        currencyCode: appStore.currencySymbol.toUpperCase(),
+        merchantCountryCode: appStore.currencySymbol.toUpperCase(),
         billingDetails: payTab.BillingDetails(
-          userStore.username.validate(),
-          userStore.email.validate(),
-          userStore.phoneNo.validate(),
+          appStore.username.validate(),
+          appStore.email.validate(),
+          appStore.phoneNo.validate(),
           '',
           '',
           '',
@@ -502,7 +501,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       "orderId": orderId,
       "amount": widget.price.toString(),
       "callbackUrl": callBackUrl,
-      "custId": userStore.userId,
+      "custId": appStore.userId,
       "testing": isPaytmTestType ? 0 : 1
     });
 
@@ -550,7 +549,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     Map req = {widget.isFromLimit == true ? "extra_property_limit_id" : "package_id": widget.id, "payment_status": "paid", "payment_type": selectedPaymentType, "txn_id": "", "transaction_detail": ""};
     widget.isFromLimit == true
         ? await purchaseExtraLimitApi(req).then((value) {
-            getUSerDetail(context, userStore.userId).then((value) {
+            getUSerDetail(context, appStore.userId).then((value) {
               setState(() {
                 appStore.setLoading(false);
                 LiveStream().emit(PAYMENT);
@@ -568,7 +567,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             });
           })
         : await subscribePackageApi(req).then((value) async {
-            getUSerDetail(context, userStore.userId).then((value) {
+            getUSerDetail(context, appStore.userId).then((value) {
               setState(() {
                 appStore.setLoading(false);
                 LiveStream().emit(PAYMENT);

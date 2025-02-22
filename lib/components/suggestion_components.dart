@@ -87,10 +87,10 @@ class _SuggestionComponentsState extends State<SuggestionComponents> {
                       decoration: boxDecorationWithRoundedCorners(borderRadius: radius(4), backgroundColor: primaryVariant),
                       child: Text(
                         widget.propertyTFor == 0
-                            ? language.forRent
+                            ? "forRent"
                             : widget.propertyTFor == 1
-                                ? language.forSell
-                                : language.pgCoLiving,
+                                ? "forSell"
+                                : "pgCoLiving",
                         style: primaryTextStyle(size: 12, color: primaryColor),
                       ),
                     )
@@ -119,7 +119,7 @@ class _SuggestionComponentsState extends State<SuggestionComponents> {
             ),
           ),
         ),
-        if (userStore.subscription == "1" && widget.isPremium == 1) Positioned(left: 0, child: PremiumBtn(pDetail: false)),
+        if (appStore.subscription == "1" && widget.isPremium == 1) Positioned(left: 0, child: PremiumBtn(pDetail: false)),
         Positioned(
             right: 8.0,
             top: 8.0,

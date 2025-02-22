@@ -14,20 +14,19 @@ import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/horizontal_list.dart';
 import '../extensions/loader_widget.dart';
 import '../extensions/system_utils.dart';
+import '../local_storage/shared_preferences_manager.dart';
 import '../screens/add_Property_screen.dart';
-import '../screens/dashboard_screen.dart';
+import 'layout/layout_screen.dart';
 import 'limit_screen.dart';
 import '../screens/photo_gallery_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../components/VideoPlayerScreen.dart';
 import '../components/limit_exceed_dialog.dart';
 import '../extensions/app_button.dart';
 import '../extensions/common.dart';
 import '../extensions/confirmation_dialog.dart';
 import '../extensions/decorations.dart';
 import '../extensions/price_widget.dart';
-import '../extensions/shared_pref.dart';
 import '../extensions/text_styles.dart';
 import '../main.dart';
 import '../models/property_details_model.dart';
@@ -48,7 +47,7 @@ class PropertyDetailScreen extends StatefulWidget {
   final bool? update;
   final Function(bool)? onTap;
 
-  PropertyDetailScreen({required this.propertyId, this.onCall, this.isSuccess = false, this.update, this.onTap});
+  const PropertyDetailScreen({super.key, required this.propertyId, this.onCall, this.isSuccess = false, this.update, this.onTap});
 
   @override
   State<PropertyDetailScreen> createState() => _PropertyDetailScreenState();
@@ -116,7 +115,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     };
     await savePropertyHistory(req).then((value) {
       mDetail = value;
-      getUSerDetail(context, userStore.userId.validate());
+     // getUSerDetail(context, appStore.userId.validate());
       appStore.setLoading(false);
       setState(() {});
     }).catchError((e) {
@@ -188,7 +187,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return WillPopScope(
       onWillPop: () {
         if (widget.isSuccess.validate()) {
-          DashboardScreen().launch(context, isNewTask: true);
+          LayoutScreen().launch(context, isNewTask: true);
         } else {
           Navigator.pop(context);
           widget.onTap!.call(false);
@@ -219,7 +218,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                             children: [
                               backButtonWidget(context, onTap: () {
                                 if (widget.isSuccess.validate()) {
-                                  DashboardScreen().launch(context, isNewTask: true);
+                                  LayoutScreen().launch(context, isNewTask: true);
                                 } else {
                                   finish(context, true);
                                   setState(() {});
@@ -254,11 +253,11 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              PremiumBtn(pDetail: false).visible(userStore.subscription == "1" && mDetail!.data!.premiumProperty == 1),
+                              PremiumBtn(pDetail: false).visible(appStore.subscription == "1" && mDetail!.data!.premiumProperty == 1),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                 decoration: boxDecorationWithRoundedCorners(borderRadius: radius(34), backgroundColor: Colors.white.withOpacity(0.50), border: Border.all(color: Colors.white)),
-                                child: Text(language.ageOfProperty + " " + mDetail!.data!.ageOfProperty.toString() + " " + language.year.replaceAll('(', '').replaceAll(')', ''),
+                                child: Text("${"ageOfProperty"} ${mDetail!.data!.ageOfProperty} ${"year".replaceAll('(', '').replaceAll(')', '')}",
                                     style: primaryTextStyle(color: primaryColor, size: 12)),
                               ),
                             ],
@@ -281,10 +280,10 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                               decoration: boxDecorationWithRoundedCorners(borderRadius: radius(8.0), backgroundColor: appStore.isDarkModeOn ? context.cardColor : primaryExtraLight),
                               child: Text(
                                 mDetail!.data!.propertyFor == 0
-                                    ? language.forRent
+                                    ? "forRent"
                                     : mDetail!.data!.propertyFor == 1
-                                        ? language.forSell
-                                        : language.pgCoLiving,
+                                        ? "forSell"
+                                        : "pgCoLiving",
                                 style: primaryTextStyle(color: primaryColor, size: 12),
                               ).center(),
                             ),
@@ -299,7 +298,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                 : Row(
                                     children: [
                                       PriceWidget(price: formatNumberString(mDetail!.data!.price!), textStyle: primaryTextStyle(size: 18, color: primaryColor)),
-                                      Text('/ ' + durationWidget(mDetail!.data!.priceDuration), style: primaryTextStyle(size: 18, color: primaryColor)),
+                                      Text('/ ${durationWidget(mDetail!.data!.priceDuration)}', style: primaryTextStyle(size: 18, color: primaryColor)),
                                     ],
                                   )
                           ],
@@ -316,8 +315,8 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         16.height,
                         horizontalWidget(),
                         Divider(thickness: 1, color: dividerColor, indent: 16, endIndent: 16),
-                        if (mDetail!.customer!.id != getIntAsync(USER_ID)) 10.height,
-                        if (mDetail!.customer!.id != getIntAsync(USER_ID)) contactWidget(),
+                        if (mDetail!.customer!.id != SharedPreferencesManager.getIntAsync("USER_ID")) 10.height,
+                        if (mDetail!.customer!.id != SharedPreferencesManager.getIntAsync("USER_ID")) contactWidget(),
                         16.height.visible(mDetail!.data!.description != null),
                         descriptionWidget(),
                         16.height,
@@ -353,7 +352,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         children: [
                           Image.asset(ic_edit_property, height: 24, width: 24),
                           20.width,
-                          Text(language.edit, style: primaryTextStyle(color: Colors.white)),
+                          Text("edit", style: primaryTextStyle(color: Colors.white)),
                         ],
                       ),
                     ).onTap(() async {
@@ -372,7 +371,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         children: [
                           Image.asset(ic_delete_ac, height: 24, width: 24, color: Colors.white),
                           20.width,
-                          Text(language.delete, style: primaryTextStyle(color: Colors.white)),
+                          Text("delete", style: primaryTextStyle(color: Colors.white)),
                         ],
                       ),
                     ).onTap(() {
@@ -386,8 +385,8 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         positiveTextColor: Colors.white,
                         negativeBg: primaryLight,
                         negativeTextColor: primaryColor,
-                        title: language.deletePropertyMsg,
-                        positiveText: language.delete,
+                        title: "deletePropertyMsg",
+                        positiveText: "delete",
                         height: 100,
                         onAccept: (c) async {
                           await deletePropertyApi(widget.propertyId);
@@ -410,18 +409,18 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(language.costOfLiving, style: boldTextStyle()).paddingSymmetric(horizontal: 16),
+        Text("costOfLiving", style: boldTextStyle()).paddingSymmetric(horizontal: 16),
         8.height,
         Container(
           padding: EdgeInsets.all(8),
           decoration: boxDecorationWithRoundedCorners(borderRadius: radius(8.0), backgroundColor: appStore.isDarkModeOn ? cardDarkColor : primaryExtraLight),
           child: Column(
             children: [
-              commonPriceWidget(title: language.securityDeposit, subTitle: mDetail!.data!.securityDeposit!),
-              commonPriceWidget(title: language.maintenanceCharges, subTitle: mDetail!.data!.maintenance!),
-              commonPriceWidget(title: language.brokerage, subTitle: mDetail!.data!.brokerage!),
+              commonPriceWidget(title: "securityDeposit", subTitle: mDetail!.data!.securityDeposit!),
+              commonPriceWidget(title: "maintenanceCharges", subTitle: mDetail!.data!.maintenance!),
+              commonPriceWidget(title: "brokerage", subTitle: mDetail!.data!.brokerage!),
               Divider(thickness: 1, color: dividerColor, indent: 10, endIndent: 10),
-              commonPriceWidget(title: language.totalExtraCost, subTitle: (mDetail!.data!.securityDeposit! + mDetail!.data!.maintenance! + mDetail!.data!.brokerage!), isTotal: true),
+              commonPriceWidget(title: "totalExtraCost", subTitle: (mDetail!.data!.securityDeposit! + mDetail!.data!.maintenance! + mDetail!.data!.brokerage!), isTotal: true),
             ],
           ),
         ).paddingSymmetric(horizontal: 16),
@@ -448,9 +447,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            Text(language.location, style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16).paddingBottom(10),
+            Text("location", style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16).paddingBottom(10),
             4.height,
-            Container(
+            SizedBox(
               height: 180, // Adjust height as needed
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -463,13 +462,13 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     target: LatLng(mDetail!.data!.latitude!.toDouble(), mDetail!.data!.longitude!.toDouble()),
                     zoom: 12.0,
                   ),
-                  markers: Set<Marker>.from([
+                  markers: <Marker>{
                     Marker(
                       markerId: MarkerId('pinpoint'),
                       position: LatLng(mDetail!.data!.latitude!.toDouble(), mDetail!.data!.longitude.toDouble()),
                       icon: BitmapDescriptor.defaultMarker,
                     ),
-                  ]),
+                  },
                 ),
               ),
             ).paddingSymmetric(horizontal: 16),
@@ -477,7 +476,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               enableScaleAnimation: false,
               width: context.width(),
               textStyle: boldTextStyle(size: 14),
-              text: language.viewOnMap,
+              text: "viewOnMap",
               color: appStore.isDarkModeOn ? cardDarkColor : primaryExtraLight,
               elevation: 0,
               onTap: () async {
@@ -499,7 +498,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(language.gallery, style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16).visible(mDetail!.data!.propertyGallary!.isNotEmpty),
+        Text("gallery", style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16).visible(mDetail!.data!.propertyGallary!.isNotEmpty),
         8.height,
         HorizontalList(
           spacing: 8,
@@ -523,7 +522,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(language.description, style: boldTextStyle(size: 18)).visible(mDetail!.data!.description != null),
+        Text("description", style: boldTextStyle(size: 18)).visible(mDetail!.data!.description != null),
         8.height,
         Text(mDetail!.data!.description.toString().capitalizeFirstLetter(), style: secondaryTextStyle(size: 16)).visible(mDetail!.data!.description != null),
       ],
@@ -553,10 +552,10 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       Text("${mDetail!.customer!.firstName.validate().capitalizeFirstLetter()} ${mDetail!.customer!.lastName.validate()}", style: boldTextStyle(size: 16)),
                       Text(
                         mDetail!.customer!.isBuilder == null && mDetail!.customer!.isAgent == null
-                            ? language.property + " " + OWNER
+                            ? "${"property"} $OWNER"
                             : mDetail!.customer!.isBuilder != null
-                                ? language.property + " " + BUILDER
-                                : language.property + " " + AGENT,
+                                ? "${"property"} $BUILDER"
+                                : "${"property"} $AGENT",
                         style: secondaryTextStyle(size: 14, color: grey),
                       ),
                     ],
@@ -575,19 +574,19 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                     backgroundColor: appStore.isDarkModeOn ? cardDarkColor : primaryExtraLight,
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
-                                        color: userStore.subscription == "1"
+                                        color: appStore.subscription == "1"
                                             ? mDetail!.data!.checkedPropertyInquiry == 0
                                                 ? Colors.transparent
                                                 : dividerColor
                                             : dividerColor)),
-                                child: userStore.subscription == "1"
+                                child: appStore.subscription == "1"
                                     ? mDetail!.data!.checkedPropertyInquiry == 0
                                         ? Image.asset(ic_wp_trans, height: 30, width: 30)
                                         : Image.asset(ic_whatsapp, height: 30, width: 30)
                                     : Image.asset(ic_whatsapp, height: 30, width: 30),
                               ),
                               onTap: () {
-                                if (userStore.subscription == "0") {
+                                if (appStore.subscription == "0") {
                                   commonLaunchUrl('whatsapp://send?phone=:${mDetail!.customer!.contactNumber}');
                                 } else {
                                   if (mDetail!.data!.checkedPropertyInquiry == 1) {
@@ -604,19 +603,19 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                                     backgroundColor: appStore.isDarkModeOn ? cardDarkColor : primaryExtraLight,
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
-                                        color: userStore.subscription == "1"
+                                        color: appStore.subscription == "1"
                                             ? mDetail!.data!.checkedPropertyInquiry == 0
                                                 ? Colors.transparent
                                                 : dividerColor
                                             : dividerColor)),
-                                child: userStore.subscription == "1"
+                                child: appStore.subscription == "1"
                                     ? mDetail!.data!.checkedPropertyInquiry == 0
                                         ? Image.asset(ic_call_trans, height: 30, width: 30)
                                         : Image.asset(ic_call, height: 30, width: 30)
                                     : Image.asset(ic_call, height: 30, width: 30),
                               ),
                               onTap: () {
-                                if (userStore.subscription == "0") {
+                                if (appStore.subscription == "0") {
                                   commonLaunchUrl('tel:${mDetail!.customer!.contactNumber}');
                                 } else {
                                   if (mDetail!.data!.checkedPropertyInquiry == 1) {
@@ -662,12 +661,12 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             padding: EdgeInsets.all(10),
             width: context.width(),
             decoration: boxDecorationWithRoundedCorners(backgroundColor: appStore.isDarkModeOn ? Colors.grey : primaryVariant, borderRadius: radiusOnly(bottomLeft: 8, bottomRight: 8)),
-            child: Text(language.tapToViewContactInfo, style: primaryTextStyle(color: mDetail!.data!.checkedPropertyInquiry == 0 ? Colors.black : grayColor)).center(),
+            child: Text("tapToViewContactInfo", style: primaryTextStyle(color: mDetail!.data!.checkedPropertyInquiry == 0 ? Colors.black : grayColor)).center(),
           ).onTap(() {
-            if (userStore.isSubscribe != 0) {
+            if (appStore.isSubscribe != 0) {
               if (mDetail!.data!.checkedPropertyInquiry == 0) {
-                if (userStore.subscriptionDetail!.subscriptionPlan!.packageData!.property.validate() == 0) {
-                  userStore.contactInfo == 0
+                if (appStore.subscriptionDetail!.subscriptionPlan!.packageData!.property.validate() == 0) {
+                  appStore.contactInfo == 0
                       ? showDialog(
                           context: context,
                           builder: (context) {
@@ -688,7 +687,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             } else {
               SubscribeScreen().launch(context);
             }
-          }).visible(userStore.subscription == "1" && mDetail!.data!.checkedPropertyInquiry == 0)
+          }).visible(appStore.subscription == "1" && mDetail!.data!.checkedPropertyInquiry == 0)
         ],
       ),
     ).paddingSymmetric(horizontal: 16);
@@ -702,15 +701,15 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       runSpacing: 8,
       spacing: 8,
       children: [
-        commonWrapWidget(image: ic_bed, title: mDetail!.data!.bhk.toString() + " " + language.bhk).visible(mDetail!.data!.bhk != null),
+        commonWrapWidget(image: ic_bed, title: "${mDetail!.data!.bhk} ${"bhk"}").visible(mDetail!.data!.bhk != null),
         commonWrapWidget(image: ic_max_square, title: mDetail!.data!.sqft.toString()).visible(mDetail!.data!.sqft != null),
         commonWrapWidget(
           image: ic_closet,
           title: mDetail!.data!.furnishedType == 1
-              ? language.fullyFurnished
+              ? "fullyFurnished"
               : mDetail!.data!.furnishedType == 2
-                  ? language.semiFurnished
-                  : language.unfurnished,
+                  ? "semiFurnished"
+                  : "unfurnished",
         )
       ],
     ).paddingSymmetric(horizontal: 16);
@@ -737,7 +736,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(language.NearestByGoogle, style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16).visible(mDetail!.data!.propertyGallary!.isNotEmpty),
+              Text("NearestByGoogle", style: boldTextStyle(size: 18)).paddingSymmetric(horizontal: 16).visible(mDetail!.data!.propertyGallary!.isNotEmpty),
               8.height,
               HorizontalList(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -759,7 +758,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           children: [
                             mDetail!.nearByPlace!.results![index].photos != null && mDetail!.nearByPlace!.results![index].photos!.isNotEmpty
                                 ? Image.network(
-                                    'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${mDetail!.nearByPlace!.results![index].photos![0].photoReference}&key=${GOOGLE_API_KEY}',
+                                    'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${mDetail!.nearByPlace!.results![index].photos![0].photoReference}&key="GOOGLE_API_KEY"',
                                     fit: BoxFit.cover,
                                     width: MediaQuery.of(context).size.width * 0.6,
                                     height: 140,

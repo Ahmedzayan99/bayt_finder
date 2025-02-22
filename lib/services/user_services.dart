@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../models/signUp_resonse.dart';
-import '../main.dart';
+import '../models/auth/signUp_resonse.dart';
 import 'base_services.dart';
 
 class UserService extends BaseService {
@@ -12,7 +11,7 @@ class UserService extends BaseService {
       if (value.docs.length == 1) {
         return UserModel.fromJson(value.docs.first.data() as Map<String, dynamic>);
       } else {
-        throw language.userNotFound;
+        throw "userNotFound";
       }
     });
   }

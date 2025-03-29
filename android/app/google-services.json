@@ -1,168 +1,26 @@
 {
   "project_info": {
-    "project_number": "747375922749",
-    "firebase_url": "https://gymsystem-94ee5-default-rtdb.firebaseio.com",
-    "project_id": "gymsystem-94ee5",
-    "storage_bucket": "gymsystem-94ee5.appspot.com"
+    "project_number": "670472906498",
+    "project_id": "bayt-finder-30802",
+    "storage_bucket": "bayt-finder-30802.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:747375922749:android:c22e6ef300faa1ae692454",
-        "android_client_info": {
-          "package_name": "com.example.blackgym"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCFV_WcOnCKrtTPGN__8lYoFRz0TRwD8pY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "747375922749-tgdh2f17klj3mcmghb2me346l4e9o9ji.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.blackgym"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:747375922749:android:cec491ea6754b9b0692454",
-        "android_client_info": {
-          "package_name": "com.example.blackgymcoach"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "747375922749-s8bmd4t339a2ajoibgo8sl68fd5qnfpm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.blackgymcoach",
-            "certificate_hash": "1f72dbf79ce2456c571847ebc49eb3500fd7708d"
-          }
-        },
-        {
-          "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCFV_WcOnCKrtTPGN__8lYoFRz0TRwD8pY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "747375922749-tgdh2f17klj3mcmghb2me346l4e9o9ji.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.blackgym"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:747375922749:android:427dc7628f352998692454",
-        "android_client_info": {
-          "package_name": "com.example.blackgymd"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "747375922749-e2qastkim77htgrium5059aj1tpkomra.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.blackgymd",
-            "certificate_hash": "a01c6df0c917b429e692790b94a29ffd05a35d6c"
-          }
-        },
-        {
-          "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCFV_WcOnCKrtTPGN__8lYoFRz0TRwD8pY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "747375922749-tgdh2f17klj3mcmghb2me346l4e9o9ji.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.blackgym"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:747375922749:android:34579d83e6d6b8b6692454",
+        "mobilesdk_app_id": "1:670472906498:android:9768585d7842bdac63441b",
         "android_client_info": {
           "package_name": "com.nahr.bayt_finder"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCFV_WcOnCKrtTPGN__8lYoFRz0TRwD8pY"
+          "current_key": "AIzaSyCqk0bVywYXN-AGCg0rdNDCIsJ6X4kZ8yM"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "747375922749-7bci51fmfkq033pm3ddvl4n20fh7jrp9.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "747375922749-tgdh2f17klj3mcmghb2me346l4e9o9ji.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.blackgym"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

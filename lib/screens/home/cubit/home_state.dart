@@ -7,6 +7,11 @@ final class HomeInitial extends HomeState {}
 final class GetUserDetailLoadingState extends HomeState {}
 final class GetUserDetailErrorState extends HomeState {}
 final class GetUserDetailSuccessState extends HomeState {}
+final class UpdateUserStatusLoadingState extends HomeState {}
+
+final class UpdateUserStatusErrorState extends HomeState {}
+
+final class UpdateUserStatusSuccessState extends HomeState {}
 final class GetCategoryLoadingState extends HomeState {}
 final class GetCategoryErrorState extends HomeState {}
 final class GetCategorySuccessState extends HomeState {}

@@ -1,6 +1,7 @@
 import 'package:bayt_finder/components/buttons/master_button.dart';
 import 'package:bayt_finder/nav.dart';
 import 'package:bayt_finder/screens/login/otp_screen.dart';
+import 'package:bayt_finder/screens/terms_and_privacy_policy/terms_conditions_screen.dart';
 import 'package:bayt_finder/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
@@ -13,9 +14,9 @@ import '../../components/appbar/custom_appbar.dart';
 import '../../components/auth_text_form_field/phone_number_text_field.dart';
 import '../../extensions/common.dart';
 
-import '../../main.dart';
 import '../../utils/images.dart';
 import '../../utils/styles.dart';
+import '../terms_and_privacy_policy/privacy_policy_screen.dart';
 import 'cubit/login_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -33,9 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-            appStore.isDarkModeOn ? Brightness.light : Brightness.dark,
+            Brightness.dark,
         systemNavigationBarIconBrightness:
-            appStore.isDarkModeOn ? Brightness.light : Brightness.dark,
+            Brightness.dark,
       ),
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
@@ -43,10 +44,11 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         builder: (context, state) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor:AppColors.colorWhite,
             appBar: CustomAppBar(
               title: "Sign in".tr(),
-              typeAppBar: TypeAppBar.textOnly,
+              showBack: true,
             ),
             body: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w),
@@ -86,9 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 24.h,
                         ),
                       ),
+                      fillColor: AppColors.colorMediumGrayTextForm,
                       textFieldController: loginCubit.mobileNumberController,
                     ),
-
                     SizedBox(height:20.h ,),
                     MasterButton(
                       text: 'Send Code'.tr(),
@@ -96,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (loginCubit.loginFormKey.currentState!.validate()) {
                           loginCubit.loginFormKey.currentState!.save();
                           hideKeyboard(context);
-                          navigateTo(context, OTPScreen());
+                          navigateTo( OTPScreen());
                           /*         await loginWithOTP(
                                 context, loginCubit.phoneNumber.phoneNumber.toString(), loginCubit.mMobileNumberCont.text.trim(), true, () {})
                                 .then((value) {})
@@ -108,32 +110,40 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
 
                       },),
-                    Padding(
-                      padding: EdgeInsetsDirectional.symmetric(
-                          horizontal: 20.w),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "By continue you agree to our".tr(),
-                              style: TextStyles.font16BlackMedium,
-                            ),
-                            TextSpan(
-                                text: "Terms & Conditions".tr(),
-                                style: TextStyles.fontPrivacyPolicy,
-                                recognizer: TapGestureRecognizer()),
-                            TextSpan(
-                                text: " & ",
-                                style: TextStyles.fontPrivacyPolicy),
-                            TextSpan(
-                                text: "Privacy policy".tr(),
-                                style: TextStyles.fontPrivacyPolicy,
-                                recognizer: TapGestureRecognizer()),
-                          ],
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.symmetric(
+                            horizontal: 20.w),
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "By continue you agree to our".tr(),
+                                style: TextStyles.font16BlackMedium,
+                              ),
+                              TextSpan(
+                                  text: "Terms & Conditions".tr(),
+                                  style: TextStyles.fontPrivacyPolicy,
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap=(){
+                                    navigateTo( TermsConditionsScreen());
+                                    }),
+                              TextSpan(
+                                  text: " & ",
+                                  style: TextStyles.fontPrivacyPolicy),
+                              TextSpan(
+                                  text: "Privacy policy".tr(),
+                                  style: TextStyles.fontPrivacyPolicy,
+                                  recognizer: TapGestureRecognizer() ..onTap=(){
+                                    print('zayan');
+                                    navigateTo( PrivacyPolicyScreen());
+                                  }),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(height:40.h ,),
+                    SizedBox(),
                   ],
                 ),
               ),

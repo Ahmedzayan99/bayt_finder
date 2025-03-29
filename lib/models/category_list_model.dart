@@ -33,7 +33,7 @@ class CategoryData {
   String? name;
   int? status;
   String? categoryImage;
-  List<AmenityName>? amenityName;
+  List<AmenityNameCategory>? amenityName;
   String? createdAt;
   String? updatedAt;
 
@@ -45,9 +45,9 @@ class CategoryData {
     status = json['status'];
     categoryImage = json['category_image'];
     if (json['amenity_name'] != null) {
-      amenityName = <AmenityName>[];
+      amenityName = <AmenityNameCategory>[];
       json['amenity_name'].forEach((v) {
-        amenityName!.add(AmenityName.fromJson(v));
+        amenityName!.add(AmenityNameCategory.fromJson(v));
       });
     }
     createdAt = json['created_at'];
@@ -69,11 +69,11 @@ class CategoryData {
   }
 }
 
-class AmenityName {
+class AmenityNameCategory {
   int? id;
   int? propertyId;
   int? amenityId;
-  String? name;
+  String? title;
   int? status;
   String? type;
   dynamic value;
@@ -82,13 +82,13 @@ class AmenityName {
   String? amenityImage;
   bool? isExpansionExpanded;
 
-  AmenityName({this.id, this.name, this.status, this.type, this.value, this.createdAt, this.updatedAt, this.amenityId, this.propertyId, this.isExpansionExpanded = false});
+  AmenityNameCategory({this.id, this.title, this.status, this.type, this.value, this.createdAt, this.updatedAt, this.amenityId, this.propertyId, this.isExpansionExpanded = false});
 
-  AmenityName.fromJson(Map<String, dynamic> json) {
+  AmenityNameCategory.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     amenityId = json['amenity_id'];
     propertyId = json["property_id"];
-    name = json['name'];
+    title = json['title'];
     status = json['status'];
     type = json['type'];
     value = json['value'];
@@ -102,7 +102,7 @@ class AmenityName {
     data['id'] = id;
     data['property_id'] = propertyId;
     data['amenity_id'] = amenityId;
-    data['name'] = name;
+    data['name'] = title;
     data['status'] = status;
     data['type'] = type;
     data['value'] = value;

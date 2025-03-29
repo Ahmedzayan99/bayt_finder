@@ -1,9 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/images.dart';
-
-import '../extensions/extension_util/context_extensions.dart';
-import '../extensions/extension_util/int_extensions.dart';
-import '../extensions/extension_util/widget_extensions.dart';
 import '../extensions/text_styles.dart';
 
 class NoDataScreen extends StatefulWidget {
@@ -35,10 +33,20 @@ class NoDataScreenState extends State<NoDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
-      children: [Image.asset(no_data, height: context.height() * 0.2, width: context.width() * 0.4), 16.height, Text(widget.mTitle ?? "noFoundData", style: boldTextStyle())],
-    ).center();
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(AppImage.noData,
+              height: 200.h, width: double.infinity * 0.4),
+          SizedBox(
+            height: 16.h,
+          ),
+          Text(widget.mTitle ?? "no Found Data".tr(), style: boldTextStyle())
+        ],
+      ),
+    );
   }
 }

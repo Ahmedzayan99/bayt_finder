@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../extensions/extension_util/bool_extensions.dart';
-import '../extensions/extension_util/string_extensions.dart';
-import '../extensions/extension_util/widget_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../extensions/text_styles.dart';
+import '../utils/colors.dart';
+import '../utils/styles.dart';
 
 class DropDownComponent extends StatefulWidget {
   final int? amenityId;
@@ -31,8 +31,8 @@ class _DropDownComponentState extends State<DropDownComponent> {
     setState(() {});
 
     widget.dropdownValues!.map((e) => print(e)).toList();
-    if (widget.isUpdateProperty.validate()) {
-      finalDropDownValue = !widget.selectedDropDownValue.toString().isEmptyOrNull ? widget.selectedDropDownValue : widget.dropdownValues!.first;
+    if (widget.isUpdateProperty!) {
+      finalDropDownValue = widget.selectedDropDownValue ?? widget.dropdownValues!.first;
     }
   }
 
@@ -47,27 +47,36 @@ class _DropDownComponentState extends State<DropDownComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        DropdownButtonFormField<String>(
-            decoration: InputDecoration(enabledBorder: InputBorder.none, focusedBorder: InputBorder.none),
-            value: finalDropDownValue ?? widget.dropdownValues!.first,
-            onChanged: (value) {
-              finalDropDownId = widget.amenityId;
-              finalDropDownValue = value;
-              sendRadioData();
-              setState(() {});
-            },
-            items: widget.dropdownValues!.map<DropdownMenuItem<String>>((value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value, style: primaryTextStyle()).paddingSymmetric(horizontal: 10),
-              );
-            }).toList()),
-      ],
-    ).paddingSymmetric(horizontal: 16);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+    decoration: BoxDecoration(
+    color: AppColors.colorWhite,
+    border: Border.all(color: AppColors.colorMediumGrayBorderTextForm),
+    borderRadius: BorderRadius.circular(10.r),
+    ), child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          DropdownButtonFormField<String>(
+              style: TextStyles.font14BlackMedium,
+              icon: Icon(Icons.keyboard_arrow_down, color: AppColors.colorBlack),
+              decoration: InputDecoration(enabledBorder: InputBorder.none, focusedBorder: InputBorder.none),
+              value: finalDropDownValue ?? widget.dropdownValues!.first,
+              onChanged: (value) {
+                finalDropDownId = widget.amenityId;
+                finalDropDownValue = value;
+                sendRadioData();
+                setState(() {});
+              },
+              items: widget.dropdownValues!.map<DropdownMenuItem<String>>((value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: primaryTextStyle())
+                );
+              }).toList()),
+        ],
+      ),
+    );
   }
 }

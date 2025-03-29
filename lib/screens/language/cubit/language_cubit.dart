@@ -1,3 +1,4 @@
+import 'package:bayt_finder/utils/constants.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,7 @@ part 'language_state.dart';
 class LanguageCubit extends Cubit<LanguageState> {
   LanguageCubit() : super(LanguageInitial());
   static LanguageCubit get(context) => BlocProvider.of(context);
-  String selectedLanguage =SharedPreferencesManager.getStringAsync("local") ?? "en";
+  String selectedLanguage =SharedPreferencesManager.getStringAsync(AppConstants.local) ?? "en";
   void selectLanguage (String language){
     selectedLanguage = language;
     emit(LanguageSelectedState());

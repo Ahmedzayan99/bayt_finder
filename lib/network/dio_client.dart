@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:bayt_finder/network/reques_iInterceptor.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../extensions/common.dart';
 import 'endpoints.dart';
 import 'exceptions_interceptor.dart';
 
@@ -46,18 +49,25 @@ class DioClient {
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      final Response response = await _dio.get(
-        url,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress,
-      );
-      return response;
-    } catch (e) {
-      log('Error in GET request: $e');
-      rethrow;
+    print('data send');
+    print(queryParameters);
+    if(await isNetworkAvailable()){
+      try {
+        final Response response = await _dio.get(
+          url,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress,
+        );
+        return response;
+      } catch (e) {
+        log('Error in GET request: $e');
+        rethrow;
+      }
+    }else {
+      toast("no Internet".tr());
+      throw 'no Internet'.tr();
     }
   }
   // Post:----------
@@ -73,74 +83,30 @@ class DioClient {
   }) async {
     print('data send');
     print(data);
-
-    try {
-      final Response response = await _dio.post(
-        uri,
-        data: isJson ? data : FormData.fromMap(data),
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-      return response;
-    } catch (e) {
-      log('Error in post request: $e');
-
-      rethrow;
+    if(await isNetworkAvailable()){
+      try {
+        final Response response = await _dio.post(
+          uri,
+          data: isJson ? data : FormData.fromMap(data),
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress,
+        );
+        return response;
+      } catch (e) {
+        log('Error in post request: $e');
+        rethrow;
+      }
+    }else {
+      toast("no Internet".tr());
+      throw 'no Internet'.tr();
     }
+
   }
-  // Patch:----------
-  Future<Response> patch(
-    String uri, {
-    data,
-    bool isJson = true,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    try {
-      final Response response = await _dio.patch(
-        uri,
-        data: isJson ? data : FormData.fromMap(data),
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-      return response;
-    } catch (e) {
-      log('Error in patch request: $e');
-
-      rethrow;
-    }
-  }
-
-  Future<Response> delete(
-    String uri, {
-    data,
-    bool isJson = true,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-  }) async {
-    try {
-      final Response response = await _dio.delete(
-        uri,
-        data: isJson ? data : FormData.fromMap(data),
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-      );
-      return response;
-    } catch (e) {
-      log('Error in delete request: $e');
-
-      rethrow;
-    }
+  Future<bool> isNetworkAvailable() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != [ConnectivityResult.none];
   }
 }

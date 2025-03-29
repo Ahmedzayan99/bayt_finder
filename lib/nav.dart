@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 
-void navigateTo(context, widget) => Navigator.push(
-      context,
+import 'appcontext.dart';
+
+void navigateTo( widget) => Navigator.push(
+  AppContext.context,
+      MaterialPageRoute(
+        builder: (context) => widget,
+      ),
+    );
+void navigateBack( [Object? result]) {
+  if (Navigator.canPop(AppContext.context)) Navigator.pop(AppContext.context, result);
+}
+void navigateReplacementTo(widget) => Navigator.pushReplacement(
+  AppContext.context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
     );
 
-void navigateBack(context) => Navigator.pop(context);
+void navigateNamedTo( widget) => Navigator.pushNamed(AppContext.context, widget);
 
-void navigateReplacementTo(context, widget) => Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => widget,
-      ),
-    );
-
-void navigateNamedTo(context, widget) => Navigator.pushNamed(context, widget);
-
-void navigateFinish(context, widget) => Navigator.pushAndRemoveUntil(
-        context,
+void navigateFinish(widget) => Navigator.pushAndRemoveUntil(
+    AppContext.context,
         MaterialPageRoute(
           builder: (context) => widget,
         ), (route) {

@@ -1,6 +1,7 @@
+import 'package:bayt_finder/utils/styles.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/constants.dart';
+import '../utils/colors.dart';
 
 /// Styles
 
@@ -21,10 +22,9 @@ TextStyle boldTextStyle({
   double? height,
 }) {
   return TextStyle(
-    fontSize: size != null ? size.toDouble() : textBoldSizeGlobal,
-    color: color ?? textPrimaryColorGlobal,
-    fontWeight: weight ?? fontWeightBoldGlobal,
-    fontFamily: fontFamily ?? fontFamilyBoldGlobal,
+    fontSize: size != null ? size.toDouble() : 16,
+    color: color ?? AppColors.colorMaster,
+    fontWeight: weight ?? FontManger.bold,
     letterSpacing: letterSpacing,
     fontStyle: fontStyle,
     decoration: decoration,
@@ -54,10 +54,9 @@ TextStyle primaryTextStyle({
   double? height,
 }) {
   return TextStyle(
-    fontSize: size != null ? size.toDouble() : textPrimarySizeGlobal,
-    color: color ?? textPrimaryColorGlobal,
-    fontWeight: weight ?? fontWeightPrimaryGlobal,
-    fontFamily: fontFamily ?? fontFamilyPrimaryGlobal,
+    fontSize: size != null ? size.toDouble() : 16,
+    color: color ?? AppColors.colorMaster,
+    fontWeight: weight ?? FontManger.medium,
     letterSpacing: letterSpacing,
     fontStyle: fontStyle,
     decoration: decoration,
@@ -87,10 +86,9 @@ TextStyle secondaryTextStyle({
   double? height,
 }) {
   return TextStyle(
-    fontSize: size != null ? size.toDouble() : textSecondarySizeGlobal,
-    color: color ?? textSecondaryColorGlobal,
-    fontWeight: weight ?? fontWeightSecondaryGlobal,
-    fontFamily: fontFamily ?? fontFamilySecondaryGlobal,
+    fontSize: size != null ? size.toDouble() : 16,
+    color: color,
+    fontWeight: weight ?? FontManger.regular,
     letterSpacing: letterSpacing,
     fontStyle: fontStyle,
     decoration: decoration,
@@ -100,25 +98,5 @@ TextStyle secondaryTextStyle({
     textBaseline: textBaseline,
     backgroundColor: backgroundColor,
     height: height,
-  );
-}
-
-// Create Rich Text
-@Deprecated('Use RichTextWidget instead')
-RichText createRichText({
-  required List<TextSpan> list,
-  TextOverflow overflow = TextOverflow.clip,
-  int? maxLines,
-  TextAlign textAlign = TextAlign.left,
-  TextDirection? textDirection,
-  StrutStyle? strutStyle,
-}) {
-  return RichText(
-    text: TextSpan(children: list),
-    overflow: overflow,
-    maxLines: maxLines,
-    textAlign: textAlign,
-    textDirection: textDirection,
-    strutStyle: strutStyle,
   );
 }

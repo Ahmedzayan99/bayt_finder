@@ -1,3 +1,4 @@
+/*
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class BaseService {
@@ -46,3 +47,4 @@ abstract class BaseService {
     return it;
   }
 }
+*/

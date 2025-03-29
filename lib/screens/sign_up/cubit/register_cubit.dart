@@ -1,108 +1,159 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-import '../../../../local_storage/shared_preferences_manager.dart';
 import '../../../extensions/common.dart';
 import '../../../models/auth/city_model.dart';
 import '../../../models/auth/filter_configuration_price_model.dart';
 import '../../../models/auth/signUp_resonse.dart';
-import '../../../models/dashBoard_response.dart';
 import '../../../models/my_properties_model.dart';
 import '../../../network/dio_maneger.dart';
+import '../../../utils/helper/image_picker_helper.dart';
 
 part 'register_state.dart';
 
-enum Gender {
-  male,
-  female,
-}
-
-enum Steps { name, email, phone, password, gender }
+enum UserType { company, individual }
 
 class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit() : super(RegisterInitial());
 
   static RegisterCubit get(context) => BlocProvider.of(context);
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  final GlobalKey<FormState> signUpFormKey = GlobalKey<FormState>();
-  FocusNode firstNameFocus = FocusNode();
-  FocusNode lastNameFocus = FocusNode();
-  FocusNode emailFocus = FocusNode();
-
-  /* bool isActiveButton = false;
-  bool isNameValidate = false;
-  bool isEmailValidate = false;
-  bool isPasswordValidate = false;
-  bool phoneNumberValidate = false;
-  bool genderValidate = false;*/
-
-/*  void validate(Steps step, isValidate) async {
-    switch (step) {
-      case Steps.name:
-        isNameValidate = isValidate;
-      case Steps.email:
-        isEmailValidate = isValidate;
-      case Steps.phone:
-        phoneNumberValidate = isValidate;
-      case Steps.password:
-        isPasswordValidate = isValidate;
-      case Steps.gender:
-        genderValidate = isValidate;
-    }
-    activeButton();
-  }*/
-
-  /* void activeButton() {
-    if (isNameValidate &&
-        isEmailValidate &&
-        isPasswordValidate &&
-        phoneNumberValidate &&
-        genderValidate) {
-      isActiveButton = true;
-    } else {
-      isActiveButton = false;
-    }
-    emit(ActiveButtonState());
-  }*/
   DioManager dioManager = DioManager();
   String? errorMessage;
   SignUpResponse registerModel = SignUpResponse();
+  UserType selectedUserType = UserType.individual;
 
-  Future<void> registerUser() async {
-    await SharedPreferencesManager.removeData('token');
-    await SharedPreferencesManager.removeData('userId');
-    emit(RegisterUserLoadingState());
+  void setUserType(UserType userType) {
+    selectedUserType = userType;
+    emit(SetUserTypeState());
+  }
+
+  bool isBackupPhone = false;
+
+  void setBackupPhone(bool phone) {
+    isBackupPhone = phone;
+    emit(SetBackupPhoneState());
+  }
+
+  PhoneNumber companyPhoneNumber = PhoneNumber(isoCode: "IQ");
+  PhoneNumber companyBackupNumber = PhoneNumber(isoCode: "IQ");
+  PhoneNumber companyWhatsappNumber = PhoneNumber(isoCode: "IQ");
+  GlobalKey<FormState> companyFormKey = GlobalKey<FormState>();
+  TextEditingController companyNameController = TextEditingController();
+  TextEditingController companyFirstNameController = TextEditingController();
+  TextEditingController companyLastNameController = TextEditingController();
+  TextEditingController companyEmailController = TextEditingController();
+  TextEditingController companyPhoneController = TextEditingController();
+  TextEditingController companyBackupPhoneController = TextEditingController();
+  TextEditingController companyWhatsappController = TextEditingController();
+  TextEditingController companyDescriptionController = TextEditingController();
+  File? companyImage;
+
+  Future<void> registerCompany() async {
+    emit(RegisterCompanyLoadingState());
     Either<String, SignUpResponse> response =
     await dioManager.registerUserAsync(
-      firstName: firstNameController.text,
-      lastName: lastNameController.text,
-      phone: phoneController.text,
-      email: emailController.text,
+        isAgent:true,
+        firstName: companyFirstNameController.text,
+      lastName: companyLastNameController.text,
+       usernameOrCompany: companyNameController.text,
+        contactNumber: companyPhoneController.text,
+      phone: companyBackupPhoneController.text.isEmpty?null:companyBackupPhoneController.text,
+      email: companyEmailController.text,
+        countryCode: companyPhoneNumber.dialCode.toString(),
+        profileImage: companyImage,
+      description: companyDescriptionController.text,
+      whatsapp: companyWhatsappController.text,
     );
     response.fold(
           (left) {
         errorMessage = left;
         toast(left.toString());
-        emit(RegisterUserErrorState());
+        emit(RegisterCompanyErrorState());
       },
           (right) {
         registerModel = right;
-        emit(RegisterUserSuccessState());
+        emit(RegisterCompanySuccessState());
       },
     );
   }
-
-  void clearData() {
-    firstNameController = TextEditingController();
-    emailController = TextEditingController();
-    phoneController = TextEditingController();
+  void clearDataCompany() {
+    isBackupPhone = false;
+    companyPhoneNumber = PhoneNumber(isoCode: "IQ");
+    companyBackupNumber = PhoneNumber(isoCode: "IQ");
+    companyWhatsappNumber = PhoneNumber(isoCode: "IQ");
+    companyFormKey = GlobalKey<FormState>();
+    companyNameController = TextEditingController();
+    companyFirstNameController = TextEditingController();
+    companyLastNameController = TextEditingController();
+    companyEmailController = TextEditingController();
+    companyPhoneController = TextEditingController();
+    companyBackupPhoneController = TextEditingController();
+    companyWhatsappController = TextEditingController();
+    companyDescriptionController = TextEditingController();
     errorMessage = null;
     emit(ClearDataState());
+  }
+
+  GlobalKey<FormState> individualFormKey = GlobalKey<FormState>();
+  PhoneNumber individualPhoneNumber = PhoneNumber(isoCode: "IQ");
+
+  TextEditingController individualUsernameController = TextEditingController();
+  TextEditingController individualPhoneController = TextEditingController();
+  TextEditingController individualFirstNameController = TextEditingController();
+  TextEditingController individualLastNameController = TextEditingController();
+  TextEditingController individualEmailController = TextEditingController();
+  File? individualImage;
+  Future<void> registerIndividual() async {
+    emit(RegisterIndividualLoadingState());
+    Either<String, SignUpResponse> response =
+    await dioManager.registerUserAsync(
+      isAgent:false,
+      firstName: individualFirstNameController.text,
+      lastName: individualLastNameController.text,
+      usernameOrCompany: individualUsernameController.text,
+      contactNumber: individualPhoneController.text,
+      email: individualEmailController.text,
+      countryCode: individualPhoneNumber.dialCode.toString(),
+      profileImage: individualImage,
+    );
+    response.fold(
+          (left) {
+        errorMessage = left;
+        toast(left.toString());
+        emit(RegisterIndividualErrorState());
+      },
+          (right) {
+        registerModel = right;
+        emit(RegisterIndividualSuccessState());
+      },
+    );
+  }
+  void clearDataIndividual() {
+    individualFormKey = GlobalKey<FormState>();
+    individualPhoneNumber = PhoneNumber(isoCode: "IQ");
+    individualUsernameController = TextEditingController();
+    individualPhoneController = TextEditingController();
+    individualFirstNameController = TextEditingController();
+    individualLastNameController = TextEditingController();
+    individualEmailController = TextEditingController();
+    emit(ClearDataState());
+  }
+
+
+  ImagePickerHelper imagePickerHelper = ImagePickerHelper();
+
+  Future<File?> pickImage({
+    required ImageSource imageSource,
+  }) async {
+    final selectedImage =
+    await imagePickerHelper.checkAndPickImage(imageSource: imageSource);
+    emit(ImagePicked());
+    return selectedImage;
   }
 
   List<String> textStepList = [
@@ -128,6 +179,7 @@ class RegisterCubit extends Cubit<RegisterState> {
   List<CityListData> city = [];
   List<CityListData> searchCityList = [];
   List<String> citySelect = [];
+  List<String> citySelectVal = [];
   TextEditingController showCityController = TextEditingController();
   TextEditingController searchCityController = TextEditingController();
 
@@ -135,12 +187,12 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(GetCityLoadingState());
     Either<String, CityModel> response = await dioManager.getCity();
     response.fold(
-          (left) {
+      (left) {
         errorMessage = left;
         toast(left.toString());
         emit(GetCityErrorState());
       },
-          (right) {
+      (right) {
         city = right.cityListData!;
         searchCityList = List.from(city);
         searchCityController.addListener(searchCity);
@@ -149,11 +201,16 @@ class RegisterCubit extends Cubit<RegisterState> {
     );
   }
 
-  void selectCity(city,) {
+  void selectCity(
+    city
+  ,cityEn
+  ) {
     if (citySelect.contains(city)) {
       citySelect.remove(city);
+      citySelectVal.remove(cityEn);
     } else {
       citySelect.add(city);
+      citySelectVal.add(cityEn);
     }
     showCityController.text = citySelect.join(',');
     /*   citySelect = [];
@@ -166,13 +223,13 @@ class RegisterCubit extends Cubit<RegisterState> {
 ;*/
     print(citySelect);
     print(citySelect.join(','));
+    print(citySelectVal.join(','));
     emit(SelectPropertyState());
   }
 
   void searchCity() {
     searchCityList = city
-        .where((test) =>
-        test.name!
+        .where((test) => test.title!
             .toLowerCase()
             .contains(searchCityController.text.toLowerCase()))
         .toList();
@@ -182,20 +239,22 @@ class RegisterCubit extends Cubit<RegisterState> {
   }
 
   FilterConfigurationPriceModel configurationPriceModel =
-  FilterConfigurationPriceModel();
+      FilterConfigurationPriceModel();
 
   Future<void> filterConfigurationPrice() async {
     emit(FilterConfigurationPriceLoadingState());
     Either<String, FilterConfigurationPriceModel> response =
-    await dioManager.filterConfigurationPrice();
+        await dioManager.filterConfigurationPrice();
     response.fold(
-          (left) {
+      (left) {
         errorMessage = left;
         toast(left.toString());
         emit(FilterConfigurationPriceErrorState());
       },
-          (right) {
+      (right) {
         configurationPriceModel = right;
+        rangeValues = RangeValues(configurationPriceModel.minPrice!.toDouble(),
+            configurationPriceModel.maxPrice!.toDouble());
         emit(FilterConfigurationPriceSuccessState());
       },
     );
@@ -208,13 +267,13 @@ class RegisterCubit extends Cubit<RegisterState> {
   void selectRangeValues(RangeValues values) {
     print(values);
     rangeValues = values;
-    if (rangeValues.start > 0.0) {
+    if (rangeValues.start > configurationPriceModel.minPrice!.toDouble()) {
       minController.text = rangeValues.start.toStringAsFixed(2).toString();
     } else {
       minController.clear();
     }
-    if (rangeValues.end > 0.0) {
-      mixController.text = rangeValues.end.toStringAsFixed(2).toString();
+    if (rangeValues.end != configurationPriceModel.maxPrice!.toDouble()) {
+      mixController.text =rangeValues.end.toStringAsFixed(2).toString();
     } else {
       mixController.clear();
     }
@@ -232,22 +291,36 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   Future<void> updateUserStatus() async {
     emit(UpdateUserStatusLoadingState());
-    Either<String, String> response =
-    await dioManager.updateUserStatus(
-      city: citySelect.join(','),
-      interestType: propertyForString,
-      maxBudget: mixController.text,
-      minBudget: minController.text,
+    Either<String, String> response = await dioManager.updateUserStatus(
+      city: citySelectVal.isNotEmpty?citySelectVal.join(','):null,
+      interestType: propertyForString.isNotEmpty?propertyForString:null,
+      maxBudget: mixController.text.isNotEmpty?mixController.text:null,
+      minBudget: minController.text.isNotEmpty?minController.text:null,
     );
     response.fold(
-          (left) {
+      (left) {
         errorMessage = left;
         toast(left.toString());
         emit(UpdateUserStatusErrorState());
       },
-          (right) {
+      (right) {
         emit(UpdateUserStatusSuccessState());
       },
     );
+  }
+  void clear(){
+    intialStep = 0;
+     minController = TextEditingController();
+     mixController = TextEditingController();
+    rangeValues = RangeValues(0, 0);
+    configurationPriceModel =
+        FilterConfigurationPriceModel();
+     propertyForString = 'Buy';
+  city = [];
+   searchCityList = [];
+     citySelect = [];
+   showCityController = TextEditingController();
+ searchCityController = TextEditingController();
+    emit(ClearState());
   }
 }

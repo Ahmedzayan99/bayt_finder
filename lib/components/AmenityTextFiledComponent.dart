@@ -1,9 +1,7 @@
+import 'package:bayt_finder/components/auth_text_form_field/auth_text_form_field.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../extensions/extension_util/bool_extensions.dart';
-import '../extensions/extension_util/string_extensions.dart';
 import '../utils/constants.dart';
-import '../extensions/app_text_field.dart';
-import '../extensions/decorations.dart';
 import '../utils/colors.dart';
 
 class AmenityTextFiledComponent extends StatefulWidget {
@@ -26,8 +24,8 @@ class _AmenityTextFiledComponentState extends State<AmenityTextFiledComponent> {
   @override
   void initState() {
     super.initState();
-    if (widget.isUpdate.validate()) {
-      textBoxController.text = widget.updatedValue.validate();
+    if (widget.isUpdate!) {
+      textBoxController.text = widget.updatedValue!;
     }
     setState(() {});
   }
@@ -40,16 +38,15 @@ class _AmenityTextFiledComponentState extends State<AmenityTextFiledComponent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(color: dividerColor, height: 0),
-        AppTextField(
+        Divider(color: AppColors.colorMediumGrayText, height: 0),
+        AuthTextFormField(
           controller: textBoxController,
-          textFieldType: widget.amenityType == AMENITY_TYPE_NUMBER
-              ? TextFieldType.PHONE
+          textInputType: widget.amenityType == AMENITY_TYPE_NUMBER
+              ? TextInputType.phone
               : widget.amenityType == AMENITY_TYPE_TEXTAREA
-                  ? TextFieldType.MULTILINE
-                  : TextFieldType.NAME,
-          isValidationRequired: true,
-          decoration: defaultInputDecoration(context, fillColor: primaryExtraLight, label: "${"enter"} ${widget.amenityValueData!.validate()}"),
+                  ? TextInputType.multiline
+                  : TextInputType.name,
+
           onFieldSubmitted: (value) {
             if (textBoxController.text.isNotEmpty) {
               sendRadioData(widget.amenityID, textBoxController.text);
@@ -60,6 +57,7 @@ class _AmenityTextFiledComponentState extends State<AmenityTextFiledComponent> {
             sendRadioData(widget.amenityID, textBoxController.text);
             setState(() {});
           },
+          hintText: "${"enter".tr()} ${widget.amenityValueData!}",
         )
       ],
     );

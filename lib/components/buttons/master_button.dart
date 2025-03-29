@@ -58,12 +58,12 @@ class MasterButton extends StatelessWidget {
       color: AppColors.colorTransparent,
       child: InkWell(
         onTap:isActive! && !isLoading!?onPressed:(){
-
         },
         borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
         child: Container(
           width: width ?? double.infinity,
           height: height ?? 50.h,
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
           decoration: BoxDecoration(
               color: isActive!?backgroundColor ?? AppColors.colorMaster:AppColors.colorMasterNotActive,
               borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
@@ -84,7 +84,7 @@ class MasterButton extends StatelessWidget {
         return textWidget();
       case TypeButton.iconOnly:
         return iconWidget();
-        throw UnimplementedError();
+
       case TypeButton.svgOnly:
         return svgWidget();
       case TypeButton.iconText:

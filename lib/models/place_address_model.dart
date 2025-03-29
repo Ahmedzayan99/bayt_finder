@@ -2,9 +2,25 @@ class PlaceAddressModel {
   double? latitude;
   double? longitude;
   String? placeId;
+  String? name;
   String? placeAddress;
+  String? country;
+  String? state;
+  String? city;
+  String? cityAR;
+  String? photoReference;
 
-  PlaceAddressModel({this.latitude, this.longitude, this.placeId, this.placeAddress});
+  PlaceAddressModel(
+      {this.latitude,
+      this.longitude,
+      this.placeId,
+      this.placeAddress,
+      this.name,
+      this.country,
+      this.state,
+      this.city,
+      this.photoReference,
+      this.cityAR});
 
   factory PlaceAddressModel.fromJson(Map<String, dynamic> json) {
     return PlaceAddressModel(
@@ -12,6 +28,7 @@ class PlaceAddressModel {
       longitude: json['longitude'],
       placeId: json['placeId'],
       placeAddress: json['placeAddress'],
+      photoReference: json['photoReference'],
     );
   }
 
@@ -21,6 +38,7 @@ class PlaceAddressModel {
     data['longitude'] = longitude;
     data['placeId'] = placeId;
     data['placeAddress'] = placeAddress;
+    data['photoReference'] = photoReference;
     return data;
   }
 }

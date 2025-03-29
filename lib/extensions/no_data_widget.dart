@@ -1,11 +1,8 @@
+import 'package:bayt_finder/components/buttons/master_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../extensions/extension_util/context_extensions.dart';
-import '../extensions/extension_util/string_extensions.dart';
-import '../extensions/extension_util/widget_extensions.dart';
-import '../extensions/extension_util/int_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../extensions/text_styles.dart';
-import 'app_button.dart';
-import 'colors.dart';
 
 
 class NoDataWidget extends StatelessWidget {
@@ -43,36 +40,32 @@ class NoDataWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _imageWidget(),
-        16.height,
-        if (title.validate().isNotEmpty)
+        SizedBox(height: 16.h,),
+        if (title!.isNotEmpty)
           Text(title!,
               style: titleTextStyle ?? primaryTextStyle(),
               textAlign: TextAlign.center),
-        4.height,
-        if (subTitle.validate().isNotEmpty)
+        SizedBox(height: 4.w,),
+        if (subTitle!.isNotEmpty)
           Text(subTitle!,
               style: subTitleTextStyle ?? secondaryTextStyle(),
               textAlign: TextAlign.center),
-        16.height,
+        SizedBox(height: 16.h,),
         if (onRetry != null)
-          AppButton(
-            onTap: () {
+          MasterButton(onPressed: () {
               onRetry?.call();
-            },
-            text: retryText ?? 'Try again',
-            textColor: white,
-            padding: EdgeInsets.zero,
-            color: context.primaryColor,
+          },
+          text: 'Try again'.tr(),
           ),
       ],
-    ).center();
+    );
   }
 
   Widget _imageWidget() {
     if (imageWidget != null) return imageWidget!;
     if (image == null) return Offstage();
 
-    if (image.validate().startsWith('http')) {
+    if (image!.startsWith('http')) {
       return Image.network(
         image!,
         height: imageSize != null ? (imageSize!.height) : 200,

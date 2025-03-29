@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import '../extensions/extension_util/bool_extensions.dart';
-import '../extensions/extension_util/context_extensions.dart';
-import '../extensions/extension_util/int_extensions.dart';
-import '../extensions/extension_util/widget_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../extensions/animatedList/animated_wrap.dart';
-import '../extensions/decorations.dart';
-import '../extensions/text_styles.dart';
 import '../utils/colors.dart';
+import '../utils/styles.dart';
 
 class CheckBoxComponent<T> extends StatefulWidget {
   final int? amenityId;
@@ -19,7 +15,15 @@ class CheckBoxComponent<T> extends StatefulWidget {
 
   final Function(List<String>?, int? id) onUpdate;
 
-  const CheckBoxComponent({super.key, this.checkboxValues, this.amenityId, required this.onUpdate, this.propertyId, this.pId, this.newCheckboxValues, this.isUpdateProperty = false});
+  const CheckBoxComponent(
+      {super.key,
+      this.checkboxValues,
+      this.amenityId,
+      required this.onUpdate,
+      this.propertyId,
+      this.pId,
+      this.newCheckboxValues,
+      this.isUpdateProperty = false});
 
   @override
   State<CheckBoxComponent> createState() => _CheckBoxComponentState();
@@ -37,7 +41,10 @@ class _CheckBoxComponentState<T> extends State<CheckBoxComponent<T>> {
   }
 
   void init() async {
-    if (widget.isUpdateProperty.validate() && widget.newCheckboxValues!.isNotEmpty) selectedIndexes = widget.newCheckboxValues!;
+    if (widget.isUpdateProperty! &&
+        widget.newCheckboxValues!.isNotEmpty) {
+      selectedIndexes = widget.newCheckboxValues!;
+    }
     setState(() {});
   }
 
@@ -63,34 +70,73 @@ class _CheckBoxComponentState<T> extends State<CheckBoxComponent<T>> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         AnimatedWrap(
-            runSpacing: 8,
-            spacing: 8,
+            //  runSpacing: 8,
+            //   spacing: 8,
             crossAxisAlignment: WrapCrossAlignment.start,
-            alignment: WrapAlignment.start,
-            runAlignment: WrapAlignment.start,
+            alignment: WrapAlignment.spaceBetween,
+            runAlignment: WrapAlignment.spaceBetween,
+            /*  itemBuilder: (p0, p1) {
+            return Container(
+              padding:
+                  EdgeInsetsDirectional.only(bottom: 16.h, top: 0, start: 20.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+              selectedIndexes.contains(widget.checkboxValues![p1].toString())
+                          ? Icons.check_box_rounded
+                          : Icons.check_box_outline_blank,
+                      color: selectedIndexes.contains(widget.checkboxValues![p1].toString())
+                          ? Colors.black
+                          : grayColor),
+                  SizedBox(width: 10.w,),
+                  Text(p1.toString(),
+                      style: secondaryTextStyle(
+                          size: 16,
+                          color: selectedIndexes.contains(p1)
+                              ? Colors.white
+                              : grayColor)),
+                ],
+              ),
+            ).onTap(() {
+              checkBoxSelection(widget.checkboxValues![p1].toString());
+              finalCheckBoxId = widget.amenityId;
+              sendRadioData((checkBoxQuotedStrings), finalCheckBoxId);
+              setState(() {});
+            });
+          },*/
             children: widget.checkboxValues!.map((e) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: boxDecorationWithRoundedCorners(backgroundColor: selectedIndexes.contains(e) ? primaryColor : context.scaffoldBackgroundColor, borderRadius: BorderRadius.circular(8.0)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(selectedIndexes.contains(e) ? Icons.check : Icons.add, color: selectedIndexes.contains(e) ? Colors.white : grayColor),
-                    10.width,
-                    Text(e.toString(), style: secondaryTextStyle(size: 16, color: selectedIndexes.contains(e) ? Colors.white : grayColor)),
-                  ],
+              return InkWell(
+               onTap: () {
+                 checkBoxSelection(e);
+                 finalCheckBoxId = widget.amenityId;
+                 sendRadioData((checkBoxQuotedStrings), finalCheckBoxId);
+                 setState(() {});
+               },
+                child: Container(
+                  padding: EdgeInsetsDirectional.only(
+                      bottom: 16.h, top: 0, start: 20.w),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                          selectedIndexes.contains(e)
+                              ? Icons.check_box_rounded
+                              : Icons.check_box_outline_blank,
+                          color: selectedIndexes.contains(e)
+                              ? AppColors.colorMaster
+                              : AppColors.colorMediumBlack),
+                      SizedBox(width: 10.w,),
+                      Text(e.toString(),
+                          style:  TextStyles.font15MediumBlackRegular),
+                    ],
+                  ),
                 ),
-              ).onTap(() {
-                checkBoxSelection(e);
-                finalCheckBoxId = widget.amenityId;
-                sendRadioData((checkBoxQuotedStrings), finalCheckBoxId);
-                setState(() {});
-              });
+              );
             }).toList()),
-        16.height
       ],
     );
   }

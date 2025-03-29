@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../extensions/common.dart';
 
@@ -26,7 +27,7 @@ class DoublePressBackWidget extends StatelessWidget {
         onWillPop?.call();
         if (_currentBackPressTime == null || now.difference(_currentBackPressTime!) > Duration(seconds: 2)) {
           _currentBackPressTime = now;
-          toast(message ?? "pressBackAgainToExit");
+          toast(message ?? "Press Back Again To Exit".tr());
 
           return Future.value(false);
         }

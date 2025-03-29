@@ -1,5 +1,5 @@
 
-import 'package:bayt_finder/extensions/extension_util/widget_extensions.dart';
+import 'package:bayt_finder/nav.dart';
 import 'package:bayt_finder/utils/colors.dart';
 import 'package:bayt_finder/utils/images.dart';
 import 'package:bayt_finder/utils/styles.dart';
@@ -8,17 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../components/add_property_dialouge.dart';
-import '../../components/limit_exceed_dialog.dart';
 import '../../extensions/double_press_back_widget.dart';
-import '../../extensions/system_utils.dart';
 import '../../main.dart';
-import '../limit_screen.dart';
-import '../subscribe_screen.dart';
+import '../../utils/alert_two_buttons.dart';
+import '../map/show_property_in_map_screen.dart';
+import '../property/cubit/property_cubit.dart';
 import 'cubit/layout_cubit.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-import '../../../extensions/LiveStream.dart';
 class LayoutScreen extends StatefulWidget {
   const LayoutScreen({super.key});
 
@@ -32,81 +29,9 @@ class _LayoutScreenState extends State<LayoutScreen> {
   void initState() {
     super.initState();
     OneSignal.User.pushSubscription.optIn();
-    init();
-  }
-
-  void init() async {
     LayoutCubit.get(context).getSetting();
-    /*PlatformDispatcher.instance.onPlatformBrightnessChanged = () {
-      if (SharedPreferencesManager.getIntAsync(THEME_MODE_INDEX) == ThemeModeSystem) {
-        appStore.setDarkMode(MediaQuery.of(context).platformBrightness == Brightness.light);
-      }
-    };*/
-
-    //getSettingList();
-    LiveStream().on("LANGUAGE", (s) {
-      setState(() {});
-    });
   }
 
-/*  Future<void> getSettingList() async {
-    await getSettingApi().then((value) {
-      appStore.setCurrencyCodeID(value.currencySetting!.symbol.validate());
-      appStore.setCurrencyPositionID(value.currencySetting!.position.validate());
-      appStore.setCurrencyCode(value.currencySetting!.code.validate());
-      for (int i = 0; i < value.data!.length; i++) {
-        switch (value.data![i].key) {
-          case "terms_condition":
-            {
-              appStore.setTermsCondition(value.data![i].value.validate());
-            }
-          case "privacy_policy":
-            {
-              appStore.setPrivacyPolicy(value.data![i].value.validate());
-            }
-          case "ONESIGNAL_APP_ID":
-            {
-              appStore.setOneSignalAppID(value.data![i].value.validate());
-            }
-          case "ONESIGNAL_REST_API_KEY":
-            {
-              appStore.setOnesignalRestApiKey(value.data![i].value.validate());
-            }
-          case "ADMOB_BannerId":
-            {
-              appStore.setAdmobBannerId(value.data![i].value.validate());
-            }
-          case "ADMOB_InterstitialId":
-            {
-              appStore.setAdmobInterstitialId(value.data![i].value.validate());
-            }
-          case "ADMOB_BannerIdIos":
-            {
-              appStore.setAdmobBannerIdIos(value.data![i].value.validate());
-            }
-          case "ADMOB_InterstitialIdIos":
-            {
-              appStore.setAdmobInterstitialIdIos(value.data![i].value.validate());
-            }
-          case "subscription_system":
-            {
-              appStore.setSubscription(value.data![i].value.validate());
-            }
-          case "CHATGPT_API_KEY":
-            {
-              appStore.setChatGptApiKey(value.data![i].value.validate());
-            }
-        }
-      }
-      getSettingData();
-    });
-  }*/
-/*  @override
-  void didChangeDependencies() {
-    if (SharedPreferencesManager.getIntAsync(THEME_MODE_INDEX) == ThemeModeSystem) appStore.setDarkMode(MediaQuery.of(context).platformBrightness == Brightness.dark);
-    setState(() {});
-    super.didChangeDependencies();
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +58,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      cubit.changeIndex(0);
+                      cubit.changeIndex(0,);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
@@ -163,7 +88,9 @@ class _LayoutScreenState extends State<LayoutScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      cubit.changeIndex(1);
+                      cubit.changeIndex(1,);
+                      PropertyCubit.get(context).filterProperty(
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
@@ -193,7 +120,16 @@ class _LayoutScreenState extends State<LayoutScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      cubit.changeIndex(2);
+                      if(isLogin){
+                        cubit.changeIndex(2);
+                      }else{
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return TwoButtonAlert();
+                          },
+                        );
+                      }
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
@@ -223,7 +159,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      cubit.changeIndex(3);
+                        cubit.changeIndex(3);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
@@ -256,42 +192,40 @@ class _LayoutScreenState extends State<LayoutScreen> {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            heroTag: "addProperties",
-            child: Icon(Icons.add, size: 44, color: Colors.white),
-            onPressed: () {
-              appStore.subscription == "1"
-                  ? appStore.isSubscribe != 0
-                  ? appStore.subscriptionDetail!.subscriptionPlan!.packageData!.addProperty == 0
-                  ? showDialog(
-                context: context,
-                builder: (context) {
-                  return appStore.addLimitCount == 0
-                      ? LimitExceedDialog(
-                    onTap: () {
-                      finish(context);
-                      LimitScreen(limit: "add_property").launch(context);
-                    },
-                  )
-                      : AddPropertyDialog();
-                },
-              )
-                  : showDialog(
-                context: context,
-                builder: (context) {
-                  return AddPropertyDialog();
-                },
-              )
-                  : SubscribeScreen().launch(context)
-                  : showDialog(
-                context: context,
-                builder: (context) {
-                  return AddPropertyDialog();
-                },
-              );
-            },
-          ),
+          floatingActionButton:cubit.current==0||cubit.current==1?Padding(
+            padding:  EdgeInsets.only(bottom: 70.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {
+                   navigateTo(ShowPropertyInMapScreen());
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10.sp),
+                    decoration: BoxDecoration(
+                      color: AppColors.colorMaster,
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 10.w,
+                      children: [
+                        Icon(Icons.map_outlined,color: AppColors.colorWhite,),
+                      Text('Map'.tr(),
+                      style: TextStyles.font15WhiteBold,
+                      )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ):SizedBox.shrink() ,
+/*
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+*/
           body:DoublePressBackWidget(
             child: AnimatedContainer(color: AppColors.colorBGSheet, duration: const Duration(seconds: 1), child: cubit.screen[cubit.current]
               // IndexedStack(index: currentIndex, children: tabs

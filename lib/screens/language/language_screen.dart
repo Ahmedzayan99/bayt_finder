@@ -1,20 +1,18 @@
-import 'package:bayt_finder/extensions/extension_util/widget_extensions.dart';
+import 'package:bayt_finder/extensions/common.dart';
 import 'package:bayt_finder/screens/language/widgit/custom_flush_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../components/buttons/master_button.dart';
-import '../../components/toast.dart';
 import '../../local_storage/shared_preferences_manager.dart';
-import '../../main.dart';
 import '../../nav.dart';
 import '../../utils/colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/decorations.dart';
 import '../../utils/images.dart';
 import '../../utils/styles.dart';
-import '../walk_through/walk_through_screen.dart';
+import '../layout/layout_screen.dart';
 import 'cubit/language_cubit.dart';
 
 class LanguageScreen extends StatelessWidget {
@@ -76,10 +74,8 @@ class LanguageScreen extends StatelessWidget {
                         MasterButton(
                           onPressed: () async {
                             if (cubit.selectedLanguage == '') {
-                              ToastWidget(
-                                  message: 'Choose your language'.tr(),
-                                  color: AppColors.colorMaster)
-                                  .showToast(context);
+                              toast('Choose your language'.tr());
+
                             } else {
                               ///supportedLocales ==0 >>>en
                               ///supportedLocales ==1 >>>ar
@@ -89,16 +85,21 @@ class LanguageScreen extends StatelessWidget {
                                       EasyLocalization.of(context)!
                                           .supportedLocales[0]);
                                   await SharedPreferencesManager.saveData(
-                                      "local",  "en");
-                                  WalkThroughScreen().launch(context, isNewTask: true);
-                                  navigateFinish(context, WalkThroughScreen());
+                                      AppConstants.local,  "en");
+                                  navigateFinish( LayoutScreen());
+                                  //navigateFinish( UpdateStataScreen());
+                              // navigateFinish( WalkThroughScreen());
                                 case 'ar':
                                   await context.setLocale(
                                       EasyLocalization.of(context)!
                                           .supportedLocales[1]);
                                   await SharedPreferencesManager.saveData(
-                                      "local",  "ar");
-                              navigateFinish(context, WalkThroughScreen());
+                                      AppConstants.local,  "ar");
+                                  navigateFinish( LayoutScreen());
+
+                              // navigateFinish( UpdateStataScreen());
+
+                              //   navigateFinish( WalkThroughScreen());
                               }
                             }
                           },

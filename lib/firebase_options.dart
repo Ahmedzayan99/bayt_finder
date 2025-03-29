@@ -50,22 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCFV_WcOnCKrtTPGN__8lYoFRz0TRwD8pY',
-    appId: '1:747375922749:android:34579d83e6d6b8b6692454',
-    messagingSenderId: '747375922749',
-    projectId: 'gymsystem-94ee5',
-    databaseURL: 'https://gymsystem-94ee5-default-rtdb.firebaseio.com',
-    storageBucket: 'gymsystem-94ee5.appspot.com',
+    apiKey: 'AIzaSyCqk0bVywYXN-AGCg0rdNDCIsJ6X4kZ8yM',
+    appId: '1:670472906498:android:9768585d7842bdac63441b',
+    messagingSenderId: '670472906498',
+    projectId: 'bayt-finder-30802',
+    storageBucket: 'bayt-finder-30802.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyByWBqPaQ-JHc7i29n5ujQIqcoqicIPWeQ',
-    appId: '1:747375922749:ios:eeec0e5594daa46c692454',
-    messagingSenderId: '747375922749',
-    projectId: 'gymsystem-94ee5',
-    databaseURL: 'https://gymsystem-94ee5-default-rtdb.firebaseio.com',
-    storageBucket: 'gymsystem-94ee5.appspot.com',
-    androidClientId: '747375922749-e2qastkim77htgrium5059aj1tpkomra.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAbBIeAKIph28_gLpwlwb4X0J0LbhiN8SA',
+    appId: '1:670472906498:ios:ab1980ae7d1149b863441b',
+    messagingSenderId: '670472906498',
+    projectId: 'bayt-finder-30802',
+    storageBucket: 'bayt-finder-30802.firebasestorage.app',
     iosBundleId: 'com.nahr.baytFinder',
   );
 }

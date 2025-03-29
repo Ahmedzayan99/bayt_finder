@@ -1,6 +1,16 @@
+import 'package:bayt_finder/local_storage/shared_preferences_manager.dart';
+import 'package:bayt_finder/nav.dart';
+import 'package:bayt_finder/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
+import '../appcontext.dart';
+import '../main.dart';
+import '../screens/login/login_screen.dart';
+import '../utils/colors.dart';
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+GlobalKey<ScaffoldMessengerState>();
 class DioExceptions implements Exception {
   late String message;
 
@@ -26,7 +36,7 @@ class DioExceptions implements Exception {
         break;
       case DioExceptionType.unknown:
         if (dioError.message!.contains("SocketException")) {
-          message = 'no_internet'.tr();
+          message = 'no Internet'.tr();
           break;
         }
         message = "unexpected_error".tr();
@@ -42,6 +52,19 @@ class DioExceptions implements Exception {
       case 400:
         return 'bad_request'.tr();
       case 401:
+        SharedPreferencesManager.removeData(AppConstants.token);
+        SharedPreferencesManager.removeData(AppConstants.isLogin);
+        SharedPreferencesManager.removeData(AppConstants.userId);
+        isLogin=false;
+        scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+          content: Text(
+            "You need to login".tr(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: AppColors.colorMaster,
+          duration: const Duration(seconds: 2),
+        ));
+        navigateTo(  LoginScreen());
         return 'unauthorized'.tr();
       case 403:
         return 'forbidden'.tr();
@@ -70,10 +93,10 @@ String handleDioError(DioException e,) {
       e.type == DioExceptionType.sendTimeout ||
       e.type == DioExceptionType.connectionTimeout
   ) {
-    return " No internet connection. Please check your internet connection and try again later.";
+    return "No internet connection. Please check your internet connection and try again later.".tr();
   } else if (e.type == DioExceptionType.cancel) {
-    return "Request cancelled";
+    return "Request cancelled".tr();
   } else {
-    return 'Unknown error';
+    return 'Unknown error'.tr();
   }
 }

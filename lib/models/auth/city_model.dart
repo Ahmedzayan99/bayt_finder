@@ -24,16 +24,26 @@ class CityModel {
 
 class CityListData {
   CityListData({
-      this.name});
+      this.title,this.selectVal,this.count,this.categoryImage,this.createdAt,this.updatedAt,});
 
   CityListData.fromJson(dynamic json) {
-    name = json['name'];
+    title = json['title']??'';
+    selectVal = json['selectVal']??'';
+    count = json['count'];
+    categoryImage = json['category_image'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+
 
   }
-  String? name;
+  String? title;
+  String? selectVal;
+  int? count;
+  String? categoryImage;
+  String? createdAt;
+  String? updatedAt;
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['name'] = name;
     return map;
   }
 

@@ -1,72 +1,10 @@
+import 'package:bayt_finder/nav.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../extensions/extension_util/widget_extensions.dart';
 import '../models/dashBoard_response.dart';
-import '../screens/slider_details_screen.dart';
+import '../screens/home/slider_details_screen.dart';
 import '../utils/colors.dart';
-
-/*class SlidesComponents extends StatefulWidget {
-  final List<MSlider>? data;
-
-  const SlidesComponents({super.key, required this.data});
-
-  @override
-  State<SlidesComponents> createState() => _SlidesComponentsState();
-}
-
-class _SlidesComponentsState extends State<SlidesComponents> {
-  PageController pageController = PageController();
-
-  int currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  void init() async {
-    setState(() {});
-  }
-
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double mHeight = context.height() * 0.2;
-    return Column(
-      children: [
-        16.height,
-        SizedBox(
-          height: mHeight,
-          width: context.width(),
-          child: PageView.builder(
-            itemCount: widget.data!.length,
-            controller: pageController,
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, i) {
-              return cachedImage(widget.data![i].sliderImage.validate(), height: context.height() * 0.2, fit: BoxFit.cover, width: context.width())
-                  .cornerRadiusWithClipRRect(16)
-                  .paddingOnly(right: 16, bottom: 8, left: 16)
-                  .onTap(() {
-                SliderDetailsScreen(slider: widget.data![i]).launch(context);
-              });
-            },
-            onPageChanged: (int i) {
-              currentIndex = i;
-              setState(() {});
-            },
-          ),
-        ),
-        dotIndicator(widget.data!, currentIndex).paddingTop(4),
-      ],
-    );
-  }
-}*/
 
 class SlidesComponents extends StatefulWidget {
   final List<MSlider>? data;
@@ -121,7 +59,7 @@ class _SlidesComponentsState extends State<SlidesComponents> {
                             (e) {
                           return InkWell(
                             onTap: (){
-                              SliderDetailsScreen(slider: e).launch(context);
+                              navigateTo(SliderDetailsScreen(slider: e));
                             },
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20.r),

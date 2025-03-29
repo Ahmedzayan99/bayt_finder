@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -75,7 +76,7 @@ class ReadMoreTextState extends State<ReadMoreText> {
         widget.colorClickableText ?? Theme.of(context).colorScheme.secondary;
 
     TextSpan link = TextSpan(
-      text: _readMore ? widget.trimCollapsedText : widget.trimExpandedText,
+      text: _readMore ? widget.trimCollapsedText.tr() : widget.trimExpandedText.tr(),
       style: effectiveTextStyle!.copyWith(
         color: colorClickableText,
       ),
@@ -97,7 +98,6 @@ class ReadMoreTextState extends State<ReadMoreText> {
         TextPainter textPainter = TextPainter(
           text: link,
           textAlign: textAlign,
-          textDirection: textDirection,
           textScaleFactor: textScaleFactor,
           maxLines: widget.trimLines,
           ellipsis: overflow == TextOverflow.ellipsis ? _kEllipsis : null,
@@ -170,13 +170,12 @@ class ReadMoreTextState extends State<ReadMoreText> {
         }
 
         return SelectableText.rich(textSpan,
-            textAlign: textAlign, textDirection: textDirection);
+            textAlign: textAlign, );
       },
     );
 
     if (widget.semanticsLabel != null) {
       result = Semantics(
-        textDirection: widget.textDirection,
         label: widget.semanticsLabel,
         child: ExcludeSemantics(
           child: result,

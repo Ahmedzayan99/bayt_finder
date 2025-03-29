@@ -1,26 +1,27 @@
 
 
-import 'dashBoard_response.dart';
+import 'package:bayt_finder/models/property_details_model.dart';
+
 
 class SearchResponse {
   bool? status;
-  List<Property>? propertyData;
-  List<Property>? nearByProperty;
+  List<PropertyDetail>? propertyData;
+  List<PropertyDetail>? nearByProperty;
 
   SearchResponse({this.status, this.propertyData, this.nearByProperty});
 
   SearchResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      propertyData = <Property>[];
+      propertyData = <PropertyDetail>[];
       json['data'].forEach((v) {
-        propertyData!.add(Property.fromJson(v));
+        propertyData!.add(PropertyDetail.fromJson(v));
       });
     }
     if (json['near_by_property'] != null) {
-      nearByProperty = <Property>[];
+      nearByProperty = <PropertyDetail>[];
       json['near_by_property'].forEach((v) {
-        nearByProperty!.add(Property.fromJson(v));
+        nearByProperty!.add(PropertyDetail.fromJson(v));
       });
     }
   }

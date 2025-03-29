@@ -10,7 +10,8 @@ import '../../utils/styles.dart';
 class AuthTextFormField extends StatelessWidget {
   final String hintText;
   final int? maxLength;
-  final Widget suffixIcon;
+  final int? maxLines;
+  final Widget? suffixIcon;
   final bool obscureText;
   final bool? readOnly;
   final FocusNode? focusNode;
@@ -25,12 +26,13 @@ class AuthTextFormField extends StatelessWidget {
   final Color? fillColor;
   final TextStyle? hintStyle;
   final List<TextInputFormatter>? inputFormatters;
+  final Function(String)? onFieldSubmitted;
 
   const AuthTextFormField(
       {super.key,
         required this.hintText,
-        required this.suffixIcon,
-        required this.obscureText,
+         this.suffixIcon,
+         this.obscureText=false,
         this.focusNode,
         this.prefixIcon,
         this.onTap,
@@ -39,19 +41,21 @@ class AuthTextFormField extends StatelessWidget {
         this.onChanged,
         this.validator,
         this.maxLength,
+        this.maxLines,
         this.border,
         this.focusedBorder,
         this.inputFormatters,
-        this.fillColor, this.hintStyle , this.readOnly });
+        this.fillColor, this.hintStyle , this.readOnly, this.onFieldSubmitted });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       inputFormatters: inputFormatters,
-      autovalidateMode: AutovalidateMode.onUnfocus,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       readOnly:readOnly??false ,
       validator: validator,
       maxLength: maxLength,
+      maxLines: maxLines,
       onChanged: onChanged,
       autofocus: false,
       keyboardType: textInputType,
@@ -60,45 +64,29 @@ class AuthTextFormField extends StatelessWidget {
       onTap: onTap,
       cursorColor: AppColors.colorBorderMediumGray,
       obscureText: obscureText,
-      // style: TextStyles.font12BlackRegular.copyWith(
-      //     // color: Color(0xff575757),
-      //     ),
       style: TextStyles.font14BlackMedium,
+      onFieldSubmitted:onFieldSubmitted ,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 10.h,
-          horizontal: 12.w,
-        ),
+        hintText: hintText,
         counterText: "",
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: fillColor ?? AppColors.colorMediumGrayTextForm,
-        hintText: hintText,
-        // hintStyle: TextStyles.font12BlackRegular.copyWith(
-        //   color: const Color(0xff575757),
-        // ),
-        hintStyle:hintStyle ?? TextStyles.font14ExtraGrayMedium,
-
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13.r),
-            borderSide:  BorderSide(width: 1.w, color: AppColors.colorMediumGrayBorderTextForm)),
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(13.r),
-              borderSide: BorderSide(
-                width: 1.w,
-                color: AppColors.colorMediumGrayBorderTextForm,
-              ),
-            ),
-        enabledBorder: border ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(13.r),
-              borderSide:  BorderSide(
-                width: 1.w,
-                color: AppColors.colorMediumGrayBorderTextForm,
-              ),
-            ),
+        fillColor: fillColor ?? AppColors.colorWhite,
+        hintStyle:hintStyle ?? TextStyles.font14ExtraGrayRegular,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.sp, vertical: 16.sp),
+        border: border??OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.sp),
+            borderSide:BorderSide(     color: AppColors.colorMediumGrayBorderTextForm, width: 1.w,)
+        ),
+        enabledBorder: border??OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.sp),
+            borderSide:BorderSide(     color: AppColors.colorMediumGrayBorderTextForm, width: 1.w,)
+        ),
+        focusedBorder:focusedBorder??OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.sp),
+            borderSide:BorderSide(     color: AppColors.colorMediumGrayBorderTextForm, width: 1.w,)
+        ),
       ),
     );
   }

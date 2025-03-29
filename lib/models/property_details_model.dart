@@ -1,8 +1,8 @@
-import '../models/category_list_model.dart';
+import 'category_list_model.dart';
 
 class PropertyDetailsModel {
   PropertyDetail? data;
-  List<AmenityName>? propertyAmenityValue;
+  List<AmenityNameCategory>? propertyAmenityValue;
   Customer? customer;
   NearByPlace? nearByPlace;
 
@@ -12,9 +12,9 @@ class PropertyDetailsModel {
     data = json['data'] != null ? PropertyDetail.fromJson(json['data']) : null;
 
     if (json['property_amenity_value'] != null) {
-      propertyAmenityValue = <AmenityName>[];
+      propertyAmenityValue = <AmenityNameCategory>[];
       json['property_amenity_value'].forEach((v) {
-        propertyAmenityValue!.add(AmenityName.fromJson(v));
+        propertyAmenityValue!.add(AmenityNameCategory.fromJson(v));
       });
     }
 
@@ -65,6 +65,7 @@ class PropertyDetail {
   String? country;
   String? state;
   String? city;
+  String? cityAr;
   String? latitude;
   String? longitude;
   String? address;
@@ -103,6 +104,8 @@ class PropertyDetail {
       this.country,
       this.state,
       this.city,
+      this. cityAr,
+
       this.latitude,
       this.longitude,
       this.address,
@@ -143,6 +146,7 @@ class PropertyDetail {
     country = json['country'];
     state = json['state'];
     city = json['city'];
+    cityAr = json['city_ar'];
     latitude = json['latitude'];
     longitude = json['longitude'];
     address = json['address'];

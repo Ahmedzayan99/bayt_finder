@@ -4,11 +4,11 @@ class FilterConfigurationPriceModel {
       this.maxPrice,});
 
   FilterConfigurationPriceModel.fromJson(dynamic json) {
-    minPrice = json['min_price'];
-    maxPrice = json['max_price'];
+    minPrice = json['min_price'].toDouble();
+    maxPrice = json['max_price'].toDouble();
   }
-  int? minPrice;
-  int? maxPrice;
+  double? minPrice;
+  double? maxPrice;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

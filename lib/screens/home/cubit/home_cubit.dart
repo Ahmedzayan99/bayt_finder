@@ -3,16 +3,12 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../../components/waves_animaiton.dart';
 import '../../../extensions/common.dart';
-import '../../../local_storage/shared_preferences_manager.dart';
 import '../../../main.dart';
-import '../../../models/article_model.dart';
+import '../../../models/auth/user_response_model.dart';
 import '../../../models/dashBoard_response.dart';
-import '../../../models/user_response.dart';
 import '../../../network/dio_maneger.dart';
 import '../../../utils/app_common.dart';
 
@@ -24,11 +20,10 @@ class HomeCubit extends Cubit<HomeState> {
   static HomeCubit get(context) => BlocProvider.of(context);
   DioManager dioManager = DioManager();
   String? errorMessage;
-  UserResponse userDetail = UserResponse();
-
+  UserResponseModel userDetail = UserResponseModel();
   Future<void> getUserDetail() async {
     emit(GetUserDetailLoadingState());
-    Either<String, UserResponse> response =
+    Either<String, UserResponseModel> response =
         await dioManager.getUserDetailAsync();
     response.fold(
       (left) {
@@ -43,68 +38,51 @@ class HomeCubit extends Cubit<HomeState> {
       },
     );
   }
-
-  late Timer _timer;
-  final GlobalKey<WaveAnimationState> waveAnimationKey =
-      GlobalKey<WaveAnimationState>();
-
-  void startTime() {
-    _timer = Timer.periodic(Duration(seconds: 20), (timer) {
-      waveAnimationKey.currentState?.refresh();
-    });
-  }
-
-/*  CategoryListModel categoryListModel = CategoryListModel();
-
-  Future<void> getCategory() async {
-    emit(GetCategoryLoadingState());
-    Either<String, CategoryListModel> response =
-        await dioManager.getCategoryAsync();
+  Future<void> updateUserStatus({
+    String? latitude,
+    String? longitude
+}) async {
+    emit(UpdateUserStatusLoadingState());
+    Either<String, String> response = await dioManager.updateUserStatus(
+      latitude: latitude,
+      longitude: longitude,
+    );
     response.fold(
-      (left) {
+          (left) {
         errorMessage = left;
         toast(left.toString());
-        emit(GetCategoryErrorState());
+        emit(UpdateUserStatusErrorState());
       },
-      (right) async {
-        categoryListModel = right;
-        emit(GetCategorySuccessState());
+          (right) {
+        emit(UpdateUserStatusSuccessState());
       },
     );
-  }*/
-
+  }
+  bool permission=false;
   Future<void> getLocation() async {
     if (await checkPermission()) {
       initLocationStream();
     }
   }
-bool isLocationLocation=false;
   void initLocationStream() async {
-    isLocationLocation=true;
     emit(InitLocationStreamLoading());
     await Geolocator.getCurrentPosition().then((value) async {
-      await setLocaleIdentifier(
-          SharedPreferencesManager.getStringAsync("local") == "ar" ? 'ar_EG' : 'en_US');
-      List<Placemark> placeMarks = await placemarkFromCoordinates(
+     if(isLogin){
+       updateUserStatus(latitude: value.latitude.toString(),longitude: value.longitude.toString(),);
+     }
+     permission=true;
+  /*       await setLocaleIdentifier(
+          SharedPreferencesManager.getStringAsync(AppConstants.local) == "ar" ? 'ar_EG' : 'en_US');
+     List<Placemark> placeMarks = await placemarkFromCoordinates(
         value.latitude,
         value.longitude,
       );
-      print('cityzayan');
       print(placeMarks.first.locality.toString());
       if (placeMarks.isNotEmpty) {
-        await SharedPreferencesManager.saveData(
-            'latitude', value.latitude.toString());
-        await SharedPreferencesManager.saveData(
-            'longitude',  value.longitude.toString());
-        await SharedPreferencesManager.saveData(
-            'city',  placeMarks.first.locality.toString());
-        isLocationLocation=false;
         emit(InitLocationStreamSuccess());
-        await getDashboardList();
-      }
+      }*/
     },  onError: (error) {
       toast(error.toString());
-      isLocationLocation=false;
       emit(InitLocationStreamError());
     });
   }
@@ -112,6 +90,7 @@ bool isLocationLocation=false;
   List<MSlider> slider=[];
   List<Category> category=[];
   List<AgentList> agentList=[];
+  List<PropertyCity> cityList=[];
  // List<PropertyCity> propertyCity=[];
   //List<Property> property=[];
   Future<void> getDashboardList() async {
@@ -128,6 +107,7 @@ bool isLocationLocation=false;
         slider=right.slider??[];
         category=right.category??[];
         agentList=right.agent??[];
+        cityList=right.propertyCity??[];
         appSettingMain=right.appSetting??AppSetting();
         filterConfigurationMain=right.filterConfiguration??FilterConfiguration();
         //getSettingData();

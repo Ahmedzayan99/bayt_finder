@@ -1,6 +1,5 @@
 import 'package:bayt_finder/components/buttons/master_button.dart';
 import 'package:bayt_finder/nav.dart';
-import 'package:bayt_finder/screens/home/cubit/home_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,12 +8,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../components/appbar/custom_appbar.dart';
 import '../../local_storage/shared_preferences_manager.dart';
 import '../../utils/styles.dart';
+import '../layout/cubit/layout_cubit.dart';
 import '../layout/layout_screen.dart';
 import 'cubit/login_cubit.dart';
 import '../sign_up/signup_screen.dart';
 import '../../utils/images.dart';
 import '../../extensions/common.dart';
-import '../../extensions/extension_util/string_extensions.dart';
 import '../../main.dart';
 import '../../utils/colors.dart';
 import '../../utils/constants.dart';
@@ -32,9 +31,9 @@ class OTPScreen extends StatelessWidget {
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-            appStore.isDarkModeOn ? Brightness.light : Brightness.light,
+            Brightness.light,
         systemNavigationBarIconBrightness:
-            appStore.isDarkModeOn ? Brightness.light : Brightness.light,
+            Brightness.light,
       ),
       child: WillPopScope(
         onWillPop: () async {
@@ -46,40 +45,48 @@ class OTPScreen extends StatelessWidget {
             if (state is LoginSuccessState) {
               if (loginCubit.isUserExist) {
                 loginCubit.stopTimer();
-                appStore.setToken(loginCubit.loginModel.data!.apiToken.validate());
-                navigateFinish(context, LayoutScreen());
-             /*   await getUSerDetail(context, loginCubit.loginModel.data!.id.validate()).whenComplete(() {
+                await SharedPreferencesManager.saveData(AppConstants.token, loginCubit.loginModel.data!.apiToken!);
+                await SharedPreferencesManager.saveData(AppConstants.isLogin, true);
+                await SharedPreferencesManager.saveData(AppConstants.userId, loginCubit.loginModel.data!.id!);
+                isLogin=true;
+                // appStore.setToken(loginCubit.loginModel.data!.apiToken!);
+                loginCubit.clearData();
+                LayoutCubit.get(context).changeIndex(0);
+                navigateFinish( LayoutScreen());
+
+
+             /*   await getUSerDetail(context, loginCubit.loginModel.data!.id!).whenComplete(() {
 
                 });*/
               } else {
                 loginCubit.stopTimer();
-                navigateFinish(context, SignUpScreen(phoneNumber: loginCubit.phoneNumber.phoneNumber.toString()));
+                navigateFinish( SignUpScreen(phoneNumber: loginCubit.mobileNumberController.text, countryCode: loginCubit.phoneNumber.dialCode.toString(),));
+                loginCubit.clearData();
                  }
             }
           },
           builder: (context, state) {
             return Scaffold(
+              resizeToAvoidBottomInset: false,
               backgroundColor:AppColors.colorWhite,
               appBar: CustomAppBar(
                 title: "OTP".tr(),
-                typeAppBar: TypeAppBar.textOnly,
               ),
               body: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 60.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   spacing: 20.h,
                   children: [
-                    SizedBox(height:5.h ,),
+                    SizedBox.shrink(),
                     Image.asset(
                       AppImage.otp,
                       fit: BoxFit.fill,
-                      height: 240.h,
-                      width: 180.w,
+                      height: 186.h,
+                      width: 186.w,
                     ),
-                    SizedBox(height:40.h ,),
                     Text(
                       'We’ve sent you a confirmation code to'.tr(),
                       style: TextStyles.font16MediumGrayTextMedium,
@@ -138,11 +145,9 @@ class OTPScreen extends StatelessWidget {
                       loginCubit.formatTime(),
                       style: TextStyles.font20BlackBold,
                     ),
-                    SizedBox(height:20.h ,),
                     MasterButton(
                       onPressed: () {
-                        if (loginCubit.otpFormKey.currentState!
-                            .validate()) {
+                        if (loginCubit.otpFormKey.currentState!.validate()) {
                           loginCubit.otpFormKey.currentState!.save();
                           hideKeyboard(context);
                           loginCubit.login();
@@ -159,7 +164,7 @@ class OTPScreen extends StatelessWidget {
                         }
                       },
                       child: Text(
-                        "Resend code",
+                        "Resend code".tr(),
                         style: TextStyles.font16BlackBold.copyWith( decoration: TextDecoration.underline,),
                       ),
                     ),

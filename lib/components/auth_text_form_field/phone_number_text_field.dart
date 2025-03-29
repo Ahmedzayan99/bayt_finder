@@ -15,7 +15,6 @@ import 'package:intl_phone_number_input/src/utils/widget_view.dart';
 import '../../utils/colors.dart';
 import 'auth_text_form_field.dart';
 import 'package:intl_phone_number_input/src/widgets/countries_search_list_widget.dart';
-import '../../utils/decorations.dart';
 import '../../utils/styles.dart';
 
 
@@ -54,6 +53,7 @@ class CustomInternationalPhoneNumberInput extends StatefulWidget {
   final double spaceBetweenSelectorAndTextField;
 
   final bool isEnabled;
+  final bool readOnly;
   final bool formatInput;
   final bool autoFocus;
   final bool autoFocusSearch;
@@ -95,6 +95,7 @@ class CustomInternationalPhoneNumberInput extends StatefulWidget {
     this.locale,
     this.countries,
     this.isSpace = false,
+    this.readOnly = false,
     this.prefixIcon,
     this.focusNode,
     this.decorationSelect,
@@ -155,7 +156,7 @@ class _InputWidgetState extends State<CustomInternationalPhoneNumberInput> {
         ? decorationSelect = widget.decorationSelect
         : decorationSelect = BoxDecoration(
         color: AppColors.colorMediumGrayTextForm,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
           color: AppColors.colorMediumGrayBorderTextForm,
           width: 1.w,
@@ -396,6 +397,7 @@ class _InputWidgetView
             ),
             Flexible(
               child: AuthTextFormField(
+                readOnly:widget.readOnly,
                 key: widget.fieldKey ?? Key(TestHelper.TextInputKeyValue),
                 onTap: widget.onTap,
                 inputFormatters: [
@@ -445,6 +447,7 @@ class _InputWidgetView
           isEnabled: widget.isEnabled,
           decorationSelect: state.decorationSelect!,
         ),
+        readOnly:widget.readOnly,
         obscureText: false,
       );
     }
@@ -475,7 +478,7 @@ class CustomSelectorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 117.w,
-      height: 50.h,
+      height: 53.h,
       margin: EdgeInsetsDirectional.only(end: 10.w),
       decoration: decorationSelect,
       child: InkWell(

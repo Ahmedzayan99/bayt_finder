@@ -1,3 +1,4 @@
+/*
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,7 +76,7 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> {
       );
     } else {
       SharedPreferencesManager.saveData("skipBoarding",true);
-      navigateFinish(context, LoginScreen());
+      navigateFinish( LoginScreen());
     }
   }
   @override
@@ -84,9 +85,9 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> {
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-            appStore.isDarkModeOn ? Brightness.light : Brightness.dark,
+            Brightness.dark,
         systemNavigationBarIconBrightness:
-            appStore.isDarkModeOn ? Brightness.light : Brightness.dark,
+            Brightness.dark,
       ),
       child: Scaffold(
           body: Stack(
@@ -163,7 +164,7 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> {
                 InkWell(
                   onTap: () {
                     SharedPreferencesManager.saveData("skipBoarding",true);
-                    navigateFinish(context, LoginScreen());
+                    navigateFinish( LoginScreen());
                   },
                   child: Text('Skip'.tr(), style: TextStyles.font14MasterBold),
                 ),
@@ -194,11 +195,12 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyles.font16WhiteRegular),
                 ),
-                /* AppButton(
+                */
+/* AppButton(
                   text:
                       mCurrentIndex == 2 ? language.getStarted : language.next,
-                  width: context.width(),
-                  color: primaryColor,
+                  width: double.infinity,
+                  color: AppColors.colorMaster,
                   onTap: () {
                     if (mCurrentIndex.toInt() >= 2) {
                       SharedPreferencesManager.saveData(IS_FIRST_TIME, true);
@@ -209,7 +211,8 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> {
                           curve: Curves.linearToEaseOut);
                     }
                   },
-                ),*/
+                ),*//*
+
               ],
             ),
           ),
@@ -279,3 +282,4 @@ class _WalkThroughScreenState extends State<WalkThroughScreen> {
     );
   }
 }
+*/

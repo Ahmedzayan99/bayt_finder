@@ -141,19 +141,6 @@ class FlipConfiguration {
   });
 }
 
-//region flutter_staggered_animation library
-/// In the context of a scrollable view, your children's animations are only built
-/// as the user scrolls and they appear on the screen.
-///
-/// This create a situation
-/// where your animations will be run as you scroll through the content.
-///
-/// If this is not a behaviour you want in your app, you can use AnimationLimiter.
-///
-/// AnimationLimiter is an InheritedWidget that prevents the children widgets to be
-/// animated if they don't appear in the first frame where AnimationLimiter is built.
-///
-/// To be effective, AnimationLimiter musts be a direct parent of your scrollable list of widgets.
 class AnimationLimiterWidget extends StatefulWidget {
   /// The child Widget to animate.
   final Widget child;

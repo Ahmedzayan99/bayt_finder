@@ -7,13 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../extensions/common.dart';
 import '../../../models/get_setting_response.dart';
 import '../../../network/dio_maneger.dart';
-import '../../../utils/constants.dart';
-import '../../category_screen.dart';
-import '../../favourite_screen.dart';
+import '../../favourite/favourite_screen.dart';
 
 
 import '../../home/home_screen.dart';
-import '../../profile_screen.dart';
+import '../../my_account/profile_screen.dart';
+import '../../property/property_screen.dart';
 part 'layout_state.dart';
 
 class LayoutCubit extends Cubit<LayoutState> {
@@ -21,12 +20,15 @@ class LayoutCubit extends Cubit<LayoutState> {
 
   static LayoutCubit get(context) => BlocProvider.of(context);
   int current = 0;
-
+  int currentFrom = 0;
  List<Widget> screen = [
-    HomeScreen(), CategoryScreen(), FavouriteScreen(), ProfileScreen()
+    HomeScreen(), PropertyScreen(fromLayout: true,),/*CategoryScreen(),*/ FavouriteScreen(), AccountScreen(),/*ProfileScreen()*/
   ];
   void changeIndex(int index) {
+    currentFrom=current;
     current = index;
+    print(currentFrom);
+    print(current);
     emit(AppChangeBottomNavBarState());
   }
   DioManager dioManager=DioManager();
@@ -38,7 +40,7 @@ class LayoutCubit extends Cubit<LayoutState> {
     );
     response.fold(
           (left) {
-        errorMessage = left;
+
         toast(left.toString());
         emit(GetSettingErrorState());
       }, (right) async {

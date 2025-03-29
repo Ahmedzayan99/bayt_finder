@@ -1,18 +1,19 @@
-import 'dashBoard_response.dart';
+import 'package:bayt_finder/models/property_details_model.dart';
+
 import 'pagination_model.dart';
 
 class FavouritePropertyModel {
   Pagination? pagination;
-  List<Property>? data;
+  List<PropertyDetail>? data;
 
   FavouritePropertyModel({this.pagination, this.data});
 
   FavouritePropertyModel.fromJson(Map<String, dynamic> json) {
     pagination = json['pagination'] != null ? Pagination.fromJson(json['pagination']) : null;
     if (json['data'] != null) {
-      data = <Property>[];
+      data = <PropertyDetail>[];
       json['data'].forEach((v) {
-        data!.add(Property.fromJson(v));
+        data!.add(PropertyDetail.fromJson(v));
       });
     }
   }

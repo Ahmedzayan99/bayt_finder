@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -10,7 +11,6 @@ import '../../../local_storage/shared_preferences_manager.dart';
 import '../../../models/auth/otp_login_response.dart';
 import '../../../network/dio_maneger.dart';
 
-
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -19,47 +19,56 @@ class LoginCubit extends Cubit<LoginState> {
   static LoginCubit get(context) => BlocProvider.of(context);
   DioManager dioManager = DioManager();
   String? errorMessage;
-///login
-  // PhoneNumber phoneNumber = PhoneNumber(isoCode: "IQ");
-  PhoneNumber phoneNumber = PhoneNumber(isoCode: "EG");
+
+  ///login
+  PhoneNumber phoneNumber = PhoneNumber(isoCode: "IQ");
+  //PhoneNumber phoneNumber = PhoneNumber(isoCode: "EG");
   FocusNode mobileFocus = FocusNode();
   TextEditingController mobileNumberController = TextEditingController();
-  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   bool isUserExist = true;
 
   SocialLoginResponse loginModel = SocialLoginResponse();
+
   Future<void> login() async {
     await SharedPreferencesManager.removeData('token');
     emit(LoginLoadingState());
     Either<String, SocialLoginResponse> response = await dioManager.login(
-      phone: phoneNumber.phoneNumber.toString(),
+      phone: mobileNumberController.text.toString(),
     );
     response.fold(
-          (left) {
+      (left) {
         errorMessage = left;
         toast(left.toString());
         emit(LoginErrorState());
-      }, (right) async {
+      },
+      (right) async {
+        if (right.message == 'No record found'.tr()) {
+          isUserExist = false;
+          emit(LoginSuccessState());
+        } else {
+          loginModel = right;
+          isUserExist = true;
+          emit(LoginSuccessState());
+        }
 
-      loginModel = right;
-      isUserExist = loginModel.isUserExist!;
-      emit(LoginSuccessState());
 /*
       await PrefsManager.saveData(key: 'token',value:loginModel.data!.apiToken);
 */
-
-    },
+      },
     );
   }
+
   void clearData() {
-    phoneNumber = PhoneNumber(isoCode: "EG");
+    phoneNumber = PhoneNumber(isoCode: "IQ");
     mobileNumberController = TextEditingController();
     errorMessage = null;
+    loginFormKey = GlobalKey<FormState>();
     emit(ClearDataState());
   }
 
 /*  Future<void> sendOTP(context) async {
-    if (loginFormKey.currentState!.validate()) {
+    if (loginFormKey.currentState!!) {
       loginFormKey.currentState!.save();
       hideKeyboard(context);
       await appStore.setLoading(true);
@@ -110,7 +119,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(ResendTimeout());
   }
 
- /* Future<void> resendOTP() async {
+/* Future<void> resendOTP() async {
     resendTimeout = 120;
     isResendEnabled = false;
     toast("e.toString()");
@@ -122,7 +131,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> submit() async {
-    *//* hideKeyboard(context);
+    */ /* hideKeyboard(context);
     await appStore.setLoading(true);
     AuthCredential credential = PhoneAuthProvider.credential(verificationId: widget.verificationId!, smsCode: otpCode);
     Map req = {
@@ -131,7 +140,7 @@ class LoginCubit extends Cubit<LoginState> {
       "user_type": LoginUser,
       "accessToken": widget.phoneNumber!.replaceAll('+', ''),
       "contact_number": widget.phoneNumber,
-      'player_id': SharedPreferencesManager.getStringAsync(PLAYER_ID).validate(),
+      'player_id': SharedPreferencesManager.getStringAsync(PLAYER_ID)!,
     };
     await otpLogInApi(req).then((value) async {
       await SharedPreferencesManager.saveData(IS_OTP, true);
@@ -142,9 +151,9 @@ class LoginCubit extends Cubit<LoginState> {
         SignUpScreen(phoneNumber: widget.phoneNumber!.replaceAll('+', '')).launch(context);
       } else {
         await appStore.setLogin(true);
-        SharedPreferencesManager.saveData(TOKEN, value.data!.apiToken.validate());
-        appStore.setToken(value.data!.apiToken.validate());
-        await getUSerDetail(context, value.data!.id.validate()).whenComplete(() {
+        SharedPreferencesManager.saveData(TOKEN, value.data!.apiToken!);
+        appStore.setToken(value.data!.apiToken!);
+        await getUSerDetail(context, value.data!.id!).whenComplete(() {
           DashboardScreen().launch(context, isNewTask: true);
         });
       }
@@ -157,16 +166,16 @@ class LoginCubit extends Cubit<LoginState> {
       } else {
         if (e.toString().contains('OTP is invalid')) toast(language.invalidOtp);
       }
-    *//*
+    */ /*
   }
-*//*    await FirebaseAuth.instance.signInWithCredential(credential).then((result) async {
+*/ /*    await FirebaseAuth.instance.signInWithCredential(credential).then((result) async {
 
     }).catchError((e) async {
       log("error->" + e.toString());
       toast(e.toString());
       await appStore.setLoading(false);
       setState(() {});
-    });*//*
+    });*/ /*
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<void> loginWithOTPFirbase() async {
     return await _auth.verifyPhoneNumber(
@@ -185,15 +194,15 @@ class LoginCubit extends Cubit<LoginState> {
       },
       timeout: Duration(minutes: 1),
       codeSent: (String verificationId, int? resendToken) async {
-     *//*   if (resend == true) {
+     */ /*   if (resend == true) {
           OTPScreen(
-            *//**//*  verificationId: verificationId,
+            */ /**/ /*  verificationId: verificationId,
           isCodeSent: true,
           phoneNumber: phoneNumber,
           mobileNo: mobileNo,
-          onCall: () {},*//**//*
+          onCall: () {},*/ /**/ /*
           ).launch(context);
-        }*//*
+        }*/ /*
         return;
       },
       codeAutoRetrievalTimeout: (String verificationId) {

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
-import '../../extensions/colors.dart';
-import '../../extensions/decorations.dart';
 
 class AppTheme {
   AppTheme._();
@@ -15,81 +12,27 @@ class AppTheme {
     useMaterial3: false,
     bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent),
     scaffoldBackgroundColor: AppColors.colorBGSheet,
-    primaryColor: primaryColor,
+    primaryColor: AppColors.colorMaster,
     iconTheme: IconThemeData(color: Colors.black),
-    dividerColor: dividerColor,
-    cardColor: cardLightColor,
+    dividerColor: AppColors.colorMediumGrayTextForm,
     appBarTheme: AppBarTheme(
       elevation: 0,
       systemOverlayStyle: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark, statusBarColor: Colors.transparent),
     ),
-    colorScheme: ColorScheme(
-      primary: primaryColor,
-      secondary: primaryColor,
-      surface: Colors.white,
-      error: Colors.red,
-      onPrimary: Colors.white,
-      onSecondary: Colors.black,
-      onSurface: Colors.black,
-      onError: Colors.redAccent,
-      brightness: Brightness.light,
-    ),
-    checkboxTheme: CheckboxThemeData(
-      shape: RoundedRectangleBorder(borderRadius: radius(20), side: BorderSide(width: 1, color: primaryColor)),
+   /* checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(borderRadius: radius(20), side: BorderSide(width: 1, color: AppColors.colorMaster)),
       checkColor: WidgetStateProperty.all(Colors.white),
-      fillColor: WidgetStateProperty.all(primaryColor),
+      fillColor: WidgetStateProperty.all(AppColors.colorMaster),
       materialTapTargetSize: MaterialTapTargetSize.padded,
-    ),
-    textTheme: GoogleFonts.latoTextTheme(),
+    ),*/
+   // textTheme: GoogleFonts.latoTextTheme(),
     pageTransitionsTheme: PageTransitionsTheme(
       builders: <TargetPlatform, PageTransitionsBuilder>{
         TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-        TargetPlatform.linux: OpenUpwardsPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       },
     ),
     fontFamily: 'Rubik',
   );
 
-  static final ThemeData darkTheme = ThemeData(
-    highlightColor: Colors.transparent,
-    splashColor: Colors.transparent,
-    hoverColor: Colors.transparent,
-    useMaterial3: false,
-    bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent),
-    scaffoldBackgroundColor: scaffoldColorDark,
-    appBarTheme: AppBarTheme(
-      elevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light, statusBarColor: Colors.transparent),
-    ),
-    iconTheme: IconThemeData(color: Colors.white),
-    cardColor: cardDarkColor,
-    colorScheme: ColorScheme(
-      primary: primaryColor,
-      secondary: primaryColor,
-      surface: Colors.black,
-      error: Colors.red,
-      onPrimary: Colors.black,
-      onSecondary: Colors.white,
-      onSurface: Colors.white,
-      onError: Colors.redAccent,
-      brightness: Brightness.dark,
-    ),
-    dividerColor: Colors.white24,
-    textTheme: GoogleFonts.latoTextTheme(),
-    checkboxTheme: CheckboxThemeData(
-      shape: RoundedRectangleBorder(borderRadius: radius(20), side: BorderSide(width: 1, color: primaryColor)),
-      checkColor: WidgetStateProperty.all(Colors.white),
-      fillColor: WidgetStateProperty.all(primaryColor),
-      materialTapTargetSize: MaterialTapTargetSize.padded,
-    ),
-    pageTransitionsTheme: PageTransitionsTheme(
-      builders: <TargetPlatform, PageTransitionsBuilder>{
-        TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-        TargetPlatform.linux: OpenUpwardsPageTransitionsBuilder(),
-        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      },
-    ),
-    fontFamily: 'Rubik',
-  );
 }

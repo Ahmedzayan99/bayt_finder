@@ -1,4 +1,6 @@
-import 'article_model.dart';
+import 'package:bayt_finder/models/property_details_model.dart';
+import 'article_response.dart';
+import 'category_list_model.dart';
 
 class DashboardResponse {
   AppSetting? appSetting;
@@ -9,14 +11,14 @@ class DashboardResponse {
 
   // List<UserProperty>? userProperty;
   List<OwnerProperty>? ownerProperty;
-  List<Property>? property;
+  List<PropertyDetail>? property;
   List<NearbyProperty>? nearByProperty;
-  List<Property>? fullyFurnishedProperty;
+  List<PropertyDetail>? fullyFurnishedProperty;
   List<PropertyType>? propertyType;
   List<Article>? article;
   List<PropertyCity>? propertyCity;
   FilterConfiguration? filterConfiguration;
-  List<Property>? advertisementProperty;
+  List<PropertyDetail>? advertisementProperty;
 
   DashboardResponse(
       {this.appSetting,
@@ -73,9 +75,9 @@ class DashboardResponse {
       });
     }
     if (json['property'] != null) {
-      property = <Property>[];
+      property = <PropertyDetail>[];
       json['property'].forEach((v) {
-        property!.add(Property.fromJson(v));
+        property!.add(PropertyDetail.fromJson(v));
       });
     }
     if (json['near_by_property'] != null) {
@@ -85,9 +87,9 @@ class DashboardResponse {
       });
     }
     if (json['fully_furnished_property'] != null) {
-      fullyFurnishedProperty = <Property>[];
+      fullyFurnishedProperty = <PropertyDetail>[];
       json['fully_furnished_property'].forEach((v) {
-        fullyFurnishedProperty!.add(Property.fromJson(v));
+        fullyFurnishedProperty!.add(PropertyDetail.fromJson(v));
       });
     }
     if (json['property_type'] != null) {
@@ -110,9 +112,9 @@ class DashboardResponse {
     }
     filterConfiguration = json['filter_configuration'] != null ? FilterConfiguration.fromJson(json['filter_configuration']) : null;
     if (json['advertisement_property'] != null) {
-      advertisementProperty = <Property>[];
+      advertisementProperty = <PropertyDetail>[];
       json['advertisement_property'].forEach((v) {
-        advertisementProperty!.add(Property.fromJson(v));
+        advertisementProperty!.add(PropertyDetail.fromJson(v));
       });
     }
   }
@@ -152,9 +154,9 @@ class DashboardResponse {
     if (article != null) {
       data['article'] = article!.map((v) => v.toJson()).toList();
     }
-    if (propertyCity != null) {
+/*    if (propertyCity != null) {
       data['property_city'] = propertyCity!.map((v) => v.toJson()).toList();
-    }
+    }*/
     if (filterConfiguration != null) {
       data['filter_configuration'] = filterConfiguration!.toJson();
     }
@@ -337,7 +339,7 @@ class Category {
   String? name;
   int? status;
   String? categoryImage;
-  List<AmenityName>? amenityName;
+  List<AmenityNameCategory>? amenityName;
   String? createdAt;
   String? updatedAt;
 
@@ -349,9 +351,9 @@ class Category {
     status = json['status'];
     categoryImage = json['category_image'];
     if (json['amenity_name'] != null) {
-      amenityName = <AmenityName>[];
+      amenityName = <AmenityNameCategory>[];
       json['amenity_name'].forEach((v) {
-        amenityName!.add(AmenityName.fromJson(v));
+        amenityName!.add(AmenityNameCategory.fromJson(v));
       });
     }
     createdAt = json['created_at'];
@@ -489,9 +491,9 @@ class AgentList {
 
 }
 
-class AmenityName {
+/*class AmenityName {
   int? id;
-  String? name;
+  String? title;
   int? status;
   String? type;
 
@@ -502,7 +504,7 @@ class AmenityName {
 
   AmenityName(
       {this.id,
-      this.name,
+      this.title,
       this.status,
       this.type,
       // this.value,
@@ -512,7 +514,7 @@ class AmenityName {
 
   AmenityName.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
+    title = json['title'];
     status = json['status'];
     type = json['type'];
     // value = json['value'].cast<String>();
@@ -524,7 +526,7 @@ class AmenityName {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['name'] = name;
+    data['name'] = title;
     data['status'] = status;
     data['type'] = type;
     // data['value'] = this.value;
@@ -533,7 +535,7 @@ class AmenityName {
     data['amenity_image'] = amenityImage;
     return data;
   }
-}
+}*/
 
 class MSlider {
   int? id;
@@ -624,7 +626,7 @@ class Amenity {
   }
 }
 
-class Property {
+/*class Property {
   int? id;
   String? name;
   int? categoryId;
@@ -702,7 +704,7 @@ class Property {
     data['advertisement_property_date'] = advertisementPropertyDate;
     return data;
   }
-}
+}*/
 
 class PropertyType {
   int? id;
@@ -1063,21 +1065,24 @@ class Tags {
 }
 
 class PropertyCity {
-  String? name;
-  bool? isSelect;
-
-  PropertyCity({this.name,this.isSelect});
+  String? title;
+  String? selectVal;
+  String? categoryImage;
+  String? createdAt;
+  String? updatedAt;
+  int? count;
+  PropertyCity({this.title,this.count,this.selectVal,this.categoryImage,this.createdAt,this.updatedAt});
 
   PropertyCity.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    isSelect = false;
+    title = json['title'];
+    selectVal = json['selectVal'];
+    count = json['count'];
+    categoryImage = json['category_image'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    return data;
-  }
+
 }
 
 class FilterConfiguration {

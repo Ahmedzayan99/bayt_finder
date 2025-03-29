@@ -35,30 +35,23 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   connectivity_plus: ^6.1.3
-  country_code_picker: ^3.2.0
-
   flutter_localization: ^0.3.1
-#  flutter_mobx: ^2.3.0
-  geolocator: ^13.0.2
+  geolocator: ^13.0.3
   shared_preferences: ^2.5.2
   google_fonts: ^6.2.1
   cached_network_image: ^3.4.1
   flutter_vector_icons: ^2.0.0
-  package_info_plus: ^8.2.1
-  onesignal_flutter: ^5.2.9
+  package_info_plus: ^8.3.0
+  onesignal_flutter: ^5.3.0
   url_launcher: ^6.3.1
   youtube_player_flutter: ^9.1.1
-  http: ^1.3.0
-  webview_flutter: ^4.10.0
-#  google_mobile_ads: ^5.3.1
   flutter_tts: ^4.2.2
   lottie: ^3.3.1
   dotted_border: ^2.1.0
   image_picker: ^1.1.2
-  chat_gpt_flutter: ^1.0.16
   share_plus: ^10.1.4
   fluttertoast: ^8.2.12
-  google_maps_flutter: ^2.10.0
+  google_maps_flutter: ^2.12.0
   stylish_bottom_bar: ^1.1.0
   photo_view: ^0.15.0
   carousel_slider: ^5.0.0
@@ -66,8 +59,8 @@ dependencies:
   otp_text_field: ^1.1.3
   maps_launcher: ^3.0.0+1
   flutter_rating_bar: ^4.0.1
-  permission_handler: ^11.3.1
-  flutter_bloc: ^9.0.0
+  permission_handler: ^11.4.0
+  flutter_bloc: ^9.1.0
   bloc: ^9.0.0
   flutter_screenutil: ^5.9.3
   easy_localization: ^3.0.7+1
@@ -77,16 +70,17 @@ dependencies:
   intl_phone_number_input: ^0.7.4
   dio_smart_retry: ^7.0.1
   pin_code_fields: ^8.0.1
-#  firbase
-  firebase_core: ^3.11.0
-  firebase_auth: ^5.4.2
-  firebase_crashlytics: ^4.3.2
-  cloud_firestore: ^5.6.3
-  cloud_functions: ^5.3.2
-  firebase_storage: ^12.4.2
-  firebase_messaging: ^15.2.2
-  firebase_remote_config: ^5.4.0
-  firebase_app_check: ^0.3.2+2
+  place_picker_google: ^0.0.14
+  flutter_widget_from_html: ^0.16.0
+  device_info_plus: ^11.3.0
+  flutter_image_compress: ^2.4.0
+
+  #  firbase
+  firebase_core: ^3.12.1
+  firebase_auth: ^5.5.1
+  firebase_messaging: ^15.2.4
+
+
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +93,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -106,11 +101,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
     - assets/image/
     - assets/svg_icon/
-    - assets/flags/
     - assets/translations/
+    - assets/fonts/
+    - assets/lottie/
 
   fonts:
     - family: Rubik

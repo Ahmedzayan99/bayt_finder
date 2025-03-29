@@ -2,10 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:bayt_finder/extensions/extension_util/bool_extensions.dart';
-import 'package:bayt_finder/extensions/extension_util/double_extensions.dart';
-import 'package:bayt_finder/extensions/extension_util/int_extensions.dart';
-import 'package:bayt_finder/extensions/extension_util/string_extensions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
@@ -31,7 +27,7 @@ class SharedPreferencesManager {
     return sharedPreferences.getStringList(key);
   }
   static Map<String, dynamic> getJSONAsync(String key, {Map<String, dynamic>? defaultValue}) {
-    if (sharedPreferences.containsKey(key) && sharedPreferences.getString(key).validate().isNotEmpty) {
+    if (sharedPreferences.containsKey(key) && sharedPreferences.getString(key)!.isNotEmpty) {
       return jsonDecode(sharedPreferences.getString(key)!);
     } else {
       return defaultValue ?? {};
@@ -51,16 +47,16 @@ class SharedPreferencesManager {
   static  Future<bool> saveData(String key, dynamic value, {bool print1 = true}) async {
     if (print1) print('${value.runtimeType} - $key - $value');
     if (value is String) {
-      return await sharedPreferences.setString(key, value.validate());
+      return await sharedPreferences.setString(key, value);
     }
     else if (value is int) {
-      return await sharedPreferences.setInt(key, value.validate());
+      return await sharedPreferences.setInt(key, value);
     }
     else if (value is bool) {
-      return await sharedPreferences.setBool(key, value.validate());
+      return await sharedPreferences.setBool(key, value);
     }
     else if (value is double) {
-      return await sharedPreferences.setDouble(key, value.validate());
+      return await sharedPreferences.setDouble(key, value);
     }
     else if (value is Map<String, dynamic>) {
       return await sharedPreferences.setString(key, jsonEncode(value));

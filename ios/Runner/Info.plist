@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -22,12 +24,33 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Baty Finder needs access to a camera to take pictures.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Baty Finder needs access to your location to provide better services.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Baty Finder needs access to your location to provide better services.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Baty Finder needs access to the gallery to select photos.</string>
+	<key>NSRemoteNotificationUsageDescription</key>
+	<string>Baty Finder will send you notifications</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -41,33 +64,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	 <!-- أذونات الموقع -->
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>Baty Finder needs access to your location to provide better services.</string>
-        <key>NSLocationAlwaysUsageDescription</key>
-        <string>Baty Finder needs access to your location to provide better services.</string>
-
-        <!-- أذونات الكاميرا والمعرض -->
-        <key>NSCameraUsageDescription</key>
-        <string>Baty Finder needs access to a camera to take pictures.</string>
-        <key>NSPhotoLibraryUsageDescription</key>
-        <string>Baty Finder needs access to the gallery to select photos.</string>
-
-        <!-- أذونات الإشعارات -->
-        <key>UIBackgroundModes</key>
-        <array>
-            <string>fetch</string>
-            <string>remote-notification</string>
-        </array>
-        <key>NSRemoteNotificationUsageDescription</key>
-        <string>Baty Finder will send you notifications</string>
-
-        <!-- إعدادات Firebase -->
-        <key>FirebaseAppDelegateProxyEnabled</key>
-        <false/>
 </dict>
 </plist>

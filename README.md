@@ -13,38 +13,10 @@ A few resources to get you started if this is your first Flutter project:
                                       17.9s
 Failed to build iOS app
 Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalOutcomes.framework'
+  Package Loading (Xcode): Missing package product 'OneSignalInAppMessages'
+  /Users/nahrdevelopment/StudioProjects/bayt_finder/ios/Runner.xcodeproj
 
+Package Loading (Xcode): Missing package product 'OneSignalFramework'
+/Users/nahrdevelopment/StudioProjects/bayt_finder/ios/Runner.xcodeproj
 
-Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalFramework.framework'
-
-
-Error (Xcode): Multiple commands produce '/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalUser.framework'
-
-
-Error (Xcode): Multiple commands produce '/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalCore.framework'
-
-
-Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalExtension.framework'
-
-
-Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalNotifications.framework'
-
-
-Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalLiveActivities.framework'
-
-
-Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalOSCore.framework'
-
-
-Error (Xcode): Multiple commands produce
-'/Users/nahrdevelopment/StudioProjects/bayt_finder/build/ios/Release-iphoneos/Runner.app/Frameworks/OneSignalInAppMessages.framework'
-
-
-Encountered error while building for device.
-nahrdevelopment@Nahrs-Mac-mini ios % 
+Could not build the application for the simulator.

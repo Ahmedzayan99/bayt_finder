@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:bayt_finder/nav.dart';
 import 'package:dartz/dartz.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -323,23 +324,31 @@ Future<void> addData(PlaceAddressModel result) async {
   }) async {
     final selectedImage =
         await imagePickerHelper.checkAndPickImage(imageSource: imageSource);
+    if(selectedImage !=null){
     imageCover = selectedImage;
-    emit(ImagePicked());
+    navigateBack();
+    emit(ImagePicked());}
   }
 
   Future<void> pickImageMultipleImage() async {
     final selectedImage =
         await imagePickerHelper.checkAndPickImageMultipleImages();
-    imageGallary.addAll(selectedImage!);
-    emit(ImagePicked());
+    if(selectedImage !=null){
+      imageGallary.addAll(selectedImage);
+      navigateBack();
+      emit(ImagePicked());
+    }
+
   }
   Future<void> pickImageGallary({
     required ImageSource imageSource,
   }) async {
     final selectedImage =
     await imagePickerHelper.checkAndPickImage(imageSource: imageSource);
+    if(selectedImage !=null){
     imageGallary.add(selectedImage!);
-    emit(ImagePicked());
+    navigateBack();
+    emit(ImagePicked());}
   }
   void remove(index) {
     imageGallary.removeAt(index);

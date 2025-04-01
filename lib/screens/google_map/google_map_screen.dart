@@ -24,6 +24,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     GoogleMapCubit googleMapCubit = GoogleMapCubit.get(context);
+    googleMapCubit.debounce?.cancel();
     return BlocConsumer<GoogleMapCubit, GoogleMapState>(
       listener: (context, state) {
         // TODO: implement listener
@@ -87,7 +88,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             ),
           },*/
                   //style: lightMapString,
-                  mapType: MapType.hybrid,
+                  mapType: MapType.normal,
                   onMapCreated: (controller) =>
                       googleMapCubit.onMapCreatedSelect(controller),
                   //onCameraIdle: () => googleMapCubit.onCameraIdle(),

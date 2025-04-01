@@ -14,6 +14,7 @@ import 'package:bayt_finder/screens/my_account/cubit/my_account_cubit.dart';
 import 'package:bayt_finder/screens/my_property/cubit/my_property_cubit.dart';
 import 'package:bayt_finder/screens/news/cubit/news_cubit.dart';
 import 'package:bayt_finder/screens/no_internet_screen.dart';
+import 'package:bayt_finder/screens/notification/cubit/notification_cubit.dart';
 import 'package:bayt_finder/screens/property/cubit/property_cubit.dart';
 import 'package:bayt_finder/screens/sign_up/cubit/register_cubit.dart';
 import 'package:bayt_finder/screens/splash_screen/splash_screen.dart';
@@ -152,7 +153,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<NewsCubit>(create: (context) => NewsCubit()),
           BlocProvider<GoogleMapCubit>(create: (context) => GoogleMapCubit()),
           BlocProvider<ShowPropertyInMapCubit>(create: (context) => ShowPropertyInMapCubit()),
-        ],
+        BlocProvider<NotificationCubit>(create: (context)=>NotificationCubit()),
+  ],
         child:  ScreenUtilInit(
         designSize: const Size(432, 932),
     minTextAdapt: true,

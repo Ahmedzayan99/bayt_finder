@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:bayt_finder/components/permission.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 class ImagePickerHelper {
   static Future<File> compressImage(File file) async {
     try {
@@ -27,42 +28,66 @@ class ImagePickerHelper {
 
   Future<bool> galleryStatus() async {
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+      if(Platform.isIOS){
+        var status = await Permission.photos.status;
+        print(status);
+        if (status == PermissionStatus.granted ||
+            status == PermissionStatus.limited) {
+          return true;
+        } else {
+          status = await Permission.photos.request();
+          if (status == PermissionStatus.granted ||
+              status == PermissionStatus.limited) {
+            return true;
+          } else {
+            if( status == PermissionStatus.permanentlyDenied){
+              openAppSettings();
+            }else{
+              return false;
+            }
+            return false;
+          }
+        }
+      }else{
+        final androidInfo = await deviceInfoPlugin.androidInfo;
+        if (Platform.isAndroid && androidInfo!.version.sdkInt >= 33) {
+          var status = await Permission.photos.status;
+          print(status);
+          if (status == PermissionStatus.granted ||
+              status == PermissionStatus.limited) {
+            return true;
+          } else {
+            status = await Permission.photos.request();
+            if (status == PermissionStatus.granted ||
+                status == PermissionStatus.limited) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+        else{
+          var status = await Permission.storage.status;
+          if (status == PermissionStatus.granted ||
+              status == PermissionStatus.limited) {
+            return true;
+          } else {
+            status = await Permission.storage.request();
+            if (status == PermissionStatus.granted ||
+                status == PermissionStatus.limited) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      }
 
-    final androidInfo = await deviceInfoPlugin.androidInfo;
-    if ((Platform.isIOS) ||
-        (Platform.isAndroid && androidInfo.version.sdkInt >= 33)) {
-      var status = await Permission.photos.status;
-      if (status == PermissionStatus.granted ||
-          status == PermissionStatus.limited) {
-        return true;
-      } else {
-        status = await Permission.photos.request();
-        if (status == PermissionStatus.granted ||
-            status == PermissionStatus.limited) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    } else {
-      var status = await Permission.storage.status;
-      if (status == PermissionStatus.granted ||
-          status == PermissionStatus.limited) {
-        return true;
-      } else {
-        status = await Permission.storage.request();
-        if (status == PermissionStatus.granted ||
-            status == PermissionStatus.limited) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
   }
 
   Future<bool> cameraStatus() async {
     var status = await Permission.camera.status;
+    print(status);
     if (status == PermissionStatus.granted ||
         status == PermissionStatus.limited) {
       return true;
@@ -98,6 +123,7 @@ class ImagePickerHelper {
 
   Future<List<File>?> checkAndPickImageMultipleImages() async {
     var status = await galleryStatus();
+    print(status);
     if (status == true) {
       return pickMultipleImages();
     } else {

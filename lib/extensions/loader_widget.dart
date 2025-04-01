@@ -56,7 +56,7 @@ class LoaderState extends State<Loader> {
             ),
         //Progress color uses accentColor from ThemeData
         child: Center(
-          child: CircularProgressIndicator(
+          child: CircularProgressIndicator.adaptive(
             strokeWidth: 2,
             value: widget.value,
             valueColor: widget.valueColor ??

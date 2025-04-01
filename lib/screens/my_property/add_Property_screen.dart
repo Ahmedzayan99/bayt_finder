@@ -1113,14 +1113,14 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                   onPressedPhotos: () async {
                                     await myPropertyCubit
                                         .pickImageMultipleImage();
-                                    Navigator.of(context).pop();
+                                   // Navigator.of(context).pop();
                                   },
                                   onPressedCamera: () async {
                                     await myPropertyCubit
                                         .pickImageGallary(
                                       imageSource: ImageSource.camera,
                                     );
-                                    Navigator.of(context).pop();
+                               //     Navigator.of(context).pop();
                                   },
                                 ),
                               );

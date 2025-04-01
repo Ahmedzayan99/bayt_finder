@@ -48,7 +48,7 @@ class ShowPropertyInMapScreen extends StatelessWidget {
                 spacing: 10.h,
                 children: [
                   SizedBox(
-                    height: 30.h,
+                    height: 100.h,
                   ),
                   InkWell(
                       onTap: () {

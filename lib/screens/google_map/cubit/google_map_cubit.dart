@@ -89,23 +89,23 @@ class GoogleMapCubit extends Cubit<GoogleMapState> {
     markers[markerId] = marker;
   //  emit(AddMarker());
   }
+  Timer? debounce;
   Future<void> onMapMove(CameraPosition position) async {
-    selectLatLong=position.target;
-    addMarker(position.target, 'pin', currentMarker!);
-  /*   if (_debounce?.isActive ?? false) _debounce?.cancel();
-  _debounce = Timer(Duration(milliseconds: 300), () {
+     if (debounce?.isActive ?? false) debounce?.cancel();
+  debounce = Timer(Duration(milliseconds: 300), () async {
   selectLatLong=position.target;
   addMarker(position.target, 'pin', currentMarker!);
-  });*/
-    if(selectLatLong !=null){
-      await setLocaleIdentifier('en_US'); //'ar_EG'
-      placeMarksEn = await placemarkFromCoordinates(
-        selectLatLong!.latitude,
-        selectLatLong!.longitude,
-      );
-      currentPickLocation='${placeMarksEn.first.name},${placeMarksEn.first.street},${placeMarksEn.first.name},${placeMarksEn.first.locality},${placeMarksEn.first.subAdministrativeArea}${placeMarksEn.first.administrativeArea},${placeMarksEn.first.country}';
-      emit(OnCameraIdle());
-    }
+  if(selectLatLong !=null){
+    await setLocaleIdentifier('en_US'); //'ar_EG'
+    placeMarksEn = await placemarkFromCoordinates(
+      selectLatLong!.latitude,
+      selectLatLong!.longitude,
+    );
+    currentPickLocation='${placeMarksEn.first.name},${placeMarksEn.first.street},${placeMarksEn.first.name},${placeMarksEn.first.locality},${placeMarksEn.first.subAdministrativeArea}${placeMarksEn.first.administrativeArea},${placeMarksEn.first.country}';
+    emit(OnCameraIdle());
+  }
+  });
+
   }
 /*  if (_debounce?.isActive ?? false) _debounce?.cancel();
   _debounce = Timer(Duration(milliseconds: 300), () {

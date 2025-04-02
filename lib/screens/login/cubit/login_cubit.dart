@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -117,6 +118,28 @@ class LoginCubit extends Cubit<LoginState> {
   void stopTimer() {
     timer!.cancel();
     emit(ResendTimeout());
+  }
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<void> loginWithOTPFirbase() async {
+    return await _auth.verifyPhoneNumber(
+        phoneNumber: '+201129820937',//phoneNumber.phoneNumber.toString(),
+    verificationCompleted: (PhoneAuthCredential credential) async {},
+    verificationFailed: (FirebaseAuthException e) async {
+    if (e.code == 'invalid-phone-number') {
+    toast("heProvidedPhoneNumberIsNotValid");
+    throw 'The provided phone number is not valid.';
+    } else {
+    toast(e.toString());
+    throw e.toString();
+    }
+    },
+    timeout: Duration(minutes: 1),
+    codeSent: (String verificationId, int? resendToken) async {
+          print('1111111111111111111111111111');
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+      },
+    );
   }
 
 /* Future<void> resendOTP() async {

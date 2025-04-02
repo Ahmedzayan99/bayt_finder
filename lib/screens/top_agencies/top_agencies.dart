@@ -1,6 +1,7 @@
 import 'package:bayt_finder/components/appbar/custom_appbar.dart';
 import 'package:bayt_finder/extensions/loader_widget.dart';
 import 'package:bayt_finder/nav.dart';
+import 'package:bayt_finder/screens/no_data_screen.dart';
 import 'package:bayt_finder/screens/property/property_detail_screen.dart';
 import 'package:bayt_finder/screens/top_agencies/cubit/top_agencies_cubit.dart';
 import 'package:bayt_finder/utils/colors.dart';
@@ -165,7 +166,10 @@ class TopAgencies extends StatelessWidget {
                                   "Listing".tr(),
                                   style: TextStyles.font20BlackBold,
                                 ),
-                                ListView.separated(
+                                if (topAgenciesCubit
+                                    .agenciesDetail.property!.isEmpty)NoDataScreen(mTitle: "No properties added yet".tr()),
+                                if (topAgenciesCubit
+                                    .agenciesDetail.property!.isNotEmpty)  ListView.separated(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemBuilder: (context, index) {

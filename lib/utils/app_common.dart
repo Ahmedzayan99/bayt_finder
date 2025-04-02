@@ -136,24 +136,7 @@ void oneSignalData() async {
   });
   OneSignal.Notifications.addClickListener((notification) async {
     navigateTo(NotificationScreen());
- //  var notId = notification.notification.additionalData!["id"];
-    if (kDebugMode) {
-      print(notification.notification.additionalData);
-    }
-
-/*    if (notId != null) {
-   *//*
-        LoginScreen().launch(getContext1)
-       else {
-        NotificationScreen().launch(getContext1);
-      }*//*
-    }*/
   });
-    Map req = {
-      "player_id":
-          SharedPreferencesManager.getStringAsync(AppConstants.playerId).toString(),
-    };
-   // updatePlayerIdApi(req);
 
 }
 

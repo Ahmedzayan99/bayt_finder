@@ -45,7 +45,7 @@ class DioManager {
           "user_type": "user",
           // "accessToken": phone,
           // "contact_number": phone,
-          'player_id': SharedPreferencesManager.getStringAsync(
+          'player_id':  SharedPreferencesManager.getStringAsync(
               AppConstants.playerId).toString(),
         },
       );
@@ -305,7 +305,10 @@ class DioManager {
     String? minBudget,
     String? maxBudget,
   }) async {
-    Map<String, dynamic> data = {};
+    Map<String, dynamic> data = {
+      'player_id':  SharedPreferencesManager.getStringAsync(
+          AppConstants.playerId).toString(),
+    };
     if (latitude != null) {data.addAll({"latitude": latitude,});}
     if (longitude != null) {data.addAll({"longitude": longitude,});}
     if (interestType != null) {data.addAll({"interest_type": interestType,});}

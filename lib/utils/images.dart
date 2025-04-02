@@ -63,6 +63,8 @@ class AppImage {
   static const String mobile = 'assets/svg_icon/mobile.svg';
   static const String hotPrice = 'assets/svg_icon/hot-price.svg';
   static const  String news = 'assets/svg_icon/news-4301.svg';
+  static const  String notification2 = 'assets/svg_icon/notification2.svg';
+  static const  String notificationCur = 'assets/svg_icon/notification_cur.svg';
 
 
 

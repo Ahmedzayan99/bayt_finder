@@ -1,8 +1,12 @@
+import 'package:bayt_finder/nav.dart';
 import 'package:bayt_finder/screens/notification/cubit/notification_cubit.dart';
+import 'package:bayt_finder/screens/notification/notification_details_screen.dart';
+import 'package:bayt_finder/utils/decorations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../components/appbar/custom_appbar.dart';
 import '../../extensions/decorations.dart';
@@ -14,142 +18,124 @@ import '../../utils/colors.dart';
 import '../../utils/images.dart';
 import '../no_data_screen.dart';
 
-
-class NotificationScreen extends StatefulWidget {
+class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
-}
-
-class _NotificationScreenState extends State<NotificationScreen> {
-  String? realAll = "";
-
-  NotificationResponse? data;
-
-  init() async {
-    getMarksRead("");
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  Future<void> getNotificationDetails(String? id) async {
-  //  appStore.setLoading(true);
-   /* await notificationDetailsApi(id!).then((value) {
-      getMarksRead(realAll);
-    //  appStore.setLoading(false);
-      setState(() {});
-    }).catchError((e) {
-    //  appStore.setLoading(false);
-      setState(() {});
-    });*/
-  }
-
-  getMarksRead(String? realAll) async {
-    Map? req;
-    req = {"type": realAll};
-   // appStore.setLoading(true);
-  /*  await notificationListApi(req).then((value) {
-      data = value;
-      //appStore.setLoading(false);
-      setState(() {});
-    }).catchError((e) {
-    //  appStore.setLoading(false);
-      log(e.toString());
-    });*/
-  }
-
-  @override
   Widget build(BuildContext context) {
-    NotificationCubit notificationCubit =NotificationCubit.get(context);
+    NotificationCubit notificationCubit = NotificationCubit.get(context);
     notificationCubit.getNotification();
-   return BlocConsumer<NotificationCubit,NotificationState>(builder: (context,state){
-     return Scaffold(
-         appBar: CustomAppBar(title:"Notification".tr(),  actions: [
-           InkWell(
-               onTap: () {
-                 getMarksRead("markas_read");
-                 setState(() {});
-               },
-               child: Image.asset(AppImage.marksAll, height: 20, width: 20))
-         ]),
-         body: Stack(
-           children: [
-             notificationCubit.notification.notificationData != null &&   notificationCubit.notification.notificationData!.isNotEmpty
-                 ? ListView.builder(
-               physics: BouncingScrollPhysics(),
-               shrinkWrap: true,
-               padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-               itemCount:   notificationCubit.notification.notificationData!.length,
-               itemBuilder: (BuildContext context, int index) {
-                 NotificationData mNotification =   notificationCubit.notification.notificationData![index];
-                 return InkWell(
-                   onTap: (){
-                     getNotificationDetails( notificationCubit.notification.notificationData![index].id);
-                   },
-                   child: Container(
-                     padding: EdgeInsets.only(top: 4, bottom: 4),
-                     margin: EdgeInsets.only(bottom: 16, top: 0),
-                     decoration: boxDecorationWithRoundedCorners(
-                         borderRadius: radius(),
-                         backgroundColor: AppColors.colorMediumGrayTextForm),
-                     child: Column(
-                       children: [
-                         Row(
-                           crossAxisAlignment: CrossAxisAlignment.center,
-                           children: [
-                             mNotification.data!.image !=null
-                                 ? Container(
-                               width: 50,
-                               height: 50,
-                               decoration: boxDecorationWithRoundedCorners(borderRadius: radius(10), backgroundColor:  AppColors.colorMaster),
-                               child: Text(mNotification.data!.subject!.isNotEmpty ? mNotification.data!.subject![0].toUpperCase() : '', style: boldTextStyle(color: AppColors.colorMaster, size: 24))
-                               ,
-                             )
-                                 : cachedImage(mNotification.data!.image.toString(), height: 50, width: 50, fit: BoxFit.cover),
-                             SizedBox(width: 10.w,),
-                             Expanded(
-                               child: Column(
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 children: [
-                                   Text(mNotification.data!.subject!, style: boldTextStyle(color: AppColors.colorMaster)),
-                                   SizedBox(height: 4.w,),
-                                   Text(mNotification.data!.message!, style: secondaryTextStyle(size: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
-                                 ],
-                               ),
-                             ),
-                           ],
-                         ),
-                         Row(
-                           crossAxisAlignment: CrossAxisAlignment.center,
-                           mainAxisAlignment: MainAxisAlignment.end,
-                           children: [
-                             Text(mNotification.createdAt!, style: secondaryTextStyle(size: 12)),
-                             SizedBox(width: 6.h,),
-
-                             mNotification.readAt !=null ? Icon(Icons.circle, color: Colors.green, size: 6) : SizedBox()
-                           ],
-                         ),
-                       ],
-                     ),
-                   ),
-                 );/*.onTap(() {
+    return BlocConsumer<NotificationCubit, NotificationState>(
+        builder: (context, state) {
+          return Scaffold(
+              appBar: CustomAppBar(
+                  title: "Notification".tr(),
+                  showBack: true,
+              ),
+              body: Stack(
+                children: [
+                  if (notificationCubit.notification.notificationData != null) ListView.separated(
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.all(16.sp),
+                          itemCount: notificationCubit
+                              .notification.notificationData!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            NotificationData mNotification = notificationCubit
+                                .notification.notificationData![index];
+                            return InkWell(
+                           /*   onTap: () {
+                                getNotificationDetails(notificationCubit
+                                    .notification.notificationData![index].id);
+                                navigateTo(NotificationDetailsScreen(mNotificationResponse: notificationCubit
+                                    .notification!.notificationData![index].data!));
+                              },*/
+                              child: Container(
+                                padding: EdgeInsets.all(8.sp),
+                                decoration:
+                                    AppBoxDecoration.decorationWhiteRadius20,
+                                child: Column(
+                                  spacing: 3.h,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        mNotification.data!.image == null
+                                            ? Stack(
+                                                alignment:
+                                                    AlignmentDirectional.center,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    AppImage.notificationCur,
+                                                  ),
+                                                  SvgPicture.asset(
+                                                      AppImage.notification2),
+                                                ],
+                                              )
+                                            : ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
+                                                child: cachedImage(
+                                                    mNotification.data!.image
+                                                        .toString(),
+                                                    height: 50.h,
+                                                    width: 50.w,
+                                                    fit: BoxFit.cover)),
+                                        SizedBox(
+                                          width: 10.w,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(mNotification.data!.subject!,
+                                                  style: boldTextStyle(
+                                                      color: AppColors
+                                                          .colorMaster)),
+                                              SizedBox(
+                                                height: 4.w,
+                                              ),
+                                              Text(mNotification.data!.message!,
+                                                  style: secondaryTextStyle(
+                                                      size: 12),
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(mNotification.createdAt!,
+                                            style: secondaryTextStyle(size: 12)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ); /*.onTap(() {
                         getNotificationDetails(mNotification.id.toString());
                         NotificationDetailsScreen(mNotificationResponse: mNotification.data!).launch(context);
                       });*/
-               },
-             )
-                 : NoDataScreen(mTitle: "resultNotFound"),
-             Center(child: Loader())
-           ],
-         ));
-   }, listener:(context,state){
-
-   });
-
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: 20.h,
+                            );
+                          },
+                        ),
+                  if (notificationCubit.notification.notificationData != null&&notificationCubit.notification.notificationData!.isEmpty)NoDataScreen(mTitle: "Result Not Found".tr()),
+                  if (state is GetNotificationLoadingState &&
+                      notificationCubit.notification.notificationData == null)
+                    Center(child: Loader())
+                ],
+              ));
+        },
+        listener: (context, state) {});
   }
 }

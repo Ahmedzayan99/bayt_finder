@@ -30,7 +30,7 @@ class _NotificationDetailsScreenState extends State<NotificationDetailsScreen> {
         appBar: CustomAppBar(title: "",),
         body: SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            widget.mNotificationResponse.image !=null
+            widget.mNotificationResponse.image ==null
                 ? Container(
                     height:  0.3,
                     width: double.infinity,

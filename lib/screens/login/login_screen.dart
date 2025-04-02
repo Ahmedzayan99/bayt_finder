@@ -98,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (loginCubit.loginFormKey.currentState!.validate()) {
                           loginCubit.loginFormKey.currentState!.save();
                           hideKeyboard(context);
+                        //  loginCubit.loginWithOTPFirbase();
                           navigateTo( OTPScreen());
                           /*         await loginWithOTP(
                                 context, loginCubit.phoneNumber.phoneNumber.toString(), loginCubit.mMobileNumberCont.text.trim(), true, () {})
